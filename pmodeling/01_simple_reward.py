@@ -23,8 +23,9 @@ if torch.cuda.is_available():
     torch.cuda.manual_seed_all(SEED)
 
 # --- Directory and Model Configuration ---
+# NOTE: Ensure these directories exist and are populated before running.
 TRAIN_DATA_DIR = "training"
-MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct"
+MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct"  # A strong instruction-tuned model
 OUTPUT_DIR = "grpo_qwen_powl_generator"
 
 # --- Training Hyperparameters ---
@@ -36,7 +37,7 @@ LEARNING_RATE = 5e-6
 KL_BETA = 0.1
 MAX_TRAINING_STEPS = 1000
 NUM_GENERATIONS = 2
-MAX_DATASET_SAMPLES = 500
+MAX_DATASET_SAMPLES = 500 # Limit samples to keep loading fast
 
 
 # ---------------------------------------------------------------------------#
@@ -87,7 +88,6 @@ ACTIVITIES (use these exactly, same names): [{activities_str}]
 Respond with valid Python code only, defining 'root'.
 """
 
-
 def load_limited_dataset(data_dir: str, max_samples: int) -> Dataset:
     """
     Loads a limited number of samples from the data directory into a Hugging Face Dataset.
@@ -121,6 +121,7 @@ def load_limited_dataset(data_dir: str, max_samples: int) -> Dataset:
 
         prompt = get_powl_prompt(desc_data["description"], desc_data["activities"])
 
+        # This defines the column name as "reference_completion"
         data_list.append({
             "prompt": prompt,
             "reference_completion": powl_code
@@ -161,17 +162,16 @@ def get_powl_object_from_code(code_str: str):
         exec(code_str, exec_globals, local_scope)
         return local_scope.get("root")
     except Exception:
+        # traceback.print_exc()
         return None
 
-
-# --- REWARD FUNCTION (SIGNATURE CHANGED) ---
+# --- REWARD FUNCTION (KEY CORRECTED) ---
 def powl_reward_function(completions: List[str], **kwargs) -> Dict[str, List[float]]:
     """
     Calculates a reward based on the behavioral similarity between the generated and reference POWL models.
-    NOTE: The 'reference_completions' are passed via **kwargs by the trainer.
     """
-    # Extract reference completions from kwargs, which is how the trainer passes extra columns.
-    reference_completions = kwargs["reference_completions"]
+    # FIXED: Access the key "reference_completion" (singular) to match the dataset column name.
+    reference_completions = kwargs["reference_completion"]
     rewards = []
 
     for gen_code, ref_code in zip(completions, reference_completions):
@@ -186,29 +186,24 @@ def powl_reward_function(completions: List[str], **kwargs) -> Dict[str, List[flo
 
         reward_score = 0.0
         try:
-            # 1. Reward for generating syntactically valid code that produces a POWL object
             reward_score += 0.25
 
-            # Discover footprints for comparison
             ref_footprints = pm4py.discover_footprints(ref_powl)
             gen_footprints = pm4py.discover_footprints(gen_powl)
 
-            # 2. Reward for using a subset of the correct activities
             if gen_footprints["activities"].issubset(ref_footprints["activities"]):
                 reward_score += 0.25
-                # Bonus for using the exact set of activities
                 if gen_footprints["activities"] == ref_footprints["activities"]:
                     reward_score += 0.10
 
-            # 3. Reward based on behavioral similarity
             similarity = pm4py.behavioral_similarity(ref_powl, gen_powl)
             reward_score += 0.40 * similarity
 
         except Exception:
-            rewards.append(-0.5)  # Penalize pm4py errors
+            # traceback.print_exc()
+            rewards.append(-0.5)
             continue
 
-        # Scale reward from [0, 1] to [-1, 1] for the trainer
         final_reward = -1.0 + 2.0 * reward_score
         rewards.append(final_reward)
 
@@ -240,7 +235,7 @@ training_args = GRPOConfig(
     max_prompt_length=MAX_PROMPT_TOKENS,
     max_completion_length=MAX_COMPLETION_TOKENS,
     num_generations=NUM_GENERATIONS,
-    remove_unused_columns=False,  # CRITICAL: Ensures 'reference_completion' is passed to reward function
+    remove_unused_columns=False,  # CRITICAL: Ensures 'reference_completion' is passed to kwargs
     bf16=True,
     logging_steps=10,
     save_steps=100,
@@ -251,7 +246,7 @@ trainer = GRPOTrainer(
     model=model,
     args=training_args,
     train_dataset=dataset,
-    reward_funcs=[powl_reward_function],  # Pass the reward function in a list
+    reward_funcs=[powl_reward_function], # Pass as a list of functions
 )
 
 # ---------------------------------------------------------------------------#
