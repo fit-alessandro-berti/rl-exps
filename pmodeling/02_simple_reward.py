@@ -147,15 +147,15 @@ def powl_reward_function(completions: List[str], **kwargs) -> List[float]:
             rewards.append(BAD_REWARD)
             continue
         try:
-            reward_score = 0.25  # Base reward for valid POWL object
+            reward_score = 0.6  # Base reward for valid POWL object
             ref_footprints = pm4py.discover_footprints(ref_powl)
             gen_footprints = pm4py.discover_footprints(gen_powl)
             if gen_footprints["activities"].issubset(ref_footprints["activities"]):
-                reward_score += 0.25
+                reward_score += 0.1
                 if gen_footprints["activities"] == ref_footprints["activities"]:
-                    reward_score += 0.10
+                    reward_score += 0.05
             similarity = pm4py.behavioral_similarity(ref_powl, gen_powl)
-            reward_score += 0.40 * similarity
+            reward_score += 0.25 * similarity
             rewards.append(-1.0 + 2.0 * reward_score)
         except Exception:
             rewards.append(PARTIAL_FAIL_REWARD)
