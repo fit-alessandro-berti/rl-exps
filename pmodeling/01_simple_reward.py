@@ -6,7 +6,7 @@ import random
 import torch
 import pm4py
 import traceback
-from datasets import Dataset  # CHANGED: Use standard Dataset instead of IterableDataset
+from datasets import Dataset
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from trl import GRPOConfig, GRPOTrainer
 from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
@@ -23,9 +23,8 @@ if torch.cuda.is_available():
     torch.cuda.manual_seed_all(SEED)
 
 # --- Directory and Model Configuration ---
-# NOTE: Ensure these directories exist and are populated before running.
 TRAIN_DATA_DIR = "training"
-MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct"  # A strong instruction-tuned model suitable for code generation
+MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct"
 OUTPUT_DIR = "grpo_qwen_powl_generator"
 
 # --- Training Hyperparameters ---
@@ -37,7 +36,7 @@ LEARNING_RATE = 5e-6
 KL_BETA = 0.1
 MAX_TRAINING_STEPS = 1000
 NUM_GENERATIONS = 2
-MAX_DATASET_SAMPLES = 500 # NEW: Limit the number of samples to load to keep it fast
+MAX_DATASET_SAMPLES = 500
 
 
 # ---------------------------------------------------------------------------#
@@ -88,11 +87,10 @@ ACTIVITIES (use these exactly, same names): [{activities_str}]
 Respond with valid Python code only, defining 'root'.
 """
 
-# CHANGED: This function now loads a limited number of samples into a standard Dataset object.
+
 def load_limited_dataset(data_dir: str, max_samples: int) -> Dataset:
     """
     Loads a limited number of samples from the data directory into a Hugging Face Dataset.
-    This avoids using an IterableDataset, which is not supported by GRPOTrainer.
     """
     desc_folder = os.path.join(data_dir, "textual_descriptions")
     powl_folder = os.path.join(data_dir, "powl")
@@ -101,11 +99,10 @@ def load_limited_dataset(data_dir: str, max_samples: int) -> Dataset:
         raise FileNotFoundError(f"Data directories not found in '{data_dir}'. Please ensure they exist.")
 
     file_names = [f for f in os.listdir(desc_folder) if f.endswith('.json')]
-    random.shuffle(file_names) # Shuffle to get a random subset
+    random.shuffle(file_names)
 
     data_list = []
     for file_name in file_names:
-        # Stop if we've collected enough samples
         if len(data_list) >= max_samples:
             break
 
@@ -130,11 +127,9 @@ def load_limited_dataset(data_dir: str, max_samples: int) -> Dataset:
         })
 
     print(f"Loaded {len(data_list)} samples into the dataset.")
-    # Create a standard Dataset from the list of dictionaries
     return Dataset.from_list(data_list)
 
 
-# CHANGED: Create the dataset using the new function
 dataset = load_limited_dataset(TRAIN_DATA_DIR, max_samples=MAX_DATASET_SAMPLES)
 
 
@@ -166,15 +161,19 @@ def get_powl_object_from_code(code_str: str):
         exec(code_str, exec_globals, local_scope)
         return local_scope.get("root")
     except Exception:
-        # traceback.print_exc() # Uncomment for detailed debugging
         return None
 
 
-def powl_reward_function(completions: List[str], prompts: List[str], reference_completions: List[str], **kwargs) -> Dict[str, List[float]]:
+# --- REWARD FUNCTION (SIGNATURE CHANGED) ---
+def powl_reward_function(completions: List[str], **kwargs) -> Dict[str, List[float]]:
     """
     Calculates a reward based on the behavioral similarity between the generated and reference POWL models.
+    NOTE: The 'reference_completions' are passed via **kwargs by the trainer.
     """
+    # Extract reference completions from kwargs, which is how the trainer passes extra columns.
+    reference_completions = kwargs["reference_completions"]
     rewards = []
+
     for gen_code, ref_code in zip(completions, reference_completions):
         BAD_REWARD = -1.0
 
@@ -187,24 +186,29 @@ def powl_reward_function(completions: List[str], prompts: List[str], reference_c
 
         reward_score = 0.0
         try:
-            reward_score += 0.25 # Reward for valid code producing a POWL object
+            # 1. Reward for generating syntactically valid code that produces a POWL object
+            reward_score += 0.25
 
+            # Discover footprints for comparison
             ref_footprints = pm4py.discover_footprints(ref_powl)
             gen_footprints = pm4py.discover_footprints(gen_powl)
 
+            # 2. Reward for using a subset of the correct activities
             if gen_footprints["activities"].issubset(ref_footprints["activities"]):
                 reward_score += 0.25
+                # Bonus for using the exact set of activities
                 if gen_footprints["activities"] == ref_footprints["activities"]:
                     reward_score += 0.10
 
+            # 3. Reward based on behavioral similarity
             similarity = pm4py.behavioral_similarity(ref_powl, gen_powl)
             reward_score += 0.40 * similarity
 
         except Exception:
-            # traceback.print_exc() # Uncomment for debugging pm4py errors
-            rewards.append(-0.5)
+            rewards.append(-0.5)  # Penalize pm4py errors
             continue
 
+        # Scale reward from [0, 1] to [-1, 1] for the trainer
         final_reward = -1.0 + 2.0 * reward_score
         rewards.append(final_reward)
 
@@ -236,7 +240,7 @@ training_args = GRPOConfig(
     max_prompt_length=MAX_PROMPT_TOKENS,
     max_completion_length=MAX_COMPLETION_TOKENS,
     num_generations=NUM_GENERATIONS,
-    remove_unused_columns=False,
+    remove_unused_columns=False,  # CRITICAL: Ensures 'reference_completion' is passed to reward function
     bf16=True,
     logging_steps=10,
     save_steps=100,
@@ -246,8 +250,8 @@ training_args = GRPOConfig(
 trainer = GRPOTrainer(
     model=model,
     args=training_args,
-    train_dataset=dataset, # This is now a standard Dataset object
-    reward_funcs=powl_reward_function,
+    train_dataset=dataset,
+    reward_funcs=[powl_reward_function],  # Pass the reward function in a list
 )
 
 # ---------------------------------------------------------------------------#
