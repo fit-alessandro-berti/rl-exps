@@ -136,6 +136,8 @@ def powl_reward_function(completions: List[str], **kwargs) -> List[float]:
     reference_completions = kwargs["reference_completion"]
     rewards = []
     for gen_code, ref_code in zip(completions, reference_completions):
+        print(gen_code)
+
         BAD_REWARD, PARTIAL_FAIL_REWARD = -1.0, -0.5
         ref_powl = get_powl_object_from_code(ref_code)
         gen_powl = get_powl_object_from_code(gen_code)
