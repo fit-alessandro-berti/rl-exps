@@ -29,7 +29,7 @@ OUTPUT_DIR = "grpo_qwen_powl_generator"
 
 # --- Training Hyperparameters ---
 MAX_PROMPT_TOKENS = 1024
-MAX_COMPLETION_TOKENS = 512
+MAX_COMPLETION_TOKENS = 4096
 PER_DEVICE_BATCH = 1
 GRAD_ACC_STEPS = 4
 LEARNING_RATE = 5e-6
@@ -39,7 +39,7 @@ NUM_GENERATIONS = 2
 MAX_DATASET_SAMPLES = 500
 
 # --- NEW: Logging and Saving Configuration ---
-LOGGING_STEPS = 10  # Print diagnostics every 10 steps
+LOGGING_STEPS = 1  # Print diagnostics every 10 steps
 SAVE_STEPS = 100    # Save a checkpoint every 100 steps
 
 
@@ -136,6 +136,7 @@ def powl_reward_function(completions: List[str], **kwargs) -> List[float]:
     reference_completions = kwargs["reference_completion"]
     rewards = []
     for gen_code, ref_code in zip(completions, reference_completions):
+        gen_code = gen_code.split("```python")[-1].split("```")[0]
         print(gen_code)
 
         BAD_REWARD, PARTIAL_FAIL_REWARD = -1.0, -0.5
