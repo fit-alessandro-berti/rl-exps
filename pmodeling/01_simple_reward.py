@@ -6,7 +6,7 @@ import random
 import torch
 import pm4py
 import traceback
-from datasets import Dataset
+from datasets import IterableDataset  # Use IterableDataset for efficient streaming
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from trl import GRPOConfig, GRPOTrainer
 from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
@@ -35,7 +35,7 @@ PER_DEVICE_BATCH = 1
 GRAD_ACC_STEPS = 4
 LEARNING_RATE = 5e-6
 KL_BETA = 0.1
-MAX_TRAINING_STEPS = 1000
+MAX_TRAINING_STEPS = 1000  # The trainer will stop after this many steps
 NUM_GENERATIONS = 2  # Number of completions to generate per prompt for comparison
 
 
@@ -101,8 +101,9 @@ def create_dataset_generator(data_dir: str):
 
     file_names = [f for f in os.listdir(desc_folder) if f.endswith('.json')]
 
-    # This loop ensures the generator can produce enough samples for training,
-    # even if the number of files is smaller than MAX_TRAINING_STEPS.
+    # The `while True` loop allows the generator to cycle through the available data indefinitely.
+    # This is ideal when using an IterableDataset, as the trainer will simply stop fetching
+    # data once `max_steps` is reached.
     while True:
         random.shuffle(file_names)
         for file_name in file_names:
@@ -127,8 +128,9 @@ def create_dataset_generator(data_dir: str):
             }
 
 
-# Build a Hugging Face Dataset from the generator
-dataset = Dataset.from_generator(create_dataset_generator, gen_kwargs={"data_dir": TRAIN_DATA_DIR})
+# Build a Hugging Face IterableDataset from the generator.
+# This avoids pre-calculating a massive dataset size and streams data instead.
+dataset = IterableDataset.from_generator(create_dataset_generator, gen_kwargs={"data_dir": TRAIN_DATA_DIR})
 
 
 # ---------------------------------------------------------------------------#
