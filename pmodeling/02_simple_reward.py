@@ -35,7 +35,7 @@ GRAD_ACC_STEPS = 4
 LEARNING_RATE = 5e-6
 KL_BETA = 0.1
 MAX_TRAINING_STEPS = 1000
-NUM_GENERATIONS = 2
+NUM_GENERATIONS = 4
 MAX_DATASET_SAMPLES = 500
 
 # --- NEW: Logging and Saving Configuration ---
@@ -159,6 +159,7 @@ def powl_reward_function(completions: List[str], **kwargs) -> List[float]:
             rewards.append(-1.0 + 2.0 * reward_score)
         except Exception:
             rewards.append(PARTIAL_FAIL_REWARD)
+    print(rewards)
     return rewards
 
 # ---------------------------------------------------------------------------#
