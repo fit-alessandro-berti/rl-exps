@@ -28,7 +28,7 @@ MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
 OUTPUT_DIR = "grpo_qwen_powl_generator"
 
 # --- Training Hyperparameters ---
-MAX_PROMPT_TOKENS = 1024
+MAX_PROMPT_TOKENS = 4096
 MAX_COMPLETION_TOKENS = 4096
 PER_DEVICE_BATCH = 1
 GRAD_ACC_STEPS = 4
