@@ -78,8 +78,6 @@ NOW, generate the POWL model for the process below.
 DESCRIPTION: {description}
 ACTIVITIES (use these exactly, same names): [{activities_str}]
 
-Crucially, your entire response must be a single block of Python code that only uses the classes and methods demonstrated in the example (StrictPartialOrder, OperatorPOWL, Transition, SilentTransition, Operator). Do not import any other libraries or use any functions not shown.
-
 Respond with valid Python code only, defining 'root'.
 """
 
