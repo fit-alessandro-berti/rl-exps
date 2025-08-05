@@ -1,4 +1,4 @@
-# grpo_powl_generation_openai_reward.py
+# grpo_powl_generation_openai_reward_fixed.py
 
 import os
 import json
@@ -6,7 +6,7 @@ import random
 import torch
 import pm4py
 import re
-import requests  # NEW: Import for API calls
+import requests
 from datasets import Dataset
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from trl import GRPOConfig, GRPOTrainer
@@ -36,7 +36,7 @@ GRAD_ACC_STEPS = 4
 LEARNING_RATE = 5e-6
 KL_BETA = 0.1
 MAX_TRAINING_STEPS = 1000
-NUM_GENERATIONS = 2  # Generate 2 responses to be graded
+NUM_GENERATIONS = 2
 MAX_DATASET_SAMPLES = 500
 
 # --- Logging and Saving Configuration ---
@@ -168,14 +168,21 @@ Now, provide the JSON output for the responses above.
 def openai_grading_reward_function(completions: List[str], **kwargs) -> List[float]:
     """
     Calculates rewards by getting grades from the OpenAI API.
-
-    NOTE: This function assumes that all completions passed in a single call
-    were generated from the same prompt. This holds true for GRPO when
-    per_device_train_batch_size=1.
     """
     BAD_REWARD = -1.0
 
-    # Get the OpenAI API key from environment variables
+    # --- FIX ---
+    # The GRPOTrainer passes prompts under the `prompts` key.
+    # We also add a print statement to see all available keys for easier debugging.
+    # print(f"DEBUG: kwargs keys available in reward function: {kwargs.keys()}")
+
+    # The `prompts` list will contain NUM_GENERATIONS identical prompts. We just need one.
+    try:
+        original_prompt = kwargs["prompts"][0]
+    except KeyError:
+        print("ERROR: Could not find 'prompts' key in kwargs. Unable to create grading prompt.")
+        return [BAD_REWARD] * len(completions)
+
     api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
         print("ERROR: OPENAI_API_KEY environment variable not set.")
@@ -186,11 +193,6 @@ def openai_grading_reward_function(completions: List[str], **kwargs) -> List[flo
         "Content-Type": "application/json"
     }
 
-    # Extract the single prompt that generated these completions
-    # In a batch size of 1, all kwargs items will be lists of size NUM_GENERATIONS
-    original_prompt = kwargs["prompt"][0]
-
-    # Create the prompt for the grading model
     grading_prompt = get_openai_grading_prompt(original_prompt, completions)
 
     payload = {
@@ -201,22 +203,20 @@ def openai_grading_reward_function(completions: List[str], **kwargs) -> List[flo
     }
 
     try:
-        print(f"Sending {len(completions)} completions to OpenAI for grading...")
         response = requests.post(OPENAI_API_URL, headers=headers, json=payload, timeout=60)
-        response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
+        response.raise_for_status()
 
         response_data = response.json()
-
-        # Defensive parsing of the response
         grades_str = response_data.get("choices", [{}])[0].get("message", {}).get("content", "{}")
         grades_json = json.loads(grades_str)
         grades = grades_json.get("grades")
 
         if grades is None or not isinstance(grades, list) or len(grades) != len(completions):
-            print(f"ERROR: OpenAI response was malformed or had an incorrect number of grades. Received: {grades_str}")
+            print(f"ERROR: OpenAI response was malformed. Received: {grades_str}")
             return [BAD_REWARD] * len(completions)
 
-        print(f"Received grades from OpenAI: {grades}")
+        # --- MODIFIED --- Print grades obtained in the current iteration
+        print(f"--- GRADES FOR STEP: {grades} ---")
         return [float(g) for g in grades]
 
     except requests.RequestException as e:
@@ -231,7 +231,6 @@ def openai_grading_reward_function(completions: List[str], **kwargs) -> List[flo
 # 4. Model, Tokenizer, and Trainer Setup                                      #
 # ---------------------------------------------------------------------------#
 
-# --- Check for a local checkpoint to resume from ---
 model_load_path = MODEL_NAME
 resume_from_checkpoint = None
 if os.path.isdir(OUTPUT_DIR):
@@ -278,7 +277,7 @@ trainer = GRPOTrainer(
     model=model,
     args=training_args,
     train_dataset=dataset,
-    reward_funcs=[openai_grading_reward_function],  # NEW: Using the new reward function
+    reward_funcs=[openai_grading_reward_function],
 )
 
 # ---------------------------------------------------------------------------#
@@ -288,13 +287,11 @@ trainer = GRPOTrainer(
 print("\n--- Starting GRPO Training with OpenAI-based Rewards ---")
 print(f"Logging diagnostics every {LOGGING_STEPS} steps.")
 print(f"Saving model checkpoint every {SAVE_STEPS} steps.")
-print("Look for 'loss', 'rewards/chosen', and 'rewards/rejected' in the logs below.")
+print("Look for 'loss', 'rewards/chosen', 'rewards/rejected', and 'GRADES FOR STEP' in the logs below.")
 
-# Pass the checkpoint path to trainer.train() to handle optimizer/scheduler states
 trainer.train(resume_from_checkpoint=resume_from_checkpoint)
 
 print("\n--- Training Finished ---")
 
-# Save the final trained model
 trainer.save_model(OUTPUT_DIR)
 print(f"Final model and tokenizer saved to {OUTPUT_DIR}")
