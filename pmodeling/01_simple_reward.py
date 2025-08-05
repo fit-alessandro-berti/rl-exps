@@ -23,9 +23,8 @@ if torch.cuda.is_available():
     torch.cuda.manual_seed_all(SEED)
 
 # --- Directory and Model Configuration ---
-# NOTE: Ensure these directories exist and are populated before running.
 TRAIN_DATA_DIR = "training"
-MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct"  # A strong instruction-tuned model
+MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct"
 OUTPUT_DIR = "grpo_qwen_powl_generator"
 
 # --- Training Hyperparameters ---
@@ -37,7 +36,7 @@ LEARNING_RATE = 5e-6
 KL_BETA = 0.1
 MAX_TRAINING_STEPS = 1000
 NUM_GENERATIONS = 2
-MAX_DATASET_SAMPLES = 500 # Limit samples to keep loading fast
+MAX_DATASET_SAMPLES = 500
 
 
 # ---------------------------------------------------------------------------#
@@ -121,7 +120,6 @@ def load_limited_dataset(data_dir: str, max_samples: int) -> Dataset:
 
         prompt = get_powl_prompt(desc_data["description"], desc_data["activities"])
 
-        # This defines the column name as "reference_completion"
         data_list.append({
             "prompt": prompt,
             "reference_completion": powl_code
@@ -162,15 +160,14 @@ def get_powl_object_from_code(code_str: str):
         exec(code_str, exec_globals, local_scope)
         return local_scope.get("root")
     except Exception:
-        # traceback.print_exc()
         return None
 
-# --- REWARD FUNCTION (KEY CORRECTED) ---
-def powl_reward_function(completions: List[str], **kwargs) -> Dict[str, List[float]]:
+# --- REWARD FUNCTION (RETURN VALUE CORRECTED) ---
+def powl_reward_function(completions: List[str], **kwargs) -> List[float]:
     """
     Calculates a reward based on the behavioral similarity between the generated and reference POWL models.
+    This function must return a list of floats, not a dictionary.
     """
-    # FIXED: Access the key "reference_completion" (singular) to match the dataset column name.
     reference_completions = kwargs["reference_completion"]
     rewards = []
 
@@ -200,14 +197,14 @@ def powl_reward_function(completions: List[str], **kwargs) -> Dict[str, List[flo
             reward_score += 0.40 * similarity
 
         except Exception:
-            # traceback.print_exc()
             rewards.append(-0.5)
             continue
 
         final_reward = -1.0 + 2.0 * reward_score
         rewards.append(final_reward)
 
-    return {"rewards": rewards}
+    # FIXED: Return the list of rewards directly.
+    return rewards
 
 
 # ---------------------------------------------------------------------------#
@@ -235,7 +232,7 @@ training_args = GRPOConfig(
     max_prompt_length=MAX_PROMPT_TOKENS,
     max_completion_length=MAX_COMPLETION_TOKENS,
     num_generations=NUM_GENERATIONS,
-    remove_unused_columns=False,  # CRITICAL: Ensures 'reference_completion' is passed to kwargs
+    remove_unused_columns=False,
     bf16=True,
     logging_steps=10,
     save_steps=100,
@@ -246,7 +243,7 @@ trainer = GRPOTrainer(
     model=model,
     args=training_args,
     train_dataset=dataset,
-    reward_funcs=[powl_reward_function], # Pass as a list of functions
+    reward_funcs=[powl_reward_function],
 )
 
 # ---------------------------------------------------------------------------#
