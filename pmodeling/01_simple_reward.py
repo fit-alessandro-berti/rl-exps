@@ -24,7 +24,7 @@ if torch.cuda.is_available():
 
 # --- Directory and Model Configuration ---
 TRAIN_DATA_DIR = "training"
-MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
+MODEL_NAME = "Qwen/Qwen2.5-Coder-3B"
 OUTPUT_DIR = "grpo_qwen_powl_generator"
 
 # --- Training Hyperparameters ---
