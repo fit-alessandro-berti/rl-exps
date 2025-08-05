@@ -255,8 +255,7 @@ trainer = GRPOTrainer(
     model=model,
     args=training_args,
     train_dataset=dataset,
-    tokenizer=tokenizer,
-    reward_fx=powl_reward_function,  # Pass the custom reward function
+    reward_funcs=powl_reward_function,  # Pass the custom reward function
 )
 
 # ---------------------------------------------------------------------------#
