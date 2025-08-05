@@ -24,7 +24,7 @@ if torch.cuda.is_available():
 
 # --- Directory and Model Configuration ---
 TRAIN_DATA_DIR = "training"
-MODEL_NAME = "Qwen/Qwen2.5-3B-Instruct"
+MODEL_NAME = "Qwen/Qwen2.5-1.5B-Instruct"
 OUTPUT_DIR = "grpo_qwen_powl_generator"
 
 # --- Training Hyperparameters ---
@@ -77,6 +77,9 @@ root.order.add_edge(loop, xor)
 NOW, generate the POWL model for the process below.
 DESCRIPTION: {description}
 ACTIVITIES (use these exactly, same names): [{activities_str}]
+
+Crucially, your entire response must be a single block of Python code that only uses the classes and methods demonstrated in the example (StrictPartialOrder, OperatorPOWL, Transition, SilentTransition, Operator). Do not import any other libraries or use any functions not shown.
+
 Respond with valid Python code only, defining 'root'.
 """
 
