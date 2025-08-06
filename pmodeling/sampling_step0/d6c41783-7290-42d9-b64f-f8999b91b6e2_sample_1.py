@@ -1,0 +1,35 @@
+root = StrictPartialOrder(nodes=[
+    Transition(label='Quantum Modeling'),
+    Transition(label='Data Encoding'),
+    Transition(label='Route Simulation'),
+    Transition(label='Demand Forecast'),
+    Transition(label='Supplier Sync'),
+    Transition(label='Entangle Nodes'),
+    Transition(label='Risk Analysis'),
+    Transition(label='Inventory Scan'),
+    Transition(label='Latency Check'),
+    Transition(label='Transport Plan'),
+    Transition(label='Quantum Compute'),
+    Transition(label='Scenario Test'),
+    Transition(label='Resource Align'),
+    Transition(label='Protocol Update'),
+    Transition(label='Feedback Loop'),
+    Transition(label='Cost Optimize'),
+    Transition(label='Impact Review')
+])
+root.order.add_edge(root.nodes[0], root.nodes[1])
+root.order.add_edge(root.nodes[1], root.nodes[2])
+root.order.add_edge(root.nodes[2], root.nodes[3])
+root.order.add_edge(root.nodes[3], root.nodes[4])
+root.order.add_edge(root.nodes[4], root.nodes[5])
+root.order.add_edge(root.nodes[5], root.nodes[6])
+root.order.add_edge(root.nodes[6], root.nodes[7])
+root.order.add_edge(root.nodes[7], root.nodes[8])
+root.order.add_edge(root.nodes[8], root.nodes[9])
+root.order.add_edge(root.nodes[9], root.nodes[10])
+root.order.add_edge(root.nodes[10], root.nodes[11])
+root.order.add_edge(root.nodes[11], root.nodes[12])
+root.order.add_edge(root.nodes[12], root.nodes[13])
+root.order.add_edge(root.nodes[13], root.nodes[14])
+root.order.add_edge(root.nodes[14], root.nodes[15])
+root.order.add_edge(root.nodes[15], root.nodes[16])

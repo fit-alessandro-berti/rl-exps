@@ -1,0 +1,23 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+intake = Transition(label='Intake Review')
+condition = Transition(label='Condition Scan')
+material = Transition(label='Material Test')
+style = Transition(label='Style Match')
+provenance = Transition(label='Provenance Log')
+risk = Transition(label='Forgery Risk')
+legal = Transition(label='Legal Audit')
+panel = Transition(label='Expert Panel')
+crosscheck = Transition(label='Data Crosscheck')
+report = Transition(label='Report Draft')
+blockchain = Transition(label='Blockchain Tag')
+certify = Transition(label='Certification')
+feedback = Transition(label='Client Feedback')
+approval = Transition(label='Final Approval')
+release = Transition(label='Release Prep')
+skip = SilentTransition()
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[condition, material, style, provenance, risk, legal, panel, crosscheck, report, blockchain, certify])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[intake, loop1, release])
+root = StrictPartialOrder(nodes=[loop2])
+root.order.add_edge(loop1, loop2)

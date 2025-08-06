@@ -1,0 +1,22 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+Initial_Review = Transition(label='Initial Review')
+Provenance_Check = Transition(label='Provenance Check')
+Material_Testing = Transition(label='Material Testing')
+Expert_Survey = Transition(label='Expert Survey')
+Digital_Scan = Transition(label='Digital Scan')
+Condition_Report = Transition(label='Condition Report')
+Legal_Review = Transition(label='Legal Review')
+Risk_Analysis = Transition(label='Risk Analysis')
+Seller_Negotiation = Transition(label='Seller Negotiation')
+Documentation = Transition(label='Documentation')
+Archival_Entry = Transition(label='Archival Entry')
+Committee_Review = Transition(label='Committee Review')
+Final_Approval = Transition(label='Final Approval')
+Acquisition_Setup = Transition(label='Acquisition Setup')
+Exhibit_Planning = Transition(label='Exhibit Planning')
+skip = SilentTransition()
+provenance_loop = OperatorPOWL(operator=Operator.LOOP, children=[Provenance_Check, Material_Testing, Expert_Survey, Digital_Scan, Condition_Report, Legal_Review, Risk_Analysis, Seller_Negotiation, Documentation, Archival_Entry, Committee_Review, Final_Approval, Acquisition_Setup, Exhibit_Planning])
+root = StrictPartialOrder(nodes=[provenance_loop])
+root.order.add_edge(provenance_loop, skip)

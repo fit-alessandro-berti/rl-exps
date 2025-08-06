@@ -1,0 +1,28 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+artifact_intake = Transition(label='Artifact Intake')
+initial_survey = Transition(label='Initial Survey')
+material_test = Transition(label='Material Test')
+historical_check = Transition(label='Historical Check')
+registry_search = Transition(label='Registry Search')
+owner_interview = Transition(label='Owner Interview')
+condition_report = Transition(label='Condition Report')
+forgeries_scan = Transition(label='Forgery Scan')
+digital_tagging = Transition(label='Digital Tagging')
+ledger_entry = Transition(label='Ledger Entry')
+expert_review = Transition(label='Expert Review')
+legal_verify = Transition(label='Legal Verify')
+provenance_draft = Transition(label='Provenance Draft')
+client_approval = Transition(label='Client Approval')
+final_certificate = Transition(label='Final Certificate')
+archive_storage = Transition(label='Archive Storage')
+
+skip = SilentTransition()
+material_test_loop = OperatorPOWL(operator=Operator.LOOP, children=[material_test, initial_survey, historical_check, registry_search, owner_interview, condition_report, forgeries_scan, digital_tagging])
+ledger_entry_loop = OperatorPOWL(operator=Operator.LOOP, children=[ledger_entry, expert_review, legal_verify, provenance_draft, client_approval, final_certificate])
+ledger_entry_xor = OperatorPOWL(operator=Operator.XOR, children=[ledger_entry_loop, skip])
+artifact_intake_xor = OperatorPOWL(operator=Operator.XOR, children=[material_test_loop, skip])
+root = StrictPartialOrder(nodes=[artifact_intake, ledger_entry_xor, artifact_intake_xor])
+root.order.add_edge(artifact_intake, artifact_intake_xor)
+root.order.add_edge(material_test_loop, ledger_entry_xor)

@@ -1,0 +1,37 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+provenance_check = Transition(label='Provenance Check')
+material_testing = Transition(label='Material Testing')
+stylistic_review = Transition(label='Stylistic Review')
+expert_panel = Transition(label='Expert Panel')
+legal_clearance = Transition(label='Legal Clearance')
+ethics_audit = Transition(label='Ethics Audit')
+insurance_quote = Transition(label='Insurance Quote')
+risk_assess = Transition(label='Risk Assess')
+digital_archive = Transition(label='Digital Archive')
+replica_build = Transition(label='Replica Build')
+transport_prep = Transition(label='Transport Prep')
+final_review = Transition(label='Final Review')
+catalog_entry = Transition(label='Catalog Entry')
+public_notice = Transition(label='Public Notice')
+condition_report = Transition(label='Condition Report')
+
+skip = SilentTransition()
+
+provenance_loop = OperatorPOWL(operator=Operator.LOOP, children=[provenance_check, material_testing])
+stylistic_loop = OperatorPOWL(operator=Operator.LOOP, children=[stylistic_review, expert_panel])
+legal_audit_loop = OperatorPOWL(operator=Operator.LOOP, children=[legal_clearance, ethics_audit])
+insurance_loop = OperatorPOWL(operator=Operator.LOOP, children=[insurance_quote, risk_assess])
+digital_archive_loop = OperatorPOWL(operator=Operator.LOOP, children=[digital_archive, replica_build])
+transport_loop = OperatorPOWL(operator=Operator.LOOP, children=[transport_prep, final_review])
+catalog_loop = OperatorPOWL(operator=Operator.LOOP, children=[catalog_entry, public_notice])
+
+root = StrictPartialOrder(nodes=[provenance_loop, stylistic_loop, legal_audit_loop, insurance_loop, digital_archive_loop, transport_loop, catalog_loop])
+root.order.add_edge(provenance_loop, stylistic_loop)
+root.order.add_edge(stylistic_loop, legal_audit_loop)
+root.order.add_edge(legal_audit_loop, insurance_loop)
+root.order.add_edge(insurance_loop, digital_archive_loop)
+root.order.add_edge(digital_archive_loop, transport_loop)
+root.order.add_edge(transport_loop, catalog_loop)
+root.order.add_edge(catalog_loop, provenance_loop)

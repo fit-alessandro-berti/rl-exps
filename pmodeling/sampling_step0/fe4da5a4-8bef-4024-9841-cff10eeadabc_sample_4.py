@@ -1,0 +1,53 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define the activities
+permit_securing = Transition(label='Permit Securing')
+structure_check = Transition(label='Structure Check')
+soil_testing = Transition(label='Soil Testing')
+water_analysis = Transition(label='Water Analysis')
+material_sourcing = Transition(label='Material Sourcing')
+planter_setup = Transition(label='Planter Setup')
+sensor_install = Transition(label='Sensor Install')
+irrigation_setup = Transition(label='Irrigation Setup')
+vendor_liaison = Transition(label='Vendor Liaison')
+staff_training = Transition(label='Staff Training')
+pest_control = Transition(label='Pest Control')
+produce_marketing = Transition(label='Produce Marketing')
+crop_rotation = Transition(label='Crop Rotation')
+health_audit = Transition(label='Health Audit')
+waste_composting = Transition(label='Waste Composting')
+
+# Define the loops
+permit_loop = OperatorPOWL(operator=OperatorPOWL.LOOP, children=[permit_securing])
+structure_loop = OperatorPOWL(operator=OperatorPOWL.LOOP, children=[structure_check])
+soil_loop = OperatorPOWL(operator=OperatorPOWL.LOOP, children=[soil_testing])
+water_loop = OperatorPOWL(operator=OperatorPOWL.LOOP, children=[water_analysis])
+material_loop = OperatorPOWL(operator=OperatorPOWL.LOOP, children=[material_sourcing])
+planter_loop = OperatorPOWL(operator=OperatorPOWL.LOOP, children=[planter_setup])
+sensor_loop = OperatorPOWL(operator=OperatorPOWL.LOOP, children=[sensor_install])
+irrigation_loop = OperatorPOWL(operator=OperatorPOWL.LOOP, children=[irrigation_setup])
+pest_control_loop = OperatorPOWL(operator=OperatorPOWL.LOOP, children=[pest_control])
+crop_rotation_loop = OperatorPOWL(operator=OperatorPOWL.LOOP, children=[crop_rotation])
+health_audit_loop = OperatorPOWL(operator=OperatorPOWL.LOOP, children=[health_audit])
+waste_composting_loop = OperatorPOWL(operator=OperatorPOWL.LOOP, children=[waste_composting])
+
+# Define the XOR nodes
+vendor_xor = OperatorPOWL(operator=OperatorPOWL.XOR, children=[vendor_liaison, permit_loop])
+staff_xor = OperatorPOWL(operator=OperatorPOWL.XOR, children=[staff_training, structure_loop])
+pest_xor = OperatorPOWL(operator=OperatorPOWL.XOR, children=[pest_control, soil_loop])
+produce_xor = OperatorPOWL(operator=OperatorPOWL.XOR, children=[produce_marketing, water_loop])
+rotation_xor = OperatorPOWL(operator=OperatorPOWL.XOR, children=[crop_rotation, material_loop])
+composting_xor = OperatorPOWL(operator=OperatorPOWL.XOR, children=[waste_composting, planter_loop])
+audit_xor = OperatorPOWL(operator=OperatorPOWL.XOR, children=[health_audit, sensor_loop])
+irrigation_xor = OperatorPOWL(operator=OperatorPOWL.XOR, children=[irrigation_setup, irrigation_loop])
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[permit_loop, structure_loop, soil_loop, water_loop, material_loop, planter_loop, sensor_loop, irrigation_loop, pest_control_loop, crop_rotation_loop, health_audit_loop, waste_composting_loop, vendor_xor, staff_xor, pest_xor, produce_xor, rotation_xor, composting_xor, irrigation_xor])
+root.order.add_edge(permit_loop, vendor_xor)
+root.order.add_edge(structure_loop, staff_xor)
+root.order.add_edge(soil_loop, pest_xor)
+root.order.add_edge(water_loop, produce_xor)
+root.order.add_edge(material_loop, rotation_xor)
+root.order.add_edge(planter_loop, composting_xor)
+root.order.add_edge(sensor_loop, audit_xor)
+root.order.add_edge(irrigation_loop, irrigation_xor)

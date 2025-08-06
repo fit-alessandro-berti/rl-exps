@@ -1,0 +1,38 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+# Define the activities
+provenance_check = Transition(label='Provenance Check')
+sample_collection = Transition(label='Sample Collection')
+spectroscopy_test = Transition(label='Spectroscopy Test')
+carbon_dating = Transition(label='Carbon Dating')
+expert_review = Transition(label='Expert Review')
+legal_clearance = Transition(label='Legal Clearance')
+cultural_assessment = Transition(label='Cultural Assessment')
+digital_scan = Transition(label='Digital Scan')
+report_draft = Transition(label='Report Draft')
+stakeholder_meet = Transition(label='Stakeholder Meet')
+acquisition_vote = Transition(label='Acquisition Vote')
+restoration_plan = Transition(label='Restoration Plan')
+condition_report = Transition(label='Condition Report')
+archival_entry = Transition(label='Archival Entry')
+final_approval = Transition(label='Final Approval')
+# Define the loop structure
+loop = OperatorPOWL(operator=Operator.LOOP, children=[provenance_check, sample_collection, spectroscopy_test, carbon_dating, expert_review, legal_clearance, cultural_assessment, digital_scan, report_draft, stakeholder_meet, acquisition_vote, restoration_plan, condition_report, archival_entry, final_approval])
+# Define the partial order
+root = StrictPartialOrder(nodes=[loop])
+root.order.add_edge(loop, provenance_check)
+root.order.add_edge(loop, sample_collection)
+root.order.add_edge(loop, spectroscopy_test)
+root.order.add_edge(loop, carbon_dating)
+root.order.add_edge(loop, expert_review)
+root.order.add_edge(loop, legal_clearance)
+root.order.add_edge(loop, cultural_assessment)
+root.order.add_edge(loop, digital_scan)
+root.order.add_edge(loop, report_draft)
+root.order.add_edge(loop, stakeholder_meet)
+root.order.add_edge(loop, acquisition_vote)
+root.order.add_edge(loop, restoration_plan)
+root.order.add_edge(loop, condition_report)
+root.order.add_edge(loop, archival_entry)
+root.order.add_edge(loop, final_approval)

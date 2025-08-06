@@ -1,0 +1,60 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL model
+root = StrictPartialOrder(nodes=[])
+
+# Add nodes to the model
+site_survey = Transition(label='Site Survey')
+env_analysis = Transition(label='Env Analysis')
+modular_build = Transition(label='Modular Build')
+hydroponic_setup = Transition(label='Hydroponic Setup')
+seed_select = Transition(label='Seed Select')
+nutrient_prep = Transition(label='Nutrient Prep')
+climate_calibrate = Transition(label='Climate Calibrate')
+sensor_install = Transition(label='Sensor Install')
+ai_integration = Transition(label='AI Integration')
+crop_monitor = Transition(label='Crop Monitor')
+growth_adjust = Transition(label='Growth Adjust')
+harvest_sort = Transition(label='Harvest Sort')
+packaging = Transition(label='Packaging')
+distribution_plan = Transition(label='Distribution Plan')
+sustain_audit = Transition(label='Sustain Audit')
+energy_optimize = Transition(label='Energy Optimize')
+
+# Add transitions to the model
+root.nodes.append(site_survey)
+root.nodes.append(env_analysis)
+root.nodes.append(modular_build)
+root.nodes.append(hydroponic_setup)
+root.nodes.append(seed_select)
+root.nodes.append(nutrient_prep)
+root.nodes.append(climate_calibrate)
+root.nodes.append(sensor_install)
+root.nodes.append(ai_integration)
+root.nodes.append(crop_monitor)
+root.nodes.append(growth_adjust)
+root.nodes.append(harvest_sort)
+root.nodes.append(packaging)
+root.nodes.append(distribution_plan)
+root.nodes.append(sustain_audit)
+root.nodes.append(energy_optimize)
+
+# Add edges to the model
+root.order.add_edge(site_survey, env_analysis)
+root.order.add_edge(site_survey, modular_build)
+root.order.add_edge(site_survey, hydroponic_setup)
+root.order.add_edge(env_analysis, seed_select)
+root.order.add_edge(env_analysis, nutrient_prep)
+root.order.add_edge(env_analysis, climate_calibrate)
+root.order.add_edge(modular_build, sensor_install)
+root.order.add_edge(modular_build, ai_integration)
+root.order.add_edge(hydroponic_setup, crop_monitor)
+root.order.add_edge(hydroponic_setup, growth_adjust)
+root.order.add_edge(crop_monitor, harvest_sort)
+root.order.add_edge(crop_monitor, packaging)
+root.order.add_edge(crop_monitor, distribution_plan)
+root.order.add_edge(crop_monitor, sustain_audit)
+root.order.add_edge(crop_monitor, energy_optimize)
+
+print(root)

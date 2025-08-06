@@ -1,0 +1,40 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+Milk_Sourcing = Transition(label='Milk Sourcing')
+Culture_Selection = Transition(label='Culture Selection')
+Milk_Testing = Transition(label='Milk Testing')
+Fermentation_Start = Transition(label='Fermentation Start')
+Temperature_Control = Transition(label='Temperature Control')
+pH_Monitoring = Transition(label='pH Monitoring')
+Curd_Cutting = Transition(label='Curd Cutting')
+Whey_Draining = Transition(label='Whey Draining')
+Molding_Cheese = Transition(label='Molding Cheese')
+Salting_Process = Transition(label='Salting Process')
+Aging_Setup = Transition(label='Aging Setup')
+Quality_Check = Transition(label='Quality Check')
+Packaging_Prep = Transition(label='Packaging Prep')
+Label_Design = Transition(label='Label Design')
+Distribution_Plan = Transition(label='Distribution Plan')
+Retail_Delivery = Transition(label='Retail Delivery')
+Customer_Feedback = Transition(label='Customer Feedback')
+
+skip = SilentTransition()
+
+fermentation_loop = OperatorPOWL(operator=Operator.LOOP, children=[pH_Monitoring, Curd_Cutting, Whey_Draining, Molding_Cheese, Salting_Process])
+aging_loop = OperatorPOWL(operator=Operator.LOOP, children=[Quality_Check, Packaging_Prep, Label_Design, Distribution_Plan])
+retail_loop = OperatorPOWL(operator=Operator.LOOP, children=[Retail_Delivery, Customer_Feedback])
+
+root = StrictPartialOrder(nodes=[Milk_Sourcing, Culture_Selection, Milk_Testing, Fermentation_Start, Temperature_Control, fermentation_loop, Aging_Setup, aging_loop, retail_loop])
+root.order.add_edge(Milk_Sourcing, Culture_Selection)
+root.order.add_edge(Culture_Selection, Milk_Testing)
+root.order.add_edge(Milk_Testing, Fermentation_Start)
+root.order.add_edge(Fermentation_Start, Temperature_Control)
+root.order.add_edge(Temperature_Control, fermentation_loop)
+root.order.add_edge(fermentation_loop, Aging_Setup)
+root.order.add_edge(Aging_Setup, aging_loop)
+root.order.add_edge(aging_loop, retail_loop)
+root.order.add_edge(retail_loop, Retail_Delivery)
+root.order.add_edge(Retail_Delivery, Customer_Feedback)
+root.order.add_edge(Customer_Feedback, retail_loop)

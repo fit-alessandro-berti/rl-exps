@@ -1,0 +1,86 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define activities
+material_scout = Transition(label='Material Scout')
+supplier_vetting = Transition(label='Supplier Vetting')
+skill_audit = Transition(label='Skill Audit')
+order_forecast = Transition(label='Order Forecast')
+custom_scheduling = Transition(label='Custom Scheduling')
+impact_review = Transition(label='Impact Review')
+product_inspect = Transition(label='Product Inspect')
+eco_packaging = Transition(label='Eco Packaging')
+multi_transport = Transition(label='Multi Transport')
+route_optimize = Transition(label='Route Optimize')
+feedback_loop = Transition(label='Feedback Loop')
+craft_refine = Transition(label='Craft Refine')
+inventory_balance = Transition(label='Inventory Balance')
+story_marketing = Transition(label='Story Marketing')
+heritage_share = Transition(label='Heritage Share')
+demand_adjust = Transition(label='Demand Adjust')
+community_sync = Transition(label='Community Sync')
+
+# Define silent transitions
+skip = SilentTransition()
+
+# Define loops and choices
+material_scout_choice = OperatorPOWL(operator=Operator.XOR, children=[material_scout, skip])
+supplier_vetting_choice = OperatorPOWL(operator=Operator.XOR, children=[supplier_vetting, skip])
+skill_audit_choice = OperatorPOWL(operator=Operator.XOR, children=[skill_audit, skip])
+order_forecast_choice = OperatorPOWL(operator=Operator.XOR, children=[order_forecast, skip])
+custom_scheduling_choice = OperatorPOWL(operator=Operator.XOR, children=[custom_scheduling, skip])
+impact_review_choice = OperatorPOWL(operator=Operator.XOR, children=[impact_review, skip])
+product_inspect_choice = OperatorPOWL(operator=Operator.XOR, children=[product_inspect, skip])
+eco_packaging_choice = OperatorPOWL(operator=Operator.XOR, children=[eco_packaging, skip])
+multi_transport_choice = OperatorPOWL(operator=Operator.XOR, children=[multi_transport, skip])
+route_optimize_choice = OperatorPOWL(operator=Operator.XOR, children=[route_optimize, skip])
+feedback_loop_choice = OperatorPOWL(operator=Operator.XOR, children=[feedback_loop, skip])
+craft_refine_choice = OperatorPOWL(operator=Operator.XOR, children=[craft_refine, skip])
+inventory_balance_choice = OperatorPOWL(operator=Operator.XOR, children=[inventory_balance, skip])
+story_marketing_choice = OperatorPOWL(operator=Operator.XOR, children=[story_marketing, skip])
+heritage_share_choice = OperatorPOWL(operator=Operator.XOR, children=[heritage_share, skip])
+demand_adjust_choice = OperatorPOWL(operator=Operator.XOR, children=[demand_adjust, skip])
+community_sync_choice = OperatorPOWL(operator=Operator.XOR, children=[community_sync, skip])
+
+# Define root POWL model
+root = StrictPartialOrder(nodes=[
+    material_scout_choice,
+    supplier_vetting_choice,
+    skill_audit_choice,
+    order_forecast_choice,
+    custom_scheduling_choice,
+    impact_review_choice,
+    product_inspect_choice,
+    eco_packaging_choice,
+    multi_transport_choice,
+    route_optimize_choice,
+    feedback_loop_choice,
+    craft_refine_choice,
+    inventory_balance_choice,
+    story_marketing_choice,
+    heritage_share_choice,
+    demand_adjust_choice,
+    community_sync_choice
+])
+
+# Add dependencies
+root.order.add_edge(material_scout_choice, supplier_vetting_choice)
+root.order.add_edge(supplier_vetting_choice, skill_audit_choice)
+root.order.add_edge(skill_audit_choice, order_forecast_choice)
+root.order.add_edge(order_forecast_choice, custom_scheduling_choice)
+root.order.add_edge(custom_scheduling_choice, impact_review_choice)
+root.order.add_edge(impact_review_choice, product_inspect_choice)
+root.order.add_edge(product_inspect_choice, eco_packaging_choice)
+root.order.add_edge(eco_packaging_choice, multi_transport_choice)
+root.order.add_edge(multi_transport_choice, route_optimize_choice)
+root.order.add_edge(route_optimize_choice, feedback_loop_choice)
+root.order.add_edge(feedback_loop_choice, craft_refine_choice)
+root.order.add_edge(craft_refine_choice, inventory_balance_choice)
+root.order.add_edge(inventory_balance_choice, story_marketing_choice)
+root.order.add_edge(story_marketing_choice, heritage_share_choice)
+root.order.add_edge(heritage_share_choice, demand_adjust_choice)
+root.order.add_edge(demand_adjust_choice, community_sync_choice)
+
+# Print the root POWL model
+print(root)

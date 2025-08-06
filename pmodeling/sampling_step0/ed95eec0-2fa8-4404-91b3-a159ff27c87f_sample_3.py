@@ -1,0 +1,61 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+TrendScan = Transition(label='Trend Scan')
+IdeaHarvest = Transition(label='Idea Harvest')
+SectorMatch = Transition(label='Sector Match')
+BrainstormHub = Transition(label='Brainstorm Hub')
+ConceptFilter = Transition(label='Concept Filter')
+PrototypeBuild = Transition(label='Prototype Build')
+HybridTesting = Transition(label='Hybrid Testing')
+StakeholderSync = Transition(label='Stakeholder Sync')
+RiskAssess = Transition(label='Risk Assess')
+ScenarioMap = Transition(label='Scenario Map')
+StrategyAlign = Transition(label='Strategy Align')
+PilotLaunch = Transition(label='Pilot Launch')
+DataCapture = Transition(label='Data Capture')
+MarketSense = Transition(label='Market Sense')
+ScalePlan = Transition(label='Scale Plan')
+
+# Define the silent transitions
+skip = SilentTransition()
+
+# Define the POWL model
+loop = OperatorPOWL(operator=Operator.LOOP, children=[PrototypeBuild, HybridTesting])
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[RiskAssess, skip])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[ScenarioMap, skip])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[StrategyAlign, skip])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[PilotLaunch, skip])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[DataCapture, skip])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[MarketSense, skip])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[ScalePlan, skip])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[StakeholderSync, skip])
+
+root = StrictPartialOrder(nodes=[TrendScan, IdeaHarvest, SectorMatch, BrainstormHub, ConceptFilter, PrototypeBuild, HybridTesting, loop, xor1, xor2, xor3, xor4, xor5, xor6, xor7, xor8])
+root.order.add_edge(TrendScan, IdeaHarvest)
+root.order.add_edge(IdeaHarvest, SectorMatch)
+root.order.add_edge(SectorMatch, BrainstormHub)
+root.order.add_edge(BrainstormHub, ConceptFilter)
+root.order.add_edge(ConceptFilter, PrototypeBuild)
+root.order.add_edge(PrototypeBuild, HybridTesting)
+root.order.add_edge(HybridTesting, loop)
+root.order.add_edge(loop, xor1)
+root.order.add_edge(xor1, RiskAssess)
+root.order.add_edge(RiskAssess, ScenarioMap)
+root.order.add_edge(ScenarioMap, xor2)
+root.order.add_edge(xor2, StrategyAlign)
+root.order.add_edge(StrategyAlign, xor3)
+root.order.add_edge(xor3, PilotLaunch)
+root.order.add_edge(PilotLaunch, xor4)
+root.order.add_edge(xor4, DataCapture)
+root.order.add_edge(DataCapture, xor5)
+root.order.add_edge(xor5, MarketSense)
+root.order.add_edge(MarketSense, xor6)
+root.order.add_edge(xor6, ScalePlan)
+root.order.add_edge(ScalePlan, xor7)
+root.order.add_edge(xor7, StakeholderSync)
+root.order.add_edge(StakeholderSync, xor8)
+
+print(root)

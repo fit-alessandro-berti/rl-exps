@@ -1,0 +1,70 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define activities
+audit_artifacts = Transition(label='Audit Artifacts')
+interview_staff = Transition(label='Interview Staff')
+assess_risks = Transition(label='Assess Risks')
+plan_retrieval = Transition(label='Plan Retrieval')
+legal_review = Transition(label='Legal Review')
+security_check = Transition(label='Security Check')
+execute_recovery = Transition(label='Execute Recovery')
+validate_items = Transition(label='Validate Items')
+restore_function = Transition(label='Restore Function')
+update_systems = Transition(label='Update Systems')
+train_users = Transition(label='Train Users')
+document_findings = Transition(label='Document Findings')
+archive_records = Transition(label='Archive Records')
+review_lessons = Transition(label='Review Lessons')
+close_process = Transition(label='Close Process')
+
+# Define silent transitions
+skip_audit = SilentTransition()
+skip_interview = SilentTransition()
+skip_assess = SilentTransition()
+skip_plan = SilentTransition()
+skip_legal = SilentTransition()
+skip_security = SilentTransition()
+skip_validate = SilentTransition()
+skip_restore = SilentTransition()
+skip_update = SilentTransition()
+skip_train = SilentTransition()
+skip_document = SilentTransition()
+skip_archive = SilentTransition()
+skip_review = SilentTransition()
+
+# Define partial order nodes
+audit = OperatorPOWL(operator=Operator.PARTIAL_ORDER, children=[audit_artifacts, interview_staff])
+interview = OperatorPOWL(operator=Operator.PARTIAL_ORDER, children=[interview_staff, assess_risks])
+assess = OperatorPOWL(operator=Operator.PARTIAL_ORDER, children=[assess_risks, plan_retrieval])
+plan = OperatorPOWL(operator=Operator.PARTIAL_ORDER, children=[plan_retrieval, legal_review])
+legal = OperatorPOWL(operator=Operator.PARTIAL_ORDER, children=[legal_review, security_check])
+security = OperatorPOWL(operator=Operator.PARTIAL_ORDER, children=[security_check, execute_recovery])
+recovery = OperatorPOWL(operator=Operator.PARTIAL_ORDER, children=[execute_recovery, validate_items])
+validate = OperatorPOWL(operator=Operator.PARTIAL_ORDER, children=[validate_items, restore_function])
+restore = OperatorPOWL(operator=Operator.PARTIAL_ORDER, children=[restore_function, update_systems])
+update = OperatorPOWL(operator=Operator.PARTIAL_ORDER, children=[update_systems, train_users])
+train = OperatorPOWL(operator=Operator.PARTIAL_ORDER, children=[train_users, document_findings])
+document = OperatorPOWL(operator=Operator.PARTIAL_ORDER, children=[document_findings, archive_records])
+archive = OperatorPOWL(operator=Operator.PARTIAL_ORDER, children=[archive_records, review_lessons])
+review = OperatorPOWL(operator=Operator.PARTIAL_ORDER, children=[review_lessons, close_process])
+
+# Define the root of the POWL model
+root = StrictPartialOrder(nodes=[audit, interview, assess, plan, legal, security, recovery, validate, restore, update, train, document, archive, review, close_process])
+
+# Add dependencies between nodes
+root.order.add_edge(audit, interview)
+root.order.add_edge(interview, assess)
+root.order.add_edge(assess, plan)
+root.order.add_edge(plan, legal)
+root.order.add_edge(legal, security)
+root.order.add_edge(security, recovery)
+root.order.add_edge(recovery, validate)
+root.order.add_edge(validate, restore)
+root.order.add_edge(restore, update)
+root.order.add_edge(update, train)
+root.order.add_edge(train, document)
+root.order.add_edge(document, archive)
+root.order.add_edge(archive, review)
+root.order.add_edge(review, close_process)

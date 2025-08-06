@@ -1,0 +1,78 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+from pm4py.objects.log.obj import EventLog, Trace, Event
+
+# Define activities
+farm_selection = Transition(label='Farm Selection')
+milk_testing = Transition(label='Milk Testing')
+batch_pasteurize = Transition(label='Batch Pasteurize')
+culture_add = Transition(label='Culture Add')
+curd_cut = Transition(label='Curd Cut')
+whey_drain = Transition(label='Whey Drain')
+mold_inoculate = Transition(label='Mold Inoculate')
+press_form = Transition(label='Press Form')
+salt_rub = Transition(label='Salt Rub')
+aging_monitor = Transition(label='Aging Monitor')
+flavor_adjust = Transition(label='Flavor Adjust')
+packaging_design = Transition(label='Packaging Design')
+label_approval = Transition(label='Label Approval')
+order_processing = Transition(label='Order Processing')
+cold_storage = Transition(label='Cold Storage')
+delivery_schedule = Transition(label='Delivery Schedule')
+retail_setup = Transition(label='Retail Setup')
+feedback_collect = Transition(label='Feedback Collect')
+
+# Define silent transitions
+skip = SilentTransition()
+
+# Define loops and exclusive choices
+farm_loop = OperatorPOWL(operator=Operator.LOOP, children=[farm_selection])
+milk_loop = OperatorPOWL(operator=Operator.LOOP, children=[milk_testing])
+pasteurize_loop = OperatorPOWL(operator=Operator.LOOP, children=[batch_pasteurize])
+culture_loop = OperatorPOWL(operator=Operator.LOOP, children=[culture_add])
+curd_cut_loop = OperatorPOWL(operator=Operator.LOOP, children=[curd_cut])
+whey_drain_loop = OperatorPOWL(operator=Operator.LOOP, children=[whey_drain])
+mold_loop = OperatorPOWL(operator=Operator.LOOP, children=[mold_inoculate])
+press_loop = OperatorPOWL(operator=Operator.LOOP, children=[press_form])
+salt_loop = OperatorPOWL(operator=Operator.LOOP, children=[salt_rub])
+aging_loop = OperatorPOWL(operator=Operator.LOOP, children=[aging_monitor])
+flavor_loop = OperatorPOWL(operator=Operator.LOOP, children=[flavor_adjust])
+packaging_loop = OperatorPOWL(operator=Operator.LOOP, children=[packaging_design])
+label_loop = OperatorPOWL(operator=Operator.LOOP, children=[label_approval])
+order_loop = OperatorPOWL(operator=Operator.LOOP, children=[order_processing])
+cold_storage_loop = OperatorPOWL(operator=Operator.LOOP, children=[cold_storage])
+delivery_loop = OperatorPOWL(operator=Operator.LOOP, children=[delivery_schedule])
+retail_loop = OperatorPOWL(operator=Operator.LOOP, children=[retail_setup])
+feedback_loop = OperatorPOWL(operator=Operator.LOOP, children=[feedback_collect])
+
+# Define exclusive choices
+milk_or_farm = OperatorPOWL(operator=Operator.XOR, children=[milk_testing, farm_selection])
+pasteurize_or_culture = OperatorPOWL(operator=Operator.XOR, children=[batch_pasteurize, culture_add])
+curd_or_whey = OperatorPOWL(operator=Operator.XOR, children=[curd_cut, whey_drain])
+mold_or_press = OperatorPOWL(operator=Operator.XOR, children=[mold_inoculate, press_form])
+salt_or_aging = OperatorPOWL(operator=Operator.XOR, children=[salt_rub, aging_monitor])
+flavor_or_packaging = OperatorPOWL(operator=Operator.XOR, children=[flavor_adjust, packaging_design])
+label_or_order = OperatorPOWL(operator=Operator.XOR, children=[label_approval, order_processing])
+cold_or_delivery = OperatorPOWL(operator=Operator.XOR, children=[cold_storage, delivery_schedule])
+retail_or_feedback = OperatorPOWL(operator=Operator.XOR, children=[retail_setup, feedback_collect])
+
+# Define root POWL model
+root = StrictPartialOrder(nodes=[farm_loop, milk_loop, pasteurize_loop, culture_loop, curd_cut_loop, whey_drain_loop, mold_loop, press_loop, salt_loop, aging_loop, flavor_loop, packaging_loop, label_loop, order_loop, cold_storage_loop, delivery_loop, retail_loop, feedback_loop])
+root.order.add_edge(farm_loop, milk_loop)
+root.order.add_edge(milk_loop, pasteurize_loop)
+root.order.add_edge(pasteurize_loop, culture_loop)
+root.order.add_edge(culture_loop, curd_cut_loop)
+root.order.add_edge(curd_cut_loop, whey_drain_loop)
+root.order.add_edge(whey_drain_loop, mold_loop)
+root.order.add_edge(mold_loop, press_loop)
+root.order.add_edge(press_loop, salt_loop)
+root.order.add_edge(salt_loop, aging_loop)
+root.order.add_edge(aging_loop, flavor_loop)
+root.order.add_edge(flavor_loop, packaging_loop)
+root.order.add_edge(packaging_loop, label_loop)
+root.order.add_edge(label_loop, order_loop)
+root.order.add_edge(order_loop, cold_storage_loop)
+root.order.add_edge(cold_storage_loop, delivery_loop)
+root.order.add_edge(delivery_loop, retail_loop)
+root.order.add_edge(retail_loop, feedback_loop)

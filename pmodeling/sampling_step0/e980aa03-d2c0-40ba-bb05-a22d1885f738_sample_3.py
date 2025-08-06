@@ -1,0 +1,37 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+client_brief = Transition(label='Client Brief')
+spec_analysis = Transition(label='Spec Analysis')
+material_sourcing = Transition(label='Material Sourcing')
+component_vetting = Transition(label='Component Vetting')
+frame_assembly = Transition(label='Frame Assembly')
+sensor_install = Transition(label='Sensor Install')
+propulsion_setup = Transition(label='Propulsion Setup')
+calibration = Transition(label='Calibration')
+software_load = Transition(label='Software Load')
+flight_test = Transition(label='Flight Test')
+ai_training = Transition(label='AI Training')
+qa_review = Transition(label='QA Review')
+mission_pack = Transition(label='Mission Pack')
+client_training = Transition(label='Client Training')
+deployment_support = Transition(label='Deployment Support')
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[client_brief, material_sourcing])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[spec_analysis, component_vetting])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[frame_assembly, sensor_install])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[propulsion_setup, calibration])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[software_load, flight_test])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[ai_training, qa_review])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[mission_pack, client_training])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[deployment_support, xor1])
+
+root = StrictPartialOrder(nodes=[xor1, xor2, xor3, xor4, xor5, xor6, xor7, xor8])
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor8)

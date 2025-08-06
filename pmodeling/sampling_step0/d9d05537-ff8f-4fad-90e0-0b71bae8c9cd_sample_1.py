@@ -1,0 +1,72 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+alert_verify = Transition(label='Alert Verify')
+impact_assess = Transition(label='Impact Assess')
+team_assemble = Transition(label='Team Assemble')
+resource_allocate = Transition(label='Resource Allocate')
+stakeholder_notify = Transition(label='Stakeholder Notify')
+legal_review = Transition(label='Legal Review')
+media_brief = Transition(label='Media Brief')
+response_deploy = Transition(label='Response Deploy')
+situation_monitor = Transition(label='Situation Monitor')
+data_collect = Transition(label='Data Collect')
+risk_mitigate = Transition(label='Risk Mitigate')
+recovery_plan = Transition(label='Recovery Plan')
+external_consult = Transition(label='External Consult')
+status_update = Transition(label='Status Update')
+post_review = Transition(label='Post Review')
+
+# Define the silent transition
+skip = SilentTransition()
+
+# Define the loop nodes
+impact_assess_loop = OperatorPOWL(operator=Operator.LOOP, children=[impact_assess])
+team_assemble_loop = OperatorPOWL(operator=Operator.LOOP, children=[team_assemble])
+resource_allocate_loop = OperatorPOWL(operator=Operator.LOOP, children=[resource_allocate])
+stakeholder_notify_loop = OperatorPOWL(operator=Operator.LOOP, children=[stakeholder_notify])
+legal_review_loop = OperatorPOWL(operator=Operator.LOOP, children=[legal_review])
+media_brief_loop = OperatorPOWL(operator=Operator.LOOP, children=[media_brief])
+response_deploy_loop = OperatorPOWL(operator=Operator.LOOP, children=[response_deploy])
+situation_monitor_loop = OperatorPOWL(operator=Operator.LOOP, children=[situation_monitor])
+data_collect_loop = OperatorPOWL(operator=Operator.LOOP, children=[data_collect])
+risk_mitigate_loop = OperatorPOWL(operator=Operator.LOOP, children=[risk_mitigate])
+recovery_plan_loop = OperatorPOWL(operator=Operator.LOOP, children=[recovery_plan])
+external_consult_loop = OperatorPOWL(operator=Operator.LOOP, children=[external_consult])
+status_update_loop = OperatorPOWL(operator=Operator.LOOP, children=[status_update])
+post_review_loop = OperatorPOWL(operator=Operator.LOOP, children=[post_review])
+
+# Define the exclusive choice nodes
+impact_assess_xor = OperatorPOWL(operator=Operator.XOR, children=[impact_assess, skip])
+team_assemble_xor = OperatorPOWL(operator=Operator.XOR, children=[team_assemble, skip])
+resource_allocate_xor = OperatorPOWL(operator=Operator.XOR, children=[resource_allocate, skip])
+stakeholder_notify_xor = OperatorPOWL(operator=Operator.XOR, children=[stakeholder_notify, skip])
+legal_review_xor = OperatorPOWL(operator=Operator.XOR, children=[legal_review, skip])
+media_brief_xor = OperatorPOWL(operator=Operator.XOR, children=[media_brief, skip])
+response_deploy_xor = OperatorPOWL(operator=Operator.XOR, children=[response_deploy, skip])
+situation_monitor_xor = OperatorPOWL(operator=Operator.XOR, children=[situation_monitor, skip])
+data_collect_xor = OperatorPOWL(operator=Operator.XOR, children=[data_collect, skip])
+risk_mitigate_xor = OperatorPOWL(operator=Operator.XOR, children=[risk_mitigate, skip])
+recovery_plan_xor = OperatorPOWL(operator=Operator.XOR, children=[recovery_plan, skip])
+external_consult_xor = OperatorPOWL(operator=Operator.XOR, children=[external_consult, skip])
+status_update_xor = OperatorPOWL(operator=Operator.XOR, children=[status_update, skip])
+post_review_xor = OperatorPOWL(operator=Operator.XOR, children=[post_review, skip])
+
+# Define the root POWL model
+root = StrictPartialOrder(nodes=[impact_assess_loop, team_assemble_loop, resource_allocate_loop, stakeholder_notify_loop, legal_review_loop, media_brief_loop, response_deploy_loop, situation_monitor_loop, data_collect_loop, risk_mitigate_loop, recovery_plan_loop, external_consult_loop, status_update_loop, post_review_loop])
+root.order.add_edge(impact_assess_loop, impact_assess_xor)
+root.order.add_edge(team_assemble_loop, team_assemble_xor)
+root.order.add_edge(resource_allocate_loop, resource_allocate_xor)
+root.order.add_edge(stakeholder_notify_loop, stakeholder_notify_xor)
+root.order.add_edge(legal_review_loop, legal_review_xor)
+root.order.add_edge(media_brief_loop, media_brief_xor)
+root.order.add_edge(response_deploy_loop, response_deploy_xor)
+root.order.add_edge(situation_monitor_loop, situation_monitor_xor)
+root.order.add_edge(data_collect_loop, data_collect_xor)
+root.order.add_edge(risk_mitigate_loop, risk_mitigate_xor)
+root.order.add_edge(recovery_plan_loop, recovery_plan_xor)
+root.order.add_edge(external_consult_loop, external_consult_xor)
+root.order.add_edge(status_update_loop, status_update_xor)
+root.order.add_edge(post_review_loop, post_review_xor)

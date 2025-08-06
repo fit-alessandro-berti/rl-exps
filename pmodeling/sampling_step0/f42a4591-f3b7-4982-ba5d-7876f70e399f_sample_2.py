@@ -1,0 +1,71 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions (activities) with their labels
+inspect_item = Transition(label='Inspect Item')
+verify_provenance = Transition(label='Verify Provenance')
+document_condition = Transition(label='Document Condition')
+disassemble_parts = Transition(label='Disassemble Parts')
+clean_components = Transition(label='Clean Components')
+analyze_damage = Transition(label='Analyze Damage')
+select_materials = Transition(label='Select Materials')
+perform_repairs = Transition(label='Perform Repairs')
+match_finishes = Transition(label='Match Finishes')
+apply_treatments = Transition(label='Apply Treatments')
+reassemble_item = Transition(label='Reassemble Item')
+quality_check = Transition(label='Quality Check')
+photograph_results = Transition(label='Photograph Results')
+update_archive = Transition(label='Update Archive')
+client_review = Transition(label='Client Review')
+finalize_report = Transition(label='Finalize Report')
+
+# Define silent transitions for loop and choice operations
+skip_inspection = SilentTransition()
+skip_provenance = SilentTransition()
+skip_documentation = SilentTransition()
+skip_cleaning = SilentTransition()
+skip_analysis = SilentTransition()
+skip_selection = SilentTransition()
+skip_repair = SilentTransition()
+skip_finish = SilentTransition()
+skip_treatment = SilentTransition()
+skip_quality = SilentTransition()
+skip_photography = SilentTransition()
+skip_archiving = SilentTransition()
+skip_client_review = SilentTransition()
+skip_finalization = SilentTransition()
+
+# Define exclusive choices
+choice1 = OperatorPOWL(operator=Operator.XOR, children=[skip_inspection, inspect_item])
+choice2 = OperatorPOWL(operator=Operator.XOR, children=[skip_provenance, verify_provenance])
+choice3 = OperatorPOWL(operator=Operator.XOR, children=[skip_documentation, document_condition])
+choice4 = OperatorPOWL(operator=Operator.XOR, children=[skip_cleaning, clean_components])
+choice5 = OperatorPOWL(operator=Operator.XOR, children=[skip_analysis, analyze_damage])
+choice6 = OperatorPOWL(operator=Operator.XOR, children=[skip_selection, select_materials])
+choice7 = OperatorPOWL(operator=Operator.XOR, children=[skip_repair, perform_repairs])
+choice8 = OperatorPOWL(operator=Operator.XOR, children=[skip_finish, match_finishes])
+choice9 = OperatorPOWL(operator=Operator.XOR, children=[skip_treatment, apply_treatments])
+choice10 = OperatorPOWL(operator=Operator.XOR, children=[skip_quality, quality_check])
+choice11 = OperatorPOWL(operator=Operator.XOR, children=[skip_photography, photograph_results])
+choice12 = OperatorPOWL(operator=Operator.XOR, children=[skip_archiving, update_archive])
+choice13 = OperatorPOWL(operator=Operator.XOR, children=[skip_client_review, client_review])
+choice14 = OperatorPOWL(operator=Operator.XOR, children=[skip_finalization, finalize_report])
+
+# Define the root node with all the activities and choices
+root = StrictPartialOrder(nodes=[choice1, choice2, choice3, choice4, choice5, choice6, choice7, choice8, choice9, choice10, choice11, choice12, choice13, choice14])
+
+# Define the order of execution
+root.order.add_edge(choice1, choice2)
+root.order.add_edge(choice2, choice3)
+root.order.add_edge(choice3, choice4)
+root.order.add_edge(choice4, choice5)
+root.order.add_edge(choice5, choice6)
+root.order.add_edge(choice6, choice7)
+root.order.add_edge(choice7, choice8)
+root.order.add_edge(choice8, choice9)
+root.order.add_edge(choice9, choice10)
+root.order.add_edge(choice10, choice11)
+root.order.add_edge(choice11, choice12)
+root.order.add_edge(choice12, choice13)
+root.order.add_edge(choice13, choice14)

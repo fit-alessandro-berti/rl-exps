@@ -1,0 +1,40 @@
+root = StrictPartialOrder(nodes=[
+    Transition(label='Farm Selection'),
+    Transition(label='Milk Testing'),
+    Transition(label='Batch Pasteurize'),
+    Transition(label='Culture Add'),
+    Transition(label='Curd Cut'),
+    Transition(label='Whey Drain'),
+    Transition(label='Mold Inoculate'),
+    Transition(label='Press Form'),
+    Transition(label='Salt Rub'),
+    Transition(label='Aging Monitor'),
+    Transition(label='Flavor Adjust'),
+    Transition(label='Packaging Design'),
+    Transition(label='Label Approval'),
+    Transition(label='Order Processing'),
+    Transition(label='Cold Storage'),
+    Transition(label='Delivery Schedule'),
+    Transition(label='Retail Setup'),
+    Transition(label='Feedback Collect')
+])
+
+root.order.add_edge(root.nodes[0], root.nodes[1])
+root.order.add_edge(root.nodes[1], root.nodes[2])
+root.order.add_edge(root.nodes[2], root.nodes[3])
+root.order.add_edge(root.nodes[3], root.nodes[4])
+root.order.add_edge(root.nodes[4], root.nodes[5])
+root.order.add_edge(root.nodes[5], root.nodes[6])
+root.order.add_edge(root.nodes[6], root.nodes[7])
+root.order.add_edge(root.nodes[7], root.nodes[8])
+root.order.add_edge(root.nodes[8], root.nodes[9])
+root.order.add_edge(root.nodes[9], root.nodes[10])
+root.order.add_edge(root.nodes[10], root.nodes[11])
+root.order.add_edge(root.nodes[11], root.nodes[12])
+root.order.add_edge(root.nodes[12], root.nodes[13])
+root.order.add_edge(root.nodes[13], root.nodes[14])
+root.order.add_edge(root.nodes[14], root.nodes[15])
+root.order.add_edge(root.nodes[15], root.nodes[16])
+root.order.add_edge(root.nodes[16], root.nodes[17])
+root.order.add_edge(root.nodes[17], root.nodes[18])
+root.order.add_edge(root.nodes[18], root.nodes[19])

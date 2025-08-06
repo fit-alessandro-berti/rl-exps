@@ -1,0 +1,73 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+TrendScan = Transition(label='Trend Scan')
+IdeaHarvest = Transition(label='Idea Harvest')
+WorkshopHost = Transition(label='Workshop Host')
+ConceptFilter = Transition(label='Concept Filter')
+PrototypeBuild = Transition(label='Prototype Build')
+ExpertReview = Transition(label='Expert Review')
+FeasibilityCheck = Transition(label='Feasibility Check')
+RiskAssess = Transition(label='Risk Assess')
+PilotLaunch = Transition(label='Pilot Launch')
+DataCapture = Transition(label='Data Capture')
+PerformanceReview = Transition(label='Performance Review')
+ScalePlan = Transition(label='Scale Plan')
+ResourceAlign = Transition(label='Resource Align')
+LearnShare = Transition(label='Learn Share')
+CultureEmbed = Transition(label='Culture Embed')
+
+# Define the silent transitions
+skip = SilentTransition()
+
+# Define the loops
+scan_loop = OperatorPOWL(operator=Operator.LOOP, children=[TrendScan])
+harvest_loop = OperatorPOWL(operator=Operator.LOOP, children=[IdeaHarvest])
+workshop_loop = OperatorPOWL(operator=Operator.LOOP, children=[WorkshopHost])
+filter_loop = OperatorPOWL(operator=Operator.LOOP, children=[ConceptFilter])
+build_loop = OperatorPOWL(operator=Operator.LOOP, children=[PrototypeBuild])
+review_loop = OperatorPOWL(operator=Operator.LOOP, children=[ExpertReview])
+check_loop = OperatorPOWL(operator=Operator.LOOP, children=[FeasibilityCheck])
+risk_loop = OperatorPOWL(operator=Operator.LOOP, children=[RiskAssess])
+launch_loop = OperatorPOWL(operator=Operator.LOOP, children=[PilotLaunch])
+capture_loop = OperatorPOWL(operator=Operator.LOOP, children=[DataCapture])
+review_loop = OperatorPOWL(operator=Operator.LOOP, children=[PerformanceReview])
+scale_loop = OperatorPOWL(operator=Operator.LOOP, children=[ScalePlan])
+align_loop = OperatorPOWL(operator=Operator.LOOP, children=[ResourceAlign])
+share_loop = OperatorPOWL(operator=Operator.LOOP, children=[LearnShare])
+embed_loop = OperatorPOWL(operator=Operator.LOOP, children=[CultureEmbed])
+
+# Define the XOR nodes
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[harvest_loop, skip])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[workshop_loop, skip])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[filter_loop, skip])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[build_loop, skip])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[review_loop, skip])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[check_loop, skip])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[risk_loop, skip])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[launch_loop, skip])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[capture_loop, skip])
+xor10 = OperatorPOWL(operator=Operator.XOR, children=[review_loop, skip])
+xor11 = OperatorPOWL(operator=Operator.XOR, children=[scale_loop, skip])
+xor12 = OperatorPOWL(operator=Operator.XOR, children=[align_loop, skip])
+xor13 = OperatorPOWL(operator=Operator.XOR, children=[share_loop, skip])
+xor14 = OperatorPOWL(operator=Operator.XOR, children=[embed_loop, skip])
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[scan_loop, xor1, xor2, xor3, xor4, xor5, xor6, xor7, xor8, xor9, xor10, xor11, xor12, xor13, xor14])
+root.order.add_edge(scan_loop, xor1)
+root.order.add_edge(scan_loop, xor2)
+root.order.add_edge(scan_loop, xor3)
+root.order.add_edge(scan_loop, xor4)
+root.order.add_edge(scan_loop, xor5)
+root.order.add_edge(scan_loop, xor6)
+root.order.add_edge(scan_loop, xor7)
+root.order.add_edge(scan_loop, xor8)
+root.order.add_edge(scan_loop, xor9)
+root.order.add_edge(scan_loop, xor10)
+root.order.add_edge(scan_loop, xor11)
+root.order.add_edge(scan_loop, xor12)
+root.order.add_edge(scan_loop, xor13)
+root.order.add_edge(scan_loop, xor14)

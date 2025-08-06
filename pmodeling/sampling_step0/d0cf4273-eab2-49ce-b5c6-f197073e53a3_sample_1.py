@@ -1,0 +1,1 @@
+root = StrictPartialOrder(nodes=[Material Sourcing, Cultural Verify, Eco Transport, Batch Storytelling, Craftsman Assignment, Product Creation, Provenance Catalog, Community Marketing, Collector Targeting, Package Assembly, Local Cooperatives, Environmental Audit, Ethical Logistics, Global Shipping, Feedback Collection])

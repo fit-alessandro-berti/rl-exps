@@ -1,0 +1,65 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+A1 = Transition(label='Material Sourcing')
+A2 = Transition(label='Supplier Audit')
+A3 = Transition(label='Credential Verify')
+A4 = Transition(label='Design Concept')
+A5 = Transition(label='Prototype Build')
+A6 = Transition(label='Quality Review')
+A7 = Transition(label='Artisan Assign')
+A8 = Transition(label='Batch Scheduling')
+A9 = Transition(label='Custom Approvals')
+A10 = Transition(label='Inventory Adjust')
+A11 = Transition(label='Production Sync')
+A12 = Transition(label='Shipping Plan')
+A13 = Transition(label='Compliance Check')
+A14 = Transition(label='Feedback Loop')
+A15 = Transition(label='Market Target')
+A16 = Transition(label='Order Fulfill')
+A17 = Transition(label='Sustainability')
+A18 = Transition(label='Customer Engage')
+
+# Define the control-flow operators
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[A1, A2])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[A3, xor1])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[A4, xor2])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[A5, xor3])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[A6, xor4])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[A7, xor5])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[A8, xor6])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[A9, xor7])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[A10, xor8])
+xor10 = OperatorPOWL(operator=Operator.XOR, children=[A11, xor9])
+xor11 = OperatorPOWL(operator=Operator.XOR, children=[A12, xor10])
+xor12 = OperatorPOWL(operator=Operator.XOR, children=[A13, xor11])
+xor13 = OperatorPOWL(operator=Operator.XOR, children=[A14, xor12])
+xor14 = OperatorPOWL(operator=Operator.XOR, children=[A15, xor13])
+xor15 = OperatorPOWL(operator=Operator.XOR, children=[A16, xor14])
+xor16 = OperatorPOWL(operator=Operator.XOR, children=[A17, xor15])
+xor17 = OperatorPOWL(operator=Operator.XOR, children=[A18, xor16])
+
+# Define the root of the POWL model
+root = StrictPartialOrder(nodes=[xor17])
+
+# Add edges to define the partial order
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor8)
+root.order.add_edge(xor8, xor9)
+root.order.add_edge(xor9, xor10)
+root.order.add_edge(xor10, xor11)
+root.order.add_edge(xor11, xor12)
+root.order.add_edge(xor12, xor13)
+root.order.add_edge(xor13, xor14)
+root.order.add_edge(xor14, xor15)
+root.order.add_edge(xor15, xor16)
+root.order.add_edge(xor16, xor17)
+
+print(root)

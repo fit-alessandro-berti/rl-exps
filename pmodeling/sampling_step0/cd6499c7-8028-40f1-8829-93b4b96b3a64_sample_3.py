@@ -1,0 +1,42 @@
+root = StrictPartialOrder(nodes=[
+    Transition(label='Milk Sourcing'),
+    Transition(label='Quality Testing'),
+    Transition(label='Starter Prep'),
+    Transition(label='Milk Pasteurize'),
+    Transition(label='Curd Formation'),
+    Transition(label='Whey Drain'),
+    Transition(label='Cheese Press'),
+    Transition(label='Salting Process'),
+    Transition(label='Aging Setup'),
+    Transition(label='Temperature Control'),
+    Transition(label='Batch Labeling'),
+    Transition(label='Eco Packaging'),
+    Transition(label='Inventory Audit'),
+    Transition(label='Order Coordination'),
+    Transition(label='Regulatory Check'),
+    Transition(label='Shipment Planning'),
+    Transition(label='Vendor Liaison'),
+    Transition(label='Waste Reduction')
+])
+
+root.order.add_edge(root.nodes[0], root.nodes[1])
+root.order.add_edge(root.nodes[1], root.nodes[2])
+root.order.add_edge(root.nodes[2], root.nodes[3])
+root.order.add_edge(root.nodes[3], root.nodes[4])
+root.order.add_edge(root.nodes[4], root.nodes[5])
+root.order.add_edge(root.nodes[5], root.nodes[6])
+root.order.add_edge(root.nodes[6], root.nodes[7])
+root.order.add_edge(root.nodes[7], root.nodes[8])
+root.order.add_edge(root.nodes[8], root.nodes[9])
+root.order.add_edge(root.nodes[9], root.nodes[10])
+root.order.add_edge(root.nodes[10], root.nodes[11])
+root.order.add_edge(root.nodes[11], root.nodes[12])
+root.order.add_edge(root.nodes[12], root.nodes[13])
+root.order.add_edge(root.nodes[13], root.nodes[14])
+root.order.add_edge(root.nodes[14], root.nodes[15])
+root.order.add_edge(root.nodes[15], root.nodes[16])
+root.order.add_edge(root.nodes[16], root.nodes[17])
+root.order.add_edge(root.nodes[17], root.nodes[18])
+root.order.add_edge(root.nodes[18], root.nodes[19])
+root.order.add_edge(root.nodes[19], root.nodes[20])
+root.order.add_edge(root.nodes[20], root.nodes[21])

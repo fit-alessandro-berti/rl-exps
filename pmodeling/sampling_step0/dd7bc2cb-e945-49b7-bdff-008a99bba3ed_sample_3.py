@@ -1,0 +1,90 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+farm_select = Transition(label='Farm Select')
+milk_test = Transition(label='Milk Test')
+milk_pasteurize = Transition(label='Milk Pasteurize')
+curd_form = Transition(label='Curd Form')
+whey_drain = Transition(label='Whey Drain')
+cheese_press = Transition(label='Cheese Press')
+salt_rub = Transition(label='Salt Rub')
+aging_set = Transition(label='Aging Set')
+flavor_check = Transition(label='Flavor Check')
+texture_scan = Transition(label='Texture Scan')
+quality_approve = Transition(label='Quality Approve')
+custom_pack = Transition(label='Custom Pack')
+cold_ship = Transition(label='Cold Ship')
+retail_train = Transition(label='Retail Train')
+feedback_log = Transition(label='Feedback Log')
+batch_adjust = Transition(label='Batch Adjust')
+
+# Define the partial order
+root = StrictPartialOrder()
+
+# Define the activities as nodes in the partial order
+root.nodes.append(farm_select)
+root.nodes.append(milk_test)
+root.nodes.append(milk_pasteurize)
+root.nodes.append(curd_form)
+root.nodes.append(whey_drain)
+root.nodes.append(cheese_press)
+root.nodes.append(salt_rub)
+root.nodes.append(aging_set)
+root.nodes.append(flavor_check)
+root.nodes.append(texture_scan)
+root.nodes.append(quality_approve)
+root.nodes.append(custom_pack)
+root.nodes.append(cold_ship)
+root.nodes.append(retail_train)
+root.nodes.append(feedback_log)
+root.nodes.append(batch_adjust)
+
+# Define the edges in the partial order
+root.order.add_edge(farm_select, milk_test)
+root.order.add_edge(milk_test, milk_pasteurize)
+root.order.add_edge(milk_pasteurize, curd_form)
+root.order.add_edge(curd_form, whey_drain)
+root.order.add_edge(whey_drain, cheese_press)
+root.order.add_edge(cheese_press, salt_rub)
+root.order.add_edge(salt_rub, aging_set)
+root.order.add_edge(aging_set, flavor_check)
+root.order.add_edge(flavor_check, texture_scan)
+root.order.add_edge(texture_scan, quality_approve)
+root.order.add_edge(quality_approve, custom_pack)
+root.order.add_edge(custom_pack, cold_ship)
+root.order.add_edge(cold_ship, retail_train)
+root.order.add_edge(retail_train, feedback_log)
+root.order.add_edge(feedback_log, batch_adjust)
+
+# Define the transitions
+root.transitions.append(Transition(label='A', children=[farm_select]))
+root.transitions.append(Transition(label='B', children=[milk_test]))
+root.transitions.append(Transition(label='C', children=[milk_pasteurize]))
+root.transitions.append(Transition(label='D', children=[curd_form]))
+root.transitions.append(Transition(label='E', children=[whey_drain]))
+root.transitions.append(Transition(label='F', children=[cheese_press]))
+root.transitions.append(Transition(label='G', children=[salt_rub]))
+root.transitions.append(Transition(label='H', children=[aging_set]))
+root.transitions.append(Transition(label='I', children=[flavor_check]))
+root.transitions.append(Transition(label='J', children=[texture_scan]))
+root.transitions.append(Transition(label='K', children=[quality_approve]))
+root.transitions.append(Transition(label='L', children=[custom_pack]))
+root.transitions.append(Transition(label='M', children=[cold_ship]))
+root.transitions.append(Transition(label='N', children=[retail_train]))
+root.transitions.append(Transition(label='O', children=[feedback_log]))
+root.transitions.append(Transition(label='P', children=[batch_adjust]))
+
+# Define the operators
+root.operators.append(OperatorPOWL(operator=Operator.XOR, children=[farm_select, milk_test]))
+root.operators.append(OperatorPOWL(operator=Operator.XOR, children=[milk_pasteurize, curd_form]))
+root.operators.append(OperatorPOWL(operator=Operator.XOR, children=[whey_drain, cheese_press]))
+root.operators.append(OperatorPOWL(operator=Operator.XOR, children=[salt_rub, aging_set]))
+root.operators.append(OperatorPOWL(operator=Operator.XOR, children=[flavor_check, texture_scan]))
+root.operators.append(OperatorPOWL(operator=Operator.XOR, children=[quality_approve, custom_pack]))
+root.operators.append(OperatorPOWL(operator=Operator.XOR, children=[cold_ship, retail_train]))
+root.operators.append(OperatorPOWL(operator=Operator.XOR, children=[feedback_log, batch_adjust]))
+
+# Print the POWL model
+print(root)

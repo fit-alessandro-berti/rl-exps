@@ -1,0 +1,67 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions for each activity
+sourcing = Transition(label='Component Sourcing')
+assembly = Transition(label='Frame Assembly')
+mounting = Transition(label='Sensor Mounting')
+wiring = Transition(label='Wiring Harness')
+testing = Transition(label='Circuit Testing')
+loading = Transition(label='Firmware Loading')
+calibration = Transition(label='Initial Calibration')
+integration = Transition(label='Software Integration')
+flight_test = Transition(label='Flight Testing')
+data_log = Transition(label='Data Logging')
+tuning = Transition(label='Performance Tuning')
+packaging = Transition(label='Packaging Prep')
+labeling = Transition(label='Custom Labeling')
+docs = Transition(label='Documentation Print')
+review = Transition(label='Quality Review')
+training = Transition(label='Client Training')
+monitoring = Transition(label='Remote Monitoring')
+firmware_update = Transition(label='Firmware Update')
+
+# Define silent transitions
+skip = SilentTransition()
+
+# Define partial order nodes
+assembly_loop = OperatorPOWL(operator=Operator.LOOP, children=[assembly, wiring, mounting, testing])
+sourcing_loop = OperatorPOWL(operator=Operator.LOOP, children=[sourcing])
+integration_loop = OperatorPOWL(operator=Operator.LOOP, children=[integration])
+flight_loop = OperatorPOWL(operator=Operator.LOOP, children=[flight_test, data_log, tuning])
+calibration_loop = OperatorPOWL(operator=Operator.LOOP, children=[calibration])
+packaging_loop = OperatorPOWL(operator=Operator.LOOP, children=[packaging])
+labeling_loop = OperatorPOWL(operator=Operator.LOOP, children=[labeling])
+docs_loop = OperatorPOWL(operator=Operator.LOOP, children=[docs])
+review_loop = OperatorPOWL(operator=Operator.LOOP, children=[review])
+training_loop = OperatorPOWL(operator=Operator.LOOP, children=[training])
+monitoring_loop = OperatorPOWL(operator=Operator.LOOP, children=[monitoring])
+firmware_update_loop = OperatorPOWL(operator=Operator.LOOP, children=[firmware_update])
+
+# Define exclusive choices
+sourcing_choice = OperatorPOWL(operator=Operator.XOR, children=[sourcing_loop, skip])
+assembly_choice = OperatorPOWL(operator=Operator.XOR, children=[assembly_loop, skip])
+integration_choice = OperatorPOWL(operator=Operator.XOR, children=[integration_loop, skip])
+flight_choice = OperatorPOWL(operator=Operator.XOR, children=[flight_loop, skip])
+calibration_choice = OperatorPOWL(operator=Operator.XOR, children=[calibration_loop, skip])
+packaging_choice = OperatorPOWL(operator=Operator.XOR, children=[packaging_loop, skip])
+labeling_choice = OperatorPOWL(operator=Operator.XOR, children=[labeling_loop, skip])
+docs_choice = OperatorPOWL(operator=Operator.XOR, children=[docs_loop, skip])
+review_choice = OperatorPOWL(operator=Operator.XOR, children=[review_loop, skip])
+training_choice = OperatorPOWL(operator=Operator.XOR, children=[training_loop, skip])
+monitoring_choice = OperatorPOWL(operator=Operator.XOR, children=[monitoring_loop, skip])
+firmware_update_choice = OperatorPOWL(operator=Operator.XOR, children=[firmware_update_loop, skip])
+
+# Define the root of the partial order
+root = StrictPartialOrder(nodes=[sourcing_choice, assembly_choice, integration_choice, flight_choice, calibration_choice, packaging_choice, labeling_choice, docs_choice, review_choice, training_choice, monitoring_choice, firmware_update_choice])
+root.order.add_edge(sourcing_choice, assembly_choice)
+root.order.add_edge(assembly_choice, integration_choice)
+root.order.add_edge(integration_choice, flight_choice)
+root.order.add_edge(flight_choice, calibration_choice)
+root.order.add_edge(calibration_choice, packaging_choice)
+root.order.add_edge(packaging_choice, labeling_choice)
+root.order.add_edge(labeling_choice, docs_choice)
+root.order.add_edge(docs_choice, review_choice)
+root.order.add_edge(review_choice, training_choice)
+root.order.add_edge(training_choice, monitoring_choice)
+root.order.add_edge(monitoring_choice, firmware_update_choice)

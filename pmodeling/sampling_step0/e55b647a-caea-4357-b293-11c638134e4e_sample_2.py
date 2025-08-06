@@ -1,0 +1,65 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+artifact_intake = Transition(label='Artifact Intake')
+provenance_check = Transition(label='Provenance Check')
+material_sampling = Transition(label='Material Sampling')
+scientific_test = Transition(label='Scientific Test')
+expert_review = Transition(label='Expert Review')
+archive_search = Transition(label='Archive Search')
+legal_verify = Transition(label='Legal Verify')
+ownership_confirm = Transition(label='Ownership Confirm')
+compliance_audit = Transition(label='Compliance Audit')
+data_documentation = Transition(label='Data Documentation')
+interim_report = Transition(label='Interim Report')
+department_review = Transition(label='Department Review')
+consensus_meeting = Transition(label='Consensus Meeting')
+final_approval = Transition(label='Final Approval')
+artifact_release = Transition(label='Artifact Release')
+
+# Define the partial order
+root = StrictPartialOrder()
+
+# Define the relationships between activities
+root.add_node(artifact_intake)
+root.add_node(provenance_check)
+root.add_node(material_sampling)
+root.add_node(scientific_test)
+root.add_node(expert_review)
+root.add_node(archive_search)
+root.add_node(legal_verify)
+root.add_node(ownership_confirm)
+root.add_node(compliance_audit)
+root.add_node(data_documentation)
+root.add_node(interim_report)
+root.add_node(department_review)
+root.add_node(consensus_meeting)
+root.add_node(final_approval)
+root.add_node(artifact_release)
+
+root.add_edge(artifact_intake, provenance_check)
+root.add_edge(artifact_intake, material_sampling)
+root.add_edge(provenance_check, scientific_test)
+root.add_edge(provenance_check, expert_review)
+root.add_edge(material_sampling, scientific_test)
+root.add_edge(material_sampling, expert_review)
+root.add_edge(scientific_test, archive_search)
+root.add_edge(scientific_test, legal_verify)
+root.add_edge(expert_review, archive_search)
+root.add_edge(expert_review, legal_verify)
+root.add_edge(archive_search, compliance_audit)
+root.add_edge(archive_search, data_documentation)
+root.add_edge(legal_verify, compliance_audit)
+root.add_edge(legal_verify, data_documentation)
+root.add_edge(compliance_audit, interim_report)
+root.add_edge(compliance_audit, department_review)
+root.add_edge(data_documentation, interim_report)
+root.add_edge(data_documentation, department_review)
+root.add_edge(interim_report, consensus_meeting)
+root.add_edge(department_review, consensus_meeting)
+root.add_edge(consensus_meeting, final_approval)
+root.add_edge(final_approval, artifact_release)
+
+# Return the root of the POWL model
+return root

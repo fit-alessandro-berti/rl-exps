@@ -1,0 +1,38 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+design_layout = Transition(label='Design Layout')
+system_build = Transition(label='System Build')
+install_sensors = Transition(label='Install Sensors')
+set_controls = Transition(label='Set Controls')
+test_modules = Transition(label='Test Modules')
+select_crops = Transition(label='Select Crops')
+configure_irrigation = Transition(label='Configure Irrigation')
+deploy_ai = Transition(label='Deploy AI')
+monitor_pests = Transition(label='Monitor Pests')
+manage_energy = Transition(label='Manage Energy')
+recycle_waste = Transition(label='Recycle Waste')
+train_staff = Transition(label='Train Staff')
+launch_market = Transition(label='Launch Market')
+engage_community = Transition(label='Engage Community')
+
+site_survey_loop = OperatorPOWL(operator=Operator.LOOP, children=[site_survey, design_layout])
+system_build_loop = OperatorPOWL(operator=Operator.LOOP, children=[system_build, install_sensors])
+controls_loop = OperatorPOWL(operator=Operator.LOOP, children=[set_controls, test_modules])
+crops_loop = OperatorPOWL(operator=Operator.LOOP, children=[select_crops, configure_irrigation])
+ai_loop = OperatorPOWL(operator=Operator.LOOP, children=[deploy_ai, monitor_pests])
+energy_loop = OperatorPOWL(operator=Operator.LOOP, children=[manage_energy, recycle_waste])
+staff_loop = OperatorPOWL(operator=Operator.LOOP, children=[train_staff, launch_market])
+community_loop = OperatorPOWL(operator=Operator.LOOP, children=[engage_community, community_loop])
+
+root = StrictPartialOrder(nodes=[site_survey_loop, system_build_loop, controls_loop, crops_loop, ai_loop, energy_loop, staff_loop, community_loop])
+root.order.add_edge(site_survey_loop, system_build_loop)
+root.order.add_edge(system_build_loop, controls_loop)
+root.order.add_edge(controls_loop, crops_loop)
+root.order.add_edge(crops_loop, ai_loop)
+root.order.add_edge(ai_loop, energy_loop)
+root.order.add_edge(energy_loop, staff_loop)
+root.order.add_edge(staff_loop, community_loop)
+root.order.add_edge(community_loop, site_survey_loop)

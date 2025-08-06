@@ -1,0 +1,23 @@
+A = Transition(label='Site Survey')
+B = Transition(label='Design Modules')
+C = Transition(label='Install Sensors')
+D = Transition(label='Calibrate Climate')
+E = Transition(label='Select Seeds')
+F = Transition(label='Optimize Nutrients')
+G = Transition(label='Deploy Robots')
+H = Transition(label='Monitor Growth')
+I = Transition(label='Detect Pests')
+J = Transition(label='Analyze Data')
+K = Transition(label='Harvest Crops')
+L = Transition(label='Customize Pack')
+M = Transition(label='Recycle Waste')
+N = Transition(label='Audit Energy')
+O = Transition(label='Align Demand')
+
+skip = SilentTransition()
+
+loop = OperatorPOWL(operator=Operator.LOOP, children=[A, B, C, D, E, F, G])
+xor = OperatorPOWL(operator=Operator.XOR, children=[H, I, J, K, L, M, N, O])
+
+root = StrictPartialOrder(nodes=[loop, xor])
+root.order.add_edge(loop, xor)

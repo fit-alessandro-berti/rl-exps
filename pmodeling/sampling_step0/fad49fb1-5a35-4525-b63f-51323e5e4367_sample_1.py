@@ -1,0 +1,40 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+# Define the POWL model
+root = StrictPartialOrder()
+root.add_transition(Transition(label='Site Survey'))
+root.add_transition(Transition(label='Design Modules'))
+root.add_transition(Transition(label='Source Materials'))
+root.add_transition(Transition(label='Install Framework'))
+root.add_transition(Transition(label='Setup Irrigation'))
+root.add_transition(Transition(label='Integrate Sensors'))
+root.add_transition(Transition(label='Configure AI'))
+root.add_transition(Transition(label='Select Crops'))
+root.add_transition(Transition(label='Calibrate Climate'))
+root.add_transition(Transition(label='Plant Seeds'))
+root.add_transition(Transition(label='Monitor Growth'))
+root.add_transition(Transition(label='Manage Pests'))
+root.add_transition(Transition(label='Recycle Waste'))
+root.add_transition(Transition(label='Engage Community'))
+root.add_transition(Transition(label='Ensure Compliance'))
+root.add_transition(Transition(label='Distribute Produce'))
+
+# Define the dependencies
+root.add_dependency(root.get_transition_by_label('Site Survey'), root.get_transition_by_label('Design Modules'))
+root.add_dependency(root.get_transition_by_label('Design Modules'), root.get_transition_by_label('Source Materials'))
+root.add_dependency(root.get_transition_by_label('Source Materials'), root.get_transition_by_label('Install Framework'))
+root.add_dependency(root.get_transition_by_label('Install Framework'), root.get_transition_by_label('Setup Irrigation'))
+root.add_dependency(root.get_transition_by_label('Setup Irrigation'), root.get_transition_by_label('Integrate Sensors'))
+root.add_dependency(root.get_transition_by_label('Integrate Sensors'), root.get_transition_by_label('Configure AI'))
+root.add_dependency(root.get_transition_by_label('Configure AI'), root.get_transition_by_label('Select Crops'))
+root.add_dependency(root.get_transition_by_label('Select Crops'), root.get_transition_by_label('Calibrate Climate'))
+root.add_dependency(root.get_transition_by_label('Calibrate Climate'), root.get_transition_by_label('Plant Seeds'))
+root.add_dependency(root.get_transition_by_label('Plant Seeds'), root.get_transition_by_label('Monitor Growth'))
+root.add_dependency(root.get_transition_by_label('Monitor Growth'), root.get_transition_by_label('Manage Pests'))
+root.add_dependency(root.get_transition_by_label('Manage Pests'), root.get_transition_by_label('Recycle Waste'))
+root.add_dependency(root.get_transition_by_label('Recycle Waste'), root.get_transition_by_label('Engage Community'))
+root.add_dependency(root.get_transition_by_label('Engage Community'), root.get_transition_by_label('Ensure Compliance'))
+root.add_dependency(root.get_transition_by_label('Ensure Compliance'), root.get_transition_by_label('Distribute Produce'))
+
+print(root)

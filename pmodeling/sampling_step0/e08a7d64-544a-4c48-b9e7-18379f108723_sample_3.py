@@ -1,0 +1,75 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL transitions
+provenance_check = Transition(label='Provenance Check')
+material_testing = Transition(label='Material Testing')
+expert_review = Transition(label='Expert Review')
+legal_verify = Transition(label='Legal Verify')
+risk_assess = Transition(label='Risk Assess')
+insurance_quote = Transition(label='Insurance Quote')
+catalog_entry = Transition(label='Catalog Entry')
+digital_scan = Transition(label='Digital Scan')
+condition_report = Transition(label='Condition Report')
+transport_plan = Transition(label='Transport Plan')
+customs_clear = Transition(label='Customs Clear')
+certification = Transition(label='Certification')
+exhibit_setup = Transition(label='Exhibit Setup')
+owner_notify = Transition(label='Owner Notify')
+final_audit = Transition(label='Final Audit')
+
+# Define the POWL transitions that will be skipped
+skip_material_testing = SilentTransition()
+skip_legal_verify = SilentTransition()
+skip_risk_assess = SilentTransition()
+skip_insurance_quote = SilentTransition()
+skip_catalog_entry = SilentTransition()
+skip_digital_scan = SilentTransition()
+skip_condition_report = SilentTransition()
+skip_transport_plan = SilentTransition()
+skip_customs_clear = SilentTransition()
+skip_exhibit_setup = SilentTransition()
+skip_owner_notify = SilentTransition()
+
+# Define the POWL loops and choices
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[provenance_check, material_testing])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[risk_assess, insurance_quote])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[catalog_entry, digital_scan])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[condition_report, transport_plan])
+loop5 = OperatorPOWL(operator=Operator.LOOP, children=[customs_clear, exhibit_setup])
+loop6 = OperatorPOWL(operator=Operator.LOOP, children=[owner_notify, final_audit])
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[expert_review, skip_material_testing])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[legal_verify, skip_legal_verify])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[risk_assess, skip_risk_assess])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[insurance_quote, skip_insurance_quote])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[catalog_entry, skip_catalog_entry])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[digital_scan, skip_digital_scan])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[condition_report, skip_condition_report])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[transport_plan, skip_transport_plan])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[customs_clear, skip_customs_clear])
+xor10 = OperatorPOWL(operator=Operator.XOR, children=[exhibit_setup, skip_exhibit_setup])
+xor11 = OperatorPOWL(operator=Operator.XOR, children=[owner_notify, skip_owner_notify])
+
+# Define the POWL partial order
+root = StrictPartialOrder(nodes=[loop1, xor1, loop2, xor2, loop3, xor3, loop4, xor4, loop5, xor5, loop6, xor6, xor7, xor8, xor9, xor10, xor11])
+root.order.add_edge(loop1, xor1)
+root.order.add_edge(loop2, xor2)
+root.order.add_edge(loop3, xor3)
+root.order.add_edge(loop4, xor4)
+root.order.add_edge(loop5, xor5)
+root.order.add_edge(loop6, xor6)
+root.order.add_edge(xor1, loop2)
+root.order.add_edge(xor2, loop3)
+root.order.add_edge(xor3, loop4)
+root.order.add_edge(xor4, loop5)
+root.order.add_edge(xor5, loop6)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor8)
+root.order.add_edge(xor8, xor9)
+root.order.add_edge(xor9, xor10)
+root.order.add_edge(xor10, xor11)
+root.order.add_edge(xor11, final_audit)
+
+# Save the final result in the variable 'root'

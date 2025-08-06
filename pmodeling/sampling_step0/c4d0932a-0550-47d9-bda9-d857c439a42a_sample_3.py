@@ -1,0 +1,52 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+Milk_Sourcing = Transition(label='Milk Sourcing')
+Quality_Testing = Transition(label='Quality Testing')
+Starter_Culture = Transition(label='Starter Culture')
+Coagulation = Transition(label='Coagulation')
+Curd_Cutting = Transition(label='Curd Cutting')
+Whey_Draining = Transition(label='Whey Draining')
+Molding_Cheese = Transition(label='Molding Cheese')
+Pressing_Block = Transition(label='Pressing Block')
+Brining_Bath = Transition(label='Brining Bath')
+Aging_Control = Transition(label='Aging Control')
+Flavor_Profiling = Transition(label='Flavor Profiling')
+Packaging_Design = Transition(label='Packaging Design')
+Demand_Forecasting = Transition(label='Demand Forecast')
+Retail_Outreach = Transition(label='Retail Outreach')
+Customer_Feedback = Transition(label='Customer Feedback')
+
+# Define the nodes
+node1 = OperatorPOWL(operator=Operator.XOR, children=[Milk_Sourcing, Quality_Testing])
+node2 = OperatorPOWL(operator=Operator.XOR, children=[Starter_Culture, node1])
+node3 = OperatorPOWL(operator=Operator.XOR, children=[Coagulation, node2])
+node4 = OperatorPOWL(operator=Operator.XOR, children=[Curd_Cutting, node3])
+node5 = OperatorPOWL(operator=Operator.XOR, children=[Whey_Draining, node4])
+node6 = OperatorPOWL(operator=Operator.XOR, children=[Molding_Cheese, node5])
+node7 = OperatorPOWL(operator=Operator.XOR, children=[Pressing_Block, node6])
+node8 = OperatorPOWL(operator=Operator.XOR, children=[Brining_Bath, node7])
+node9 = OperatorPOWL(operator=Operator.XOR, children=[Aging_Control, node8])
+node10 = OperatorPOWL(operator=Operator.XOR, children=[Flavor_Profiling, node9])
+node11 = OperatorPOWL(operator=Operator.XOR, children=[Packaging_Design, node10])
+node12 = OperatorPOWL(operator=Operator.XOR, children=[Demand_Forecasting, node11])
+node13 = OperatorPOWL(operator=Operator.XOR, children=[Retail_Outreach, node12])
+node14 = OperatorPOWL(operator=Operator.XOR, children=[Customer_Feedback, node13])
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[node14])
+root.order.add_edge(node14, node13)
+root.order.add_edge(node13, node12)
+root.order.add_edge(node12, node11)
+root.order.add_edge(node11, node10)
+root.order.add_edge(node10, node9)
+root.order.add_edge(node9, node8)
+root.order.add_edge(node8, node7)
+root.order.add_edge(node7, node6)
+root.order.add_edge(node6, node5)
+root.order.add_edge(node5, node4)
+root.order.add_edge(node4, node3)
+root.order.add_edge(node3, node2)
+root.order.add_edge(node2, node1)

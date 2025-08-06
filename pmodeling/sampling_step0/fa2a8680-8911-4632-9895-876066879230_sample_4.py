@@ -1,0 +1,37 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+client_meet = Transition(label='Client Meet')
+requirement_gather = Transition(label='Requirement Gather')
+module_design = Transition(label='Module Design')
+supplier_vetting = Transition(label='Supplier Vetting')
+component_order = Transition(label='Component Order')
+prototype_build = Transition(label='Prototype Build')
+field_testing = Transition(label='Field Testing')
+test_analysis = Transition(label='Test Analysis')
+software_setup = Transition(label='Software Setup')
+data_integration = Transition(label='Data Integration')
+pilot_train = Transition(label='Pilot Train')
+compliance_check = Transition(label='Compliance Check')
+fleet_deploy = Transition(label='Fleet Deploy')
+remote_monitor = Transition(label='Remote Monitor')
+maintenance_plan = Transition(label='Maintenance Plan')
+performance_tune = Transition(label='Performance Tune')
+
+skip = SilentTransition()
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[module_design, supplier_vetting])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[component_order, prototype_build])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[field_testing, test_analysis])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[software_setup, data_integration])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[pilot_train, compliance_check])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[fleet_deploy, remote_monitor])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[maintenance_plan, performance_tune])
+
+root = StrictPartialOrder(nodes=[xor1, xor2, xor3, xor4, xor5, xor6, xor7])
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)

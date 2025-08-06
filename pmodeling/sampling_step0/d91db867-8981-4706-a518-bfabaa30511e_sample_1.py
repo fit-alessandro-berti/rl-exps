@@ -1,0 +1,39 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define activities
+provenance_check = Transition(label='Provenance Check')
+material_scan = Transition(label='Material Scan')
+context_review = Transition(label='Context Review')
+expert_consult = Transition(label='Expert Consult')
+image_capture = Transition(label='Image Capture')
+condition_test = Transition(label='Condition Test')
+forger_risk = Transition(label='Forgery Risk')
+registry_crosscheck = Transition(label='Registry Crosscheck')
+legal_verify = Transition(label='Legal Verify')
+ethics_review = Transition(label='Ethics Review')
+report_draft = Transition(label='Report Draft')
+certificate_issue = Transition(label='Certificate Issue')
+digital_archive = Transition(label='Digital Archive')
+transfer_setup = Transition(label='Transfer Setup')
+final_approval = Transition(label='Final Approval')
+
+# Define silent activities
+skip = SilentTransition()
+
+# Define loops
+provenance_loop = OperatorPOWL(operator=Operator.LOOP, children=[provenance_check, material_scan, context_review, expert_consult])
+condition_loop = OperatorPOWL(operator=Operator.LOOP, children=[image_capture, condition_test, forger_risk])
+legal_loop = OperatorPOWL(operator=Operator.LOOP, children=[registry_crosscheck, legal_verify, ethics_review])
+
+# Define partial order
+root = StrictPartialOrder(nodes=[provenance_loop, condition_loop, legal_loop, report_draft, certificate_issue, digital_archive, transfer_setup, final_approval])
+root.order.add_edge(provenance_loop, condition_loop)
+root.order.add_edge(condition_loop, legal_loop)
+root.order.add_edge(legal_loop, report_draft)
+root.order.add_edge(report_draft, certificate_issue)
+root.order.add_edge(certificate_issue, digital_archive)
+root.order.add_edge(digital_archive, transfer_setup)
+root.order.add_edge(transfer_setup, final_approval)
+
+print(root)

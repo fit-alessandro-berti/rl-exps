@@ -1,0 +1,52 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+site_survey = Transition(label='Site Survey')
+rack_design = Transition(label='Rack Design')
+system_setup = Transition(label='System Setup')
+climate_calibrate = Transition(label='Climate Calibrate')
+nutrient_prep = Transition(label='Nutrient Prep')
+crop_select = Transition(label='Crop Select')
+seed_germinate = Transition(label='Seed Germinate')
+sensor_deploy = Transition(label='Sensor Deploy')
+pest_control = Transition(label='Pest Control')
+harvest_automate = Transition(label='Harvest Automate')
+quality_check = Transition(label='Quality Check')
+pack_produce = Transition(label='Pack Produce')
+data_analyze = Transition(label='Data Analyze')
+engage_community = Transition(label='Engage Community')
+logistics_plan = Transition(label='Logistics Plan')
+
+# Define the workflow
+site_survey_to_rack_design = OperatorPOWL(operator=Operator.XOR, children=[site_survey, rack_design])
+rack_design_to_system_setup = OperatorPOWL(operator=Operator.XOR, children=[rack_design, system_setup])
+system_setup_to_climate_calibrate = OperatorPOWL(operator=Operator.XOR, children=[system_setup, climate_calibrate])
+climate_calibrate_to_nutrient_prep = OperatorPOWL(operator=Operator.XOR, children=[climate_calibrate, nutrient_prep])
+nutrient_prep_to_crop_select = OperatorPOWL(operator=Operator.XOR, children=[nutrient_prep, crop_select])
+crop_select_to_seed_germinate = OperatorPOWL(operator=Operator.XOR, children=[crop_select, seed_germinate])
+seed_germinate_to_sensor_deploy = OperatorPOWL(operator=Operator.XOR, children=[seed_germinate, sensor_deploy])
+sensor_deploy_to_pest_control = OperatorPOWL(operator=Operator.XOR, children=[sensor_deploy, pest_control])
+pest_control_to_harvest_automate = OperatorPOWL(operator=Operator.XOR, children=[pest_control, harvest_automate])
+harvest_automate_to_quality_check = OperatorPOWL(operator=Operator.XOR, children=[harvest_automate, quality_check])
+quality_check_to_pack_produce = OperatorPOWL(operator=Operator.XOR, children=[quality_check, pack_produce])
+pack_produce_to_data_analyze = OperatorPOWL(operator=Operator.XOR, children=[pack_produce, data_analyze])
+data_analyze_to_engage_community = OperatorPOWL(operator=Operator.XOR, children=[data_analyze, engage_community])
+engage_community_to_logistics_plan = OperatorPOWL(operator=Operator.XOR, children=[engage_community, logistics_plan])
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[site_survey_to_rack_design, rack_design_to_system_setup, system_setup_to_climate_calibrate, climate_calibrate_to_nutrient_prep, nutrient_prep_to_crop_select, crop_select_to_seed_germinate, seed_germinate_to_sensor_deploy, sensor_deploy_to_pest_control, pest_control_to_harvest_automate, harvest_automate_to_quality_check, quality_check_to_pack_produce, pack_produce_to_data_analyze, data_analyze_to_engage_community, engage_community_to_logistics_plan])
+root.order.add_edge(site_survey_to_rack_design, rack_design_to_system_setup)
+root.order.add_edge(rack_design_to_system_setup, system_setup_to_climate_calibrate)
+root.order.add_edge(system_setup_to_climate_calibrate, climate_calibrate_to_nutrient_prep)
+root.order.add_edge(climate_calibrate_to_nutrient_prep, nutrient_prep_to_crop_select)
+root.order.add_edge(nutrient_prep_to_crop_select, crop_select_to_seed_germinate)
+root.order.add_edge(crop_select_to_seed_germinate, seed_germinate_to_sensor_deploy)
+root.order.add_edge(seed_germinate_to_sensor_deploy, sensor_deploy_to_pest_control)
+root.order.add_edge(sensor_deploy_to_pest_control, pest_control_to_harvest_automate)
+root.order.add_edge(pest_control_to_harvest_automate, harvest_automate_to_quality_check)
+root.order.add_edge(harvest_automate_to_quality_check, quality_check_to_pack_produce)
+root.order.add_edge(quality_check_to_pack_produce, pack_produce_to_data_analyze)
+root.order.add_edge(pack_produce_to_data_analyze, data_analyze_to_engage_community)
+root.order.add_edge(data_analyze_to_engage_community, engage_community_to_logistics_plan)

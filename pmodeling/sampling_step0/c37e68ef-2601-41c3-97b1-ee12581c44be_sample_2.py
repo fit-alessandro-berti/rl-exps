@@ -1,0 +1,42 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+MilkSourcing = Transition(label='Milk Sourcing')
+QualityTesting = Transition(label='Quality Testing')
+StarterPrep = Transition(label='Starter Prep')
+CurdCutting = Transition(label='Curd Cutting')
+WheyDraining = Transition(label='Whey Draining')
+MoldingPress = Transition(label='Molding Press')
+FermentationControl = Transition(label='Fermentation Control')
+AgingSetup = Transition(label='Aging Setup')
+HumidityCheck = Transition(label='Humidity Check')
+PackagingDesign = Transition(label='Packaging Design')
+LabelApproval = Transition(label='Label Approval')
+InventoryAudit = Transition(label='Inventory Audit')
+OrderScheduling = Transition(label='Order Scheduling')
+MarketDelivery = Transition(label='Market Delivery')
+FeedbackReview = Transition(label='Feedback Review')
+ComplianceCheck = Transition(label='Compliance Check')
+MarketingSync = Transition(label='Marketing Sync')
+skip = SilentTransition()
+
+# Define the POWL model
+root = StrictPartialOrder(nodes=[MilkSourcing, QualityTesting, StarterPrep, CurdCutting, WheyDraining, MoldingPress, FermentationControl, AgingSetup, HumidityCheck, PackagingDesign, LabelApproval, InventoryAudit, OrderScheduling, MarketDelivery, FeedbackReview, ComplianceCheck, MarketingSync])
+root.order.add_edge(MilkSourcing, QualityTesting)
+root.order.add_edge(QualityTesting, StarterPrep)
+root.order.add_edge(StarterPrep, CurdCutting)
+root.order.add_edge(CurdCutting, WheyDraining)
+root.order.add_edge(WheyDraining, MoldingPress)
+root.order.add_edge(MoldingPress, FermentationControl)
+root.order.add_edge(FermentationControl, AgingSetup)
+root.order.add_edge(AgingSetup, HumidityCheck)
+root.order.add_edge(HumidityCheck, PackagingDesign)
+root.order.add_edge(PackagingDesign, LabelApproval)
+root.order.add_edge(LabelApproval, InventoryAudit)
+root.order.add_edge(InventoryAudit, OrderScheduling)
+root.order.add_edge(OrderScheduling, MarketDelivery)
+root.order.add_edge(MarketDelivery, FeedbackReview)
+root.order.add_edge(FeedbackReview, ComplianceCheck)
+root.order.add_edge(ComplianceCheck, MarketingSync)
+
+# Now root contains the POWL model for the process.

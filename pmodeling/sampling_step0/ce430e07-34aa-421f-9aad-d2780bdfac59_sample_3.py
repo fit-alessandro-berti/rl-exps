@@ -1,0 +1,46 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+RiskAssess = Transition(label='Risk Assess')
+SourceAlternatives = Transition(label='Source Alternatives')
+SupplierAudit = Transition(label='Supplier Audit')
+ContractReview = Transition(label='Contract Review')
+RegulationCheck = Transition(label='Regulation Check')
+InventoryScan = Transition(label='Inventory Scan')
+LogisticsReroute = Transition(label='Logistics Reroute')
+CustomsNotify = Transition(label='Customs Notify')
+StakeholderAlert = Transition(label='Stakeholder Alert')
+DataAnalyze = Transition(label='Data Analyze')
+CostForecast = Transition(label='Cost Forecast')
+ComplianceVerify = Transition(label='Compliance Verify')
+ScenarioPlan = Transition(label='Scenario Plan')
+DecisionGate = Transition(label='Decision Gate')
+FeedbackLoop = Transition(label='Feedback Loop')
+ReportGenerate = Transition(label='Report Generate')
+MarketMonitor = Transition(label='Market Monitor')
+TeamSync = Transition(label='Team Sync')
+
+# Define the partial order
+loop = OperatorPOWL(operator=Operator.LOOP, children=[RiskAssess, SourceAlternatives, SupplierAudit, ContractReview, RegulationCheck, InventoryScan, LogisticsReroute, CustomsNotify, StakeholderAlert, DataAnalyze, CostForecast, ComplianceVerify, ScenarioPlan, DecisionGate, FeedbackLoop, ReportGenerate, MarketMonitor, TeamSync])
+
+# Define the root node
+root = StrictPartialOrder(nodes=[loop])
+root.order.add_edge(loop, RiskAssess)
+root.order.add_edge(loop, SourceAlternatives)
+root.order.add_edge(loop, SupplierAudit)
+root.order.add_edge(loop, ContractReview)
+root.order.add_edge(loop, RegulationCheck)
+root.order.add_edge(loop, InventoryScan)
+root.order.add_edge(loop, LogisticsReroute)
+root.order.add_edge(loop, CustomsNotify)
+root.order.add_edge(loop, StakeholderAlert)
+root.order.add_edge(loop, DataAnalyze)
+root.order.add_edge(loop, CostForecast)
+root.order.add_edge(loop, ComplianceVerify)
+root.order.add_edge(loop, ScenarioPlan)
+root.order.add_edge(loop, DecisionGate)
+root.order.add_edge(loop, FeedbackLoop)
+root.order.add_edge(loop, ReportGenerate)
+root.order.add_edge(loop, MarketMonitor)
+root.order.add_edge(loop, TeamSync)

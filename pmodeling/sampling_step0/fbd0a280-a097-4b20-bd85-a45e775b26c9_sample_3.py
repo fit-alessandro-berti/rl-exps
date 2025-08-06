@@ -1,0 +1,65 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define transitions
+seed_selection = Transition(label='Seed Selection')
+germination_setup = Transition(label='Germination Setup')
+nutrient_mix = Transition(label='Nutrient Mix')
+water_control = Transition(label='Water Control')
+climate_adjust = Transition(label='Climate Adjust')
+sensor_monitor = Transition(label='Sensor Monitor')
+lighting_tune = Transition(label='Lighting Tune')
+airflow_manage = Transition(label='Airflow Manage')
+health_scan = Transition(label='Health Scan')
+pest_control = Transition(label='Pest Control')
+harvest_timing = Transition(label='Harvest Timing')
+cold_storage = Transition(label='Cold Storage')
+package_prep = Transition(label='Package Prep')
+delivery_plan = Transition(label='Delivery Plan')
+feedback_loop = Transition(label='Feedback Loop')
+
+# Define silent transitions
+skip = SilentTransition()
+
+# Define operators
+xor1 = OperatorPOWL(operator=OperatorPOWL.XOR, children=[pest_control, skip])
+xor2 = OperatorPOWL(operator=OperatorPOWL.XOR, children=[health_scan, skip])
+xor3 = OperatorPOWL(operator=OperatorPOWL.XOR, children=[lighting_tune, skip])
+xor4 = OperatorPOWL(operator=OperatorPOWL.XOR, children=[airflow_manage, skip])
+
+loop1 = OperatorPOWL(operator=OperatorPOWL.LOOP, children=[climate_adjust, sensor_monitor])
+loop2 = OperatorPOWL(operator=OperatorPOWL.LOOP, children=[health_scan, pest_control])
+loop3 = OperatorPOWL(operator=OperatorPOWL.LOOP, children=[lighting_tune, airflow_manage])
+
+root = StrictPartialOrder(nodes=[seed_selection, germination_setup, nutrient_mix, water_control, loop1, loop2, loop3, xor1, xor2, xor3, xor4, cold_storage, package_prep, delivery_plan, feedback_loop])
+
+# Define edges
+root.order.add_edge(seed_selection, germination_setup)
+root.order.add_edge(germination_setup, nutrient_mix)
+root.order.add_edge(nutrient_mix, water_control)
+root.order.add_edge(water_control, climate_adjust)
+root.order.add_edge(climate_adjust, sensor_monitor)
+root.order.add_edge(sensor_monitor, loop1)
+root.order.add_edge(loop1, xor1)
+root.order.add_edge(xor1, climate_adjust)
+root.order.add_edge(climate_adjust, sensor_monitor)
+root.order.add_edge(sensor_monitor, loop1)
+root.order.add_edge(loop1, xor1)
+root.order.add_edge(xor1, lighting_tune)
+root.order.add_edge(lighting_tune, airflow_manage)
+root.order.add_edge(airflow_manage, loop2)
+root.order.add_edge(loop2, xor2)
+root.order.add_edge(xor2, health_scan)
+root.order.add_edge(health_scan, pest_control)
+root.order.add_edge(pest_control, loop3)
+root.order.add_edge(loop3, xor3)
+root.order.add_edge(xor3, lighting_tune)
+root.order.add_edge(lighting_tune, airflow_manage)
+root.order.add_edge(airflow_manage, loop2)
+root.order.add_edge(loop2, xor2)
+root.order.add_edge(xor2, cold_storage)
+root.order.add_edge(cold_storage, package_prep)
+root.order.add_edge(package_prep, delivery_plan)
+root.order.add_edge(delivery_plan, feedback_loop)
+root.order.add_edge(feedback_loop, seed_selection)
+
+print(root)

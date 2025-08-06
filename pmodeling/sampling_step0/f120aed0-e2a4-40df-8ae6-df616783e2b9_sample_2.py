@@ -1,0 +1,52 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions
+site_survey = Transition(label='Site Survey')
+rack_design = Transition(label='Rack Design')
+system_setup = Transition(label='System Setup')
+climate_calibrate = Transition(label='Climate Calibrate')
+nutrient_prep = Transition(label='Nutrient Prep')
+crop_select = Transition(label='Crop Select')
+seed_germinate = Transition(label='Seed Germinate')
+sensor_deploy = Transition(label='Sensor Deploy')
+pest_control = Transition(label='Pest Control')
+harvest_automate = Transition(label='Harvest Automate')
+quality_check = Transition(label='Quality Check')
+pack_produce = Transition(label='Pack Produce')
+data_analyze = Transition(label='Data Analyze')
+engage_community = Transition(label='Engage Community')
+logistics_plan = Transition(label='Logistics Plan')
+
+# Define operators
+xor = OperatorPOWL(operator=Operator.XOR, children=[pest_control, sensor_deploy])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[logistics_plan, engage_community])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[data_analyze, quality_check])
+loop = OperatorPOWL(operator=Operator.LOOP, children=[harvest_automate])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[pack_produce, crop_select])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[system_setup, climate_calibrate])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[nutrient_prep, seed_germinate])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[rack_design, site_survey])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[xor7, xor6])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[xor8, xor5])
+xor10 = OperatorPOWL(operator=Operator.XOR, children=[xor9, xor4])
+xor11 = OperatorPOWL(operator=Operator.XOR, children=[xor10, xor3])
+xor12 = OperatorPOWL(operator=Operator.XOR, children=[xor11, xor2])
+xor13 = OperatorPOWL(operator=Operator.XOR, children=[xor12, loop])
+
+# Define root
+root = StrictPartialOrder(nodes=[xor13])
+root.order.add_edge(xor13, xor12)
+root.order.add_edge(xor12, xor11)
+root.order.add_edge(xor11, xor10)
+root.order.add_edge(xor10, xor9)
+root.order.add_edge(xor9, xor8)
+root.order.add_edge(xor8, xor7)
+root.order.add_edge(xor7, xor6)
+root.order.add_edge(xor6, xor5)
+root.order.add_edge(xor5, xor4)
+root.order.add_edge(xor4, xor3)
+root.order.add_edge(xor3, xor2)
+root.order.add_edge(xor2, loop)
+root.order.add_edge(loop, xor13)
