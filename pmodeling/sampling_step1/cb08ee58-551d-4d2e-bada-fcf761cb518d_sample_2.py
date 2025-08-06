@@ -1,0 +1,65 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the transitions (activities) with their labels
+site_survey = Transition(label='Site Survey')
+light_mapping = Transition(label='Light Mapping')
+water_testing = Transition(label='Water Testing')
+design_modules = Transition(label='Design Modules')
+iot_setup = Transition(label='IoT Setup')
+sensor_calibration = Transition(label='Sensor Calibration')
+nutrient_mix = Transition(label='Nutrient Mix')
+climate_control = Transition(label='Climate Control')
+regulatory_check = Transition(label='Regulatory Check')
+community_meet = Transition(label='Community Meet')
+energy_audit = Transition(label='Energy Audit')
+staff_training = Transition(label='Staff Training')
+installation = Transition(label='Installation')
+system_testing = Transition(label='System Testing')
+yield_analysis = Transition(label='Yield Analysis')
+resource_audit = Transition(label='Resource Audit')
+impact_review = Transition(label='Impact Review')
+
+# Define the partial order model
+root = StrictPartialOrder()
+
+# Add the nodes to the model
+root.add_node(site_survey)
+root.add_node(light_mapping)
+root.add_node(water_testing)
+root.add_node(design_modules)
+root.add_node(iot_setup)
+root.add_node(sensor_calibration)
+root.add_node(nutrient_mix)
+root.add_node(climate_control)
+root.add_node(regulatory_check)
+root.add_node(community_meet)
+root.add_node(energy_audit)
+root.add_node(staff_training)
+root.add_node(installation)
+root.add_node(system_testing)
+root.add_node(yield_analysis)
+root.add_node(resource_audit)
+root.add_node(impact_review)
+
+# Define the edges (dependencies) in the partial order
+root.add_edge(site_survey, light_mapping)
+root.add_edge(site_survey, water_testing)
+root.add_edge(light_mapping, design_modules)
+root.add_edge(water_testing, design_modules)
+root.add_edge(design_modules, iot_setup)
+root.add_edge(iot_setup, sensor_calibration)
+root.add_edge(sensor_calibration, nutrient_mix)
+root.add_edge(nutrient_mix, climate_control)
+root.add_edge(climate_control, regulatory_check)
+root.add_edge(regulatory_check, community_meet)
+root.add_edge(community_meet, energy_audit)
+root.add_edge(energy_audit, staff_training)
+root.add_edge(staff_training, installation)
+root.add_edge(installation, system_testing)
+root.add_edge(system_testing, yield_analysis)
+root.add_edge(yield_analysis, resource_audit)
+root.add_edge(resource_audit, impact_review)
+
+# Print the final POWL model
+print(root)

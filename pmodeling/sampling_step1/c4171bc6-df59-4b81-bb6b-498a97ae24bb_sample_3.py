@@ -1,0 +1,42 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+milk_sourcing = Transition(label='Milk Sourcing')
+quality_testing = Transition(label='Quality Testing')
+milk_pasteurize = Transition(label='Milk Pasteurize')
+curd_formation = Transition(label='Curd Formation')
+whey_separation = Transition(label='Whey Separation')
+press_cheese = Transition(label='Press Cheese')
+salt_application = Transition(label='Salt Application')
+controlled_aging = Transition(label='Controlled Aging')
+sensory_check = Transition(label='Sensory Check')
+batch_packaging = Transition(label='Batch Packaging')
+label_printing = Transition(label='Label Printing')
+cold_storage = Transition(label='Cold Storage')
+logistics_plan = Transition(label='Logistics Plan')
+retail_delivery = Transition(label='Retail Delivery')
+feedback_review = Transition(label='Feedback Review')
+demand_forecast = Transition(label='Demand Forecast')
+provenance_track = Transition(label='Provenance Track')
+
+skip = SilentTransition()
+
+milk_processing = OperatorPOWL(operator=Operator.XOR, children=[milk_pasteurize, quality_testing])
+curd_production = OperatorPOWL(operator=Operator.XOR, children=[curd_formation, whey_separation])
+aged_cheese = OperatorPOWL(operator=Operator.XOR, children=[controlled_aging, salt_application])
+final_product = OperatorPOWL(operator=Operator.XOR, children=[sensory_check, batch_packaging])
+packaging = OperatorPOWL(operator=Operator.XOR, children=[label_printing, cold_storage])
+distribution = OperatorPOWL(operator=Operator.XOR, children=[logistics_plan, retail_delivery])
+feedback = OperatorPOWL(operator=Operator.XOR, children=[feedback_review, provenance_track])
+demand = OperatorPOWL(operator=Operator.XOR, children=[demand_forecast, provenance_track])
+
+root = StrictPartialOrder(nodes=[milk_sourcing, milk_processing, curd_production, aged_cheese, final_product, packaging, distribution, feedback, demand])
+root.order.add_edge(milk_sourcing, milk_processing)
+root.order.add_edge(milk_processing, curd_production)
+root.order.add_edge(curd_production, aged_cheese)
+root.order.add_edge(aged_cheese, final_product)
+root.order.add_edge(final_product, packaging)
+root.order.add_edge(packaging, distribution)
+root.order.add_edge(distribution, feedback)
+root.order.add_edge(feedback, demand)

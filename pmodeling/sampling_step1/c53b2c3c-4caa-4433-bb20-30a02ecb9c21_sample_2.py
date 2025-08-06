@@ -1,0 +1,40 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define activities
+discover_item = Transition(label='Discover Item')
+document_find = Transition(label='Document Find')
+initial_survey = Transition(label='Initial Survey')
+image_capture = Transition(label='Image Capture')
+material_testing = Transition(label='Material Testing')
+style_compare = Transition(label='Style Compare')
+expert_consult = Transition(label='Expert Consult')
+provenance_check = Transition(label='Provenance Check')
+ownership_verify = Transition(label='Ownership Verify')
+legal_review = Transition(label='Legal Review')
+risk_assess = Transition(label='Risk Assess')
+conservation_plan = Transition(label='Conservation Plan')
+certification = Transition(label='Certification')
+secure_transfer = Transition(label='Secure Transfer')
+dispute_resolve = Transition(label='Dispute Resolve')
+final_archive = Transition(label='Final Archive')
+
+# Define control flow operators
+xor = OperatorPOWL(operator=Operator.XOR, children=[provenance_check, ownership_verify, legal_review, risk_assess, conservation_plan])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[dispute_resolve, final_archive])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[certification, secure_transfer])
+
+# Define partial order
+root = StrictPartialOrder(nodes=[discover_item, document_find, initial_survey, image_capture, material_testing, style_compare, expert_consult, xor, xor2, xor3])
+root.order.add_edge(discover_item, document_find)
+root.order.add_edge(document_find, initial_survey)
+root.order.add_edge(initial_survey, image_capture)
+root.order.add_edge(image_capture, material_testing)
+root.order.add_edge(material_testing, style_compare)
+root.order.add_edge(style_compare, expert_consult)
+root.order.add_edge(expert_consult, xor)
+root.order.add_edge(xor, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, certification)
+root.order.add_edge(xor3, secure_transfer)
+root.order.add_edge(xor, dispute_resolve)
+root.order.add_edge(xor, final_archive)

@@ -1,0 +1,53 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL nodes
+artifact_intake = Transition(label='Artifact Intake')
+provenance_check = Transition(label='Provenance Check')
+material_sampling = Transition(label='Material Sampling')
+scientific_test = Transition(label='Scientific Test')
+expert_review = Transition(label='Expert Review')
+archive_search = Transition(label='Archive Search')
+legal_verify = Transition(label='Legal Verify')
+ownership_confirm = Transition(label='Ownership Confirm')
+compliance_audit = Transition(label='Compliance Audit')
+data_documentation = Transition(label='Data Documentation')
+interim_report = Transition(label='Interim Report')
+department_review = Transition(label='Department Review')
+consensus_meeting = Transition(label='Consensus Meeting')
+final_approval = Transition(label='Final Approval')
+artifact_release = Transition(label='Artifact Release')
+
+# Define the POWL operators
+xor = OperatorPOWL(operator=Operator.XOR, children=[provenance_check, artifact_intake])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[material_sampling, xor])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[scientific_test, xor2])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[expert_review, xor3])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[archive_search, xor4])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[legal_verify, xor5])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[ownership_confirm, xor6])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[compliance_audit, xor7])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[data_documentation, xor8])
+xor10 = OperatorPOWL(operator=Operator.XOR, children=[interim_report, xor9])
+xor11 = OperatorPOWL(operator=Operator.XOR, children=[department_review, xor10])
+xor12 = OperatorPOWL(operator=Operator.XOR, children=[consensus_meeting, xor11])
+xor13 = OperatorPOWL(operator=Operator.XOR, children=[final_approval, xor12])
+xor14 = OperatorPOWL(operator=Operator.XOR, children=[artifact_release, xor13])
+
+# Define the POWL model
+root = StrictPartialOrder(nodes=[artifact_intake, provenance_check, material_sampling, scientific_test, expert_review, archive_search, legal_verify, ownership_confirm, compliance_audit, data_documentation, interim_report, department_review, consensus_meeting, final_approval, artifact_release])
+root.order.add_edge(artifact_intake, provenance_check)
+root.order.add_edge(artifact_intake, material_sampling)
+root.order.add_edge(provenance_check, scientific_test)
+root.order.add_edge(material_sampling, expert_review)
+root.order.add_edge(scientific_test, archive_search)
+root.order.add_edge(expert_review, legal_verify)
+root.order.add_edge(archive_search, ownership_confirm)
+root.order.add_edge(legal_verify, compliance_audit)
+root.order.add_edge(ownership_confirm, data_documentation)
+root.order.add_edge(compliance_audit, interim_report)
+root.order.add_edge(data_documentation, department_review)
+root.order.add_edge(interim_report, consensus_meeting)
+root.order.add_edge(department_review, final_approval)
+root.order.add_edge(consensus_meeting, artifact_release)

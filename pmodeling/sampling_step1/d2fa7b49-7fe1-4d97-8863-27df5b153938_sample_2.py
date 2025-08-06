@@ -1,0 +1,41 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+artifact_intake = Transition(label='Artifact Intake')
+preliminary_check = Transition(label='Preliminary Check')
+historical_review = Transition(label='Historical Review')
+chemical_test = Transition(label='Chemical Test')
+provenance_audit = Transition(label='Provenance Audit')
+expert_panel = Transition(label='Expert Panel')
+token_minting = Transition(label='Token Minting')
+legal_review = Transition(label='Legal Review')
+compliance_check = Transition(label='Compliance Check')
+insurance_valuation = Transition(label='Insurance Valuation')
+risk_assessment = Transition(label='Risk Assessment')
+packaging_prep = Transition(label='Packaging Prep')
+climate_control = Transition(label='Climate Control')
+transport_setup = Transition(label='Transport Setup')
+final_approval = Transition(label='Final Approval')
+
+skip = SilentTransition()
+
+expert_panel_choice = OperatorPOWL(operator=Operator.XOR, children=[historical_review, chemical_test, provenance_audit, expert_panel])
+token_minting_loop = OperatorPOWL(operator=Operator.LOOP, children=[token_minting])
+legal_review_choice = OperatorPOWL(operator=Operator.XOR, children=[legal_review, skip])
+compliance_check_choice = OperatorPOWL(operator=Operator.XOR, children=[compliance_check, skip])
+insurance_valuation_choice = OperatorPOWL(operator=Operator.XOR, children=[insurance_valuation, skip])
+risk_assessment_choice = OperatorPOWL(operator=Operator.XOR, children=[risk_assessment, skip])
+packaging_prep_loop = OperatorPOWL(operator=Operator.LOOP, children=[packaging_prep, climate_control, transport_setup])
+final_approval_choice = OperatorPOWL(operator=Operator.XOR, children=[final_approval, skip])
+
+root = StrictPartialOrder(nodes=[artifact_intake, preliminary_check, expert_panel_choice, token_minting_loop, legal_review_choice, compliance_check_choice, insurance_valuation_choice, risk_assessment_choice, packaging_prep_loop, final_approval_choice])
+root.order.add_edge(artifact_intake, preliminary_check)
+root.order.add_edge(preliminary_check, expert_panel_choice)
+root.order.add_edge(expert_panel_choice, token_minting_loop)
+root.order.add_edge(token_minting_loop, legal_review_choice)
+root.order.add_edge(legal_review_choice, compliance_check_choice)
+root.order.add_edge(compliance_check_choice, insurance_valuation_choice)
+root.order.add_edge(insurance_valuation_choice, risk_assessment_choice)
+root.order.add_edge(risk_assessment_choice, packaging_prep_loop)
+root.order.add_edge(packaging_prep_loop, final_approval_choice)

@@ -1,0 +1,38 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+artifact_intake = Transition(label='Artifact Intake')
+provenance_check = Transition(label='Provenance Check')
+archive_research = Transition(label='Archive Research')
+expert_interview = Transition(label='Expert Interview')
+material_analysis = Transition(label='Material Analysis')
+spectroscopy_test = Transition(label='Spectroscopy Test')
+carbon_dating = Transition(label='Carbon Dating')
+digital_imaging = Transition(label='Digital Imaging')
+three_d_modeling = Transition(label='3D Modeling')
+data_review = Transition(label='Data Review')
+consensus_meeting = Transition(label='Consensus Meeting')
+conservation_plan = Transition(label='Conservation Plan')
+preservation_setup = Transition(label='Preservation Setup')
+documentation = Transition(label='Documentation')
+exhibition_prep = Transition(label='Exhibition Prep')
+
+skip = SilentTransition()
+loop = OperatorPOWL(operator=Operator.LOOP, children=[provenance_check, archive_research, expert_interview, material_analysis, spectroscopy_test, carbon_dating])
+xor = OperatorPOWL(operator=Operator.XOR, children=[digital_imaging, three_d_modeling, data_review])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[consensus_meeting, skip])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[conservation_plan, skip])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[preservation_setup, skip])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[documentation, skip])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[exhibition_prep, skip])
+
+root = StrictPartialOrder(nodes=[artifact_intake, loop, xor, xor2, xor3, xor4, xor5, xor6])
+root.order.add_edge(artifact_intake, loop)
+root.order.add_edge(loop, xor)
+root.order.add_edge(xor, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, artifact_intake)
