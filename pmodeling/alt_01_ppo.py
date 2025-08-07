@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # ppo_powl_generation_openai_reward.py
-# Compatible with: transformers ≥ 4.42, trl ≥ 0.22.0  ✅
+# Compatible with: transformers ≥ 4.42  |  trl ≥ 0.22.0  ✅
 
 import os
 import re
@@ -16,6 +16,7 @@ from datasets import Dataset
 from transformers import (
     AutoTokenizer,
     AutoModelForSequenceClassification,
+    GenerationConfig,               # ★ NEW
 )
 from trl import (
     AutoModelForCausalLMWithValueHead,
@@ -79,7 +80,6 @@ OPENAI_MODEL = "gpt-4.1-mini"
 # ---------------------------------------------------------------------------#
 # 2. Prompt and Data Loading                                                  #
 # ---------------------------------------------------------------------------#
-
 def get_powl_prompt(description: str, activities: List[str]) -> str:
     activities_str = ", ".join([f"'{act}'" for act in activities])
     return f"""Generate a POWL model for the following process, saving the final result in the variable 'root'.
@@ -91,7 +91,7 @@ A partially ordered workflow language (POWL) is a partially ordered graph repres
 - a partial order: PO=(nodes={{...}}, order={{...}}), where order is a set of source-->target dependencies; unconnected nodes are concurrent.
 
 Example code:
-```python
+python
 import pm4py
 from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
 from pm4py.objects.process_tree.obj import Operator
@@ -103,7 +103,7 @@ loop = OperatorPOWL(operator=Operator.LOOP, children=[A, B])
 xor = OperatorPOWL(operator=Operator.XOR, children=[C, skip])
 root = StrictPartialOrder(nodes=[loop, xor])
 root.order.add_edge(loop, xor)
-```
+
 
 NOW, generate the POWL model for the process below.
 DESCRIPTION: {description}
@@ -138,9 +138,8 @@ def load_limited_dataset(data_dir: str, max_samples: int) -> Dataset:
 
 
 # ---------------------------------------------------------------------------#
-# 3. OpenAI Reward Function                                                    #
+# 3. OpenAI Reward Function                                                   #
 # ---------------------------------------------------------------------------#
-
 def get_openai_grading_prompt(original_prompt: str, completions: List[str]) -> str:
     prompt_intro = f"""
 You are an expert in process modeling. Your task is to evaluate Python code snippets that generate POWL models based on a given prompt.
@@ -161,7 +160,7 @@ Here are the responses to grade:
 """
     responses_section = ""
     for i, response in enumerate(completions):
-        responses_section += f"\n--- RESPONSE {i + 1} ---\n```python\n{response}\n```"
+        responses_section += f"\n--- RESPONSE {i + 1} ---\n```python\n{response}\n```\n"
     prompt_outro = f"""
 Please provide your evaluation in a single JSON object. The JSON should have a single key \"grades\", which is a list of floating-point numbers corresponding to each response. The number of grades in the list must be exactly {len(completions)}.
 
@@ -213,7 +212,7 @@ def compute_rewards_from_openai(prompts: List[str], completions: List[str]) -> L
 
 
 # ---------------------------------------------------------------------------#
-# 4. Model, Tokenizer, and PPO Setup                                           #
+# 4. Model, Tokenizer, and PPO Setup                                          #
 # ---------------------------------------------------------------------------#
 def collator(data):
     return {key: [d[key] for d in data] for key in data[0]}
@@ -250,13 +249,32 @@ ref_model = AutoModelForCausalLMWithValueHead.from_pretrained(
 )
 
 # ---------------------------------------------------------------------------#
-# 4-bis. Dummy Reward & Value models (required by PPOTrainer v2)  # NEW      #
+# ★ 4‑bis. Ensure models expose `generation_config`                           #
 # ---------------------------------------------------------------------------#
-class ZeroRewardModel(torch.nn.Module):  # NEW
+def ensure_generation_config(model, source_path):
     """
-    Minimal reward model that returns a zero scalar for any input.
-    Needed only because PPOTrainer's new signature requires a Module.
+    TRL >= 0.22 expects every (value‑head) policy model to carry
+    a `generation_config` attribute. Some wrappers do not forward it,
+    so we create one on the fly if needed.
     """
+    if getattr(model, "generation_config", None) is None:
+        try:
+            gc = GenerationConfig.from_pretrained(source_path)
+        except Exception:
+            gc = GenerationConfig()  # fall back to a blank config
+        # guarantee EOS is defined; TRL writes to it in PPOTrainer.__init__
+        if gc.eos_token_id is None:
+            gc.eos_token_id = tokenizer.eos_token_id
+        model.generation_config = gc
+
+ensure_generation_config(policy_model, model_load_path)
+ensure_generation_config(ref_model, MODEL_NAME)
+
+# ---------------------------------------------------------------------------#
+# 4‑ter. Dummy Reward & shared Value models (required by PPOTrainer v2)       #
+# ---------------------------------------------------------------------------#
+class ZeroRewardModel(torch.nn.Module):
+    """Returns a zero scalar for any input (placeholder reward model)."""
     def __init__(self):
         super().__init__()
         self.dummy = torch.nn.Parameter(torch.zeros(1))
@@ -266,11 +284,11 @@ class ZeroRewardModel(torch.nn.Module):  # NEW
         logits = torch.zeros(batch, 1, device=self.dummy.device)
         return SequenceClassifierOutput(logits=logits)
 
-reward_model = ZeroRewardModel()          # NEW
-value_model = policy_model                # NEW (share weights with policy)
+reward_model = ZeroRewardModel()
+value_model = policy_model           # share weights with policy
 
 # ---------------------------------------------------------------------------#
-# PPO v2 Configuration (only valid fields)                                   #
+# PPO v2 Configuration                                                        #
 # ---------------------------------------------------------------------------#
 ppo_config = PPOConfig(
     learning_rate=LEARNING_RATE,
@@ -290,11 +308,11 @@ ppo_config = PPOConfig(
 )
 
 # ---------------------------------------------------------------------------#
-# Instantiate PPOTrainer v2 (new signature)                                  #
+# Instantiate PPOTrainer                                                     #
 # ---------------------------------------------------------------------------#
 ppo_trainer = PPOTrainer(
     args=ppo_config,
-    processing_class=tokenizer,
+    processing_class=tokenizer,      # correct for TRL ≥ 0.22
     model=policy_model,
     ref_model=ref_model,
     reward_model=reward_model,
@@ -315,7 +333,8 @@ for epoch in range(MAX_TRAINING_STEPS // BATCH_SIZE):
     # 1) sample prompts ------------------------------------------------------ #
     batch_prompts = [random.choice(dataset)["query"] for _ in range(BATCH_SIZE)]
     query_tensors = [
-        tokenizer(p, return_tensors="pt", truncation=True, padding=True, max_length=MAX_PROMPT_TOKENS).input_ids[0]
+        tokenizer(p, return_tensors="pt", truncation=True, padding=True,
+                  max_length=MAX_PROMPT_TOKENS).input_ids[0]
         for p in batch_prompts
     ]
     # 2) generate responses -------------------------------------------------- #
