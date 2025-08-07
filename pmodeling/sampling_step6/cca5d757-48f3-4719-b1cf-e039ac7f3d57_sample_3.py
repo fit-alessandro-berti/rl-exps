@@ -1,0 +1,57 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions for each activity
+SiteAssess = Transition(label='Site Assess')
+LoadTesting = Transition(label='Load Testing')
+ClimateStudy = Transition(label='Climate Study')
+MediumPrep = Transition(label='Medium Prep')
+BedInstall = Transition(label='Bed Install')
+IrrigationSetup = Transition(label='Irrigation Setup')
+CropSelect = Transition(label='Crop Select')
+PestControl = Transition(label='Pest Control')
+CommunityMeet = Transition(label='Community Meet')
+MonitorDeploy = Transition(label='Monitor Deploy')
+WasteCycle = Transition(label='Waste Cycle')
+YieldForecast = Transition(label='Yield Forecast')
+MarketLink = Transition(label='Market Link')
+WorkshopPlan = Transition(label='Workshop Plan')
+TechIntegrate = Transition(label='Tech Integrate')
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[
+    SiteAssess,
+    LoadTesting,
+    ClimateStudy,
+    MediumPrep,
+    BedInstall,
+    IrrigationSetup,
+    CropSelect,
+    PestControl,
+    CommunityMeet,
+    MonitorDeploy,
+    WasteCycle,
+    YieldForecast,
+    MarketLink,
+    WorkshopPlan,
+    TechIntegrate
+])
+
+# Add dependencies if necessary
+# For example, you might want to add dependencies between activities like:
+# root.order.add_edge(SiteAssess, LoadTesting)
+# root.order.add_edge(SiteAssess, ClimateStudy)
+# root.order.add_edge(SiteAssess, MediumPrep)
+# root.order.add_edge(SiteAssess, BedInstall)
+# root.order.add_edge(SiteAssess, IrrigationSetup)
+# root.order.add_edge(SiteAssess, CropSelect)
+# root.order.add_edge(SiteAssess, PestControl)
+# root.order.add_edge(SiteAssess, CommunityMeet)
+# root.order.add_edge(SiteAssess, MonitorDeploy)
+# root.order.add_edge(SiteAssess, WasteCycle)
+# root.order.add_edge(SiteAssess, YieldForecast)
+# root.order.add_edge(SiteAssess, MarketLink)
+# root.order.add_edge(SiteAssess, WorkshopPlan)
+# root.order.add_edge(SiteAssess, TechIntegrate)
+
+# Note: The actual dependencies might vary based on the specific process and requirements.
