@@ -1,0 +1,72 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define activities
+milk_sourcing     = Transition(label='Milk Sourcing')
+quality_testing   = Transition(label='Quality Testing')
+starter_prep      = Transition(label='Starter Prep')
+milk_pasture      = Transition(label='Milk Pasteurize')
+curd_form         = Transition(label='Curd Formation')
+whey_drain        = Transition(label='Whey Drain')
+cheese_press      = Transition(label='Cheese Press')
+salting_process   = Transition(label='Salting Process')
+aging_setup       = Transition(label='Aging Setup')
+temp_control      = Transition(label='Temperature Control')
+batch_labeling    = Transition(label='Batch Labeling')
+eco_packaging     = Transition(label='Eco Packaging')
+inventory_audit   = Transition(label='Inventory Audit')
+order_coord       = Transition(label='Order Coordination')
+regulatory_check  = Transition(label='Regulatory Check')
+shipment_planning = Transition(label='Shipment Planning')
+vendor_liaison    = Transition(label='Vendor Liaison')
+waste_reduction   = Transition(label='Waste Reduction')
+
+# Loop for seasonal variations: repeat aging setup and temperature control
+aging_loop = OperatorPOWL(
+    operator=Operator.LOOP,
+    children=[aging_setup, temp_control]
+)
+
+# Build the partial order
+root = StrictPartialOrder(nodes=[
+    milk_sourcing,
+    quality_testing,
+    starter_prep,
+    milk_pasture,
+    curd_form,
+    whey_drain,
+    cheese_press,
+    salting_process,
+    aging_loop,
+    batch_labeling,
+    eco_packaging,
+    inventory_audit,
+    order_coord,
+    regulatory_check,
+    shipment_planning,
+    vendor_liaison,
+    waste_reduction
+])
+
+# Define the control-flow dependencies
+root.order.add_edge(milk_sourcing, quality_testing)
+root.order.add_edge(quality_testing, starter_prep)
+root.order.add_edge(starter_prep, milk_pasture)
+root.order.add_edge(milk_pasture, curd_form)
+root.order.add_edge(curd_form, whey_drain)
+root.order.add_edge(whey_drain, cheese_press)
+root.order.add_edge(cheese_press, salting_process)
+root.order.add_edge(salting_process, aging_loop)
+root.order.add_edge(aging_loop, batch_labeling)
+root.order.add_edge(batch_labeling, eco_packaging)
+root.order.add_edge(eco_packaging, inventory_audit)
+root.order.add_edge(inventory_audit, order_coord)
+root.order.add_edge(order_coord, regulatory_check)
+root.order.add_edge(regulatory_check, shipment_planning)
+root.order.add_edge(shipment_planning, vendor_liaison)
+root.order.add_edge(vendor_liaison, waste_reduction)

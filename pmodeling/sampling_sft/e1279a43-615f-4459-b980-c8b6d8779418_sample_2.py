@@ -1,0 +1,59 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define atomic activities
+site_analysis     = Transition(label='Site Analysis')
+infrastructure    = Transition(label='Infrastructure Setup')
+seed_selection    = Transition(label='Seed Selection')
+nutrient_mix      = Transition(label='Nutrient Mix')
+planting_cycle    = Transition(label='Planting Cycle')
+climate_adjust    = Transition(label='Climate Adjust')
+growth_monitor    = Transition(label='Growth Monitor')
+pest_control      = Transition(label='Pest Control')
+harvesting_mode   = Transition(label='Harvesting Mode')
+quality_check     = Transition(label='Quality Check')
+packaging_phase   = Transition(label='Packaging Phase')
+cold_storage      = Transition(label='Cold Storage')
+order_dispatch    = Transition(label='Order Dispatch')
+waste_recycling   = Transition(label='Waste Recycling')
+system_maintain   = Transition(label='System Maintain')
+
+# Define the harvesting loop: after Quality Check, do Harvesting Mode and Packaging Phase, then optionally Pest Control
+harvest_loop = OperatorPOWL(
+    operator=Operator.LOOP,
+    children=[harvesting_mode, packaging_phase]
+)
+
+# Build the top-level partial order
+root = StrictPartialOrder(nodes=[
+    site_analysis,
+    infrastructure,
+    seed_selection,
+    nutrient_mix,
+    planting_cycle,
+    climate_adjust,
+    growth_monitor,
+    pest_control,
+    harvest_loop,
+    quality_check,
+    cold_storage,
+    order_dispatch,
+    waste_recycling,
+    system_maintain
+])
+
+# Define the control-flow dependencies
+root.order.add_edge(site_analysis, infrastructure)
+root.order.add_edge(infrastructure, seed_selection)
+root.order.add_edge(seed_selection, nutrient_mix)
+root.order.add_edge(nutrient_mix, planting_cycle)
+root.order.add_edge(planting_cycle, climate_adjust)
+root.order.add_edge(climate_adjust, growth_monitor)
+root.order.add_edge(growth_monitor, pest_control)
+root.order.add_edge(pest_control, harvest_loop)
+root.order.add_edge(harvest_loop, quality_check)
+root.order.add_edge(quality_check, cold_storage)
+root.order.add_edge(cold_storage, order_dispatch)
+root.order.add_edge(order_dispatch, waste_recycling)
+root.order.add_edge(waste_recycling, system_maintain)

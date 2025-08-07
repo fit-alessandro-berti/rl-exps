@@ -1,0 +1,64 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define activities
+site_analysis      = Transition(label='Site Analysis')
+climate_setup      = Transition(label='Climate Setup')
+nutrient_mix       = Transition(label='Nutrient Mix')
+seed_germinate     = Transition(label='Seed Germinate')
+auto_planting      = Transition(label='Auto Planting')
+irrigation_setup   = Transition(label='Irrigation Setup')
+iot_monitoring     = Transition(label='IoT Monitoring')
+pest_detection     = Transition(label='Pest Detection')
+drone_pollinate    = Transition(label='Drone Pollinate')
+pesticide_spray    = Transition(label='Pesticide Spray')
+robotic_harvest    = Transition(label='Robotic Harvest')
+quality_check      = Transition(label='Quality Check')
+package_product    = Transition(label='Package Product')
+waste_recycle      = Transition(label='Waste Recycle')
+energy_optimize    = Transition(label='Energy Optimize')
+data_logging       = Transition(label='Data Logging')
+
+# Silent transition for loop exit
+skip = SilentTransition()
+
+# Loop: monitor then either exit or do pest detection and pesticide spray
+monitor_loop = OperatorPOWL(operator=Operator.LOOP, children=[iot_monitoring, pest_detection])
+pest_loop    = OperatorPOWL(operator=Operator.LOOP, children=[pest_detection, pesticide_spray])
+
+# Build the partial order
+root = StrictPartialOrder(nodes=[
+    site_analysis, climate_setup, nutrient_mix, seed_germinate,
+    auto_planting, irrigation_setup, monitor_loop,
+    robotic_harvest, quality_check, package_product,
+    waste_recycle, energy_optimize, data_logging
+])
+
+# Define the control-flow edges
+root.order.add_edge(site_analysis, climate_setup)
+root.order.add_edge(climate_setup, nutrient_mix)
+root.order.add_edge(nutrient_mix, seed_germinate)
+root.order.add_edge(seed_germinate, auto_planting)
+root.order.add_edge(auto_planting, irrigation_setup)
+
+# After planting, monitor then either exit or do pest cycle
+root.order.add_edge(irrigation_setup, monitor_loop)
+
+# Within the monitoring loop, either exit or do pest cycle
+root.order.add_edge(monitor_loop, robotic_harvest)
+root.order.add_edge(monitor_loop, pest_loop)
+
+# After pest cycle, harvest, quality check, package, recycle, and optimize energy
+root.order.add_edge(pest_loop, robotic_harvest)
+root.order.add_edge(robotic_harvest, quality_check)
+root.order.add_edge(quality_check, package_product)
+root.order.add_edge(package_product, waste_recycle)
+root.order.add_edge(waste_recycle, energy_optimize)
+
+# Finally, log data
+root.order.add_edge(energy_optimize, data_logging)
