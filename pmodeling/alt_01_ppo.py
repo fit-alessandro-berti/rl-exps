@@ -155,7 +155,6 @@ cfg_kwargs = dict(
     gradient_accumulation_steps=GRAD_ACC_STEPS,
     learning_rate=LEARNING_RATE,
     seed=SEED,
-    log_with=None,
 )
 sig = inspect.signature(PPOConfig)
 if "init_kl_coef" in sig.parameters:
