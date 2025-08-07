@@ -233,7 +233,7 @@ trainer = PPOTrainer(
     ref_model=None,
     args=training_args,
     train_dataset=dataset,
-    tokenizer=tokenizer,
+    #tokenizer=tokenizer,
     data_collator=data_collator,
 )
 # ---------------------------------------------------------------------------#
