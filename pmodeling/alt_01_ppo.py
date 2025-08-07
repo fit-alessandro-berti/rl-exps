@@ -17,10 +17,10 @@ from transformers import (
     AutoTokenizer,
     AutoModelForCausalLM,
     AutoModelForCausalLMWithValueHead,  # value head wrapper
-    AutoModelForSequenceClassification,  # NEW – tiny dummy reward model
-    SequenceClassifierOutput,            # NEW – for the dummy model
+    AutoModelForSequenceClassification,  # NEW – tiny dummy reward model
+    SequenceClassifierOutput,            # NEW – for the dummy model
 )
-from trl import PPOConfig, PPOTrainer      # TRL ≥ 0.22
+from trl import PPOConfig, PPOTrainer      # TRL ≥ 0.22
 from trl.core import LengthSampler
 from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
 from pm4py.objects.process_tree.obj import Operator
@@ -36,7 +36,7 @@ if torch.cuda.is_available():
 
 TRAIN_DATA_DIR = "training"
 MODEL_NAME = "Qwen/Qwen2.5-Coder-3B"
-OUTPUT_DIR = "ppo_qwen_powl"
+OUTPUT_DIR = "ppo_qwen_powl_generator_openai_reward"
 
 MAX_PROMPT_TOKENS = 4096
 MAX_COMPLETION_TOKENS = 4096
@@ -77,11 +77,12 @@ OPENAI_MODEL = "gpt-4.1-mini"
 # ---------------------------------------------------------------------------#
 # 2. Prompt and Data Loading                                                  #
 # ---------------------------------------------------------------------------#
+
 def get_powl_prompt(description: str, activities: List[str]) -> str:
     activities_str = ", ".join([f"'{act}'" for act in activities])
     return f"""Generate a POWL model for the following process, saving the final result in the variable 'root'.
 
-A partially ordered workflow language (POWL) is a partially ordered graph representation of a process, extended with control‑flow operators for modeling choice and loop structures. There are four types of POWL models:
+A partially ordered workflow language (POWL) is a partially ordered graph representation of a process, extended with control-flow operators for modeling choice and loop structures. There are four types of POWL models:
 - an activity (identified by its label, e.g., 'M'). Silent activities with empty labels (tau labels) are also supported.
 - a choice of other POWL models (exclusive choice: X(A, B)).
 - a loop node (* (A, B)): execute A, then choose to exit or execute B then A again, repeated until exit.
@@ -100,51 +101,51 @@ loop = OperatorPOWL(operator=Operator.LOOP, children=[A, B])
 xor = OperatorPOWL(operator=Operator.XOR, children=[C, skip])
 root = StrictPartialOrder(nodes=[loop, xor])
 root.order.add_edge(loop, xor)
-````
+```
 
 NOW, generate the POWL model for the process below.
 DESCRIPTION: {description}
-ACTIVITIES (use these exactly, same names): \[{activities\_str}]
+ACTIVITIES (use these exactly, same names): [{activities_str}]
 
 Respond with valid Python code only, defining 'root'.
 """
 
-def load\_limited\_dataset(data\_dir: str, max\_samples: int) -> Dataset:
-desc\_folder = os.path.join(data\_dir, "textual\_descriptions")
-powl\_folder = os.path.join(data\_dir, "powl")
-if not os.path.exists(desc\_folder) or not os.path.exists(powl\_folder):
-raise FileNotFoundError(f"Data directories not found in '{data\_dir}'.")
-file\_names = \[f for f in os.listdir(desc\_folder) if f.endswith('.json')]
-random.shuffle(file\_names)
-data\_list = \[]
-for file\_name in file\_names\[:max\_samples]:
-base\_name = os.path.splitext(file\_name)\[0]
-json\_path = os.path.join(desc\_folder, file\_name)
-py\_path = os.path.join(powl\_folder, f"{base\_name}.py")
-if not os.path.exists(py\_path):
-continue
-with open(json\_path, 'r', encoding='utf-8') as f:
-desc\_data = json.load(f)
-with open(py\_path, 'r', encoding='utf-8') as f:
-powl\_code = f.read()
-prompt = get\_powl\_prompt(desc\_data\["description"], desc\_data\["activities"])
-data\_list.append({"query": prompt, "reference\_completion": powl\_code})
-print(f"Loaded {len(data\_list)} samples into the dataset.")
-return Dataset.from\_list(data\_list)
 
-# ---------------------------------------------------------------------------\#
+def load_limited_dataset(data_dir: str, max_samples: int) -> Dataset:
+    desc_folder = os.path.join(data_dir, "textual_descriptions")
+    powl_folder = os.path.join(data_dir, "powl")
+    if not os.path.exists(desc_folder) or not os.path.exists(powl_folder):
+        raise FileNotFoundError(f"Data directories not found in '{data_dir}'.")
+    file_names = [f for f in os.listdir(desc_folder) if f.endswith('.json')]
+    random.shuffle(file_names)
+    data_list = []
+    for file_name in file_names[:max_samples]:
+        base_name = os.path.splitext(file_name)[0]
+        json_path = os.path.join(desc_folder, file_name)
+        py_path = os.path.join(powl_folder, f"{base_name}.py")
+        if not os.path.exists(py_path):
+            continue
+        with open(json_path, 'r', encoding='utf-8') as f:
+            desc_data = json.load(f)
+        with open(py_path, 'r', encoding='utf-8') as f:
+            powl_code = f.read()
+        prompt = get_powl_prompt(desc_data["description"], desc_data["activities"])
+        data_list.append({"query": prompt, "reference_completion": powl_code})
+    print(f"Loaded {len(data_list)} samples into the dataset.")
+    return Dataset.from_list(data_list)
 
-# 3. OpenAI Reward Function
 
-# ---------------------------------------------------------------------------\#
+# ---------------------------------------------------------------------------#
+# 3. OpenAI Reward Function                                                    #
+# ---------------------------------------------------------------------------#
 
-def get\_openai\_grading\_prompt(original\_prompt: str, completions: List\[str]) -> str:
-prompt\_intro = f"""
+def get_openai_grading_prompt(original_prompt: str, completions: List[str]) -> str:
+    prompt_intro = f"""
 You are an expert in process modeling. Your task is to evaluate Python code snippets that generate POWL models based on a given prompt.
 
 ## The original prompt was:
 
-## {original\_prompt}
+## {original_prompt}
 
 I have received {len(completions)} responses. Please evaluate each response based on its correctness, completeness, and adherence to the prompt's requirements.
 Provide a grade for each response on a scale from -1.0 to 1.0, where:
@@ -156,16 +157,11 @@ Provide a grade for each response on a scale from -1.0 to 1.0, where:
 
 Here are the responses to grade:
 """
-responses\_section = ""
-for i, response in enumerate(completions):
-responses\_section += f"""
-\--- RESPONSE {i + 1} ---
-
-````python
-{response}
-```"""
+    responses_section = ""
+    for i, response in enumerate(completions):
+        responses_section += f"\n--- RESPONSE {i + 1} ---\n```python\n{response}\n```"
     prompt_outro = f"""
-Please provide your evaluation in a single JSON object. The JSON should have a single key "grades", which is a list of floating‑point numbers corresponding to each response. The number of grades in the list must be exactly {len(completions)}.
+Please provide your evaluation in a single JSON object. The JSON should have a single key \"grades\", which is a list of floating-point numbers corresponding to each response. The number of grades in the list must be exactly {len(completions)}.
 
 Example format:
 {{
@@ -215,7 +211,7 @@ def compute_rewards_from_openai(prompts: List[str], completions: List[str]) -> L
 
 
 # ---------------------------------------------------------------------------#
-# 4. Model, Tokenizer, and PPO Setup                                         #
+# 4. Model, Tokenizer, and PPO Setup                                           #
 # ---------------------------------------------------------------------------#
 def collator(data):
     return {key: [d[key] for d in data] for key in data[0]}
@@ -252,7 +248,7 @@ ref_model = AutoModelForCausalLMWithValueHead.from_pretrained(
 )
 
 # ---------------------------------------------------------------------------#
-# 4‑bis. Dummy Reward & Value models (required by PPOTrainer v2)  # NEW      #
+# 4-bis. Dummy Reward & Value models (required by PPOTrainer v2)  # NEW      #
 # ---------------------------------------------------------------------------#
 class ZeroRewardModel(torch.nn.Module):  # NEW
     """
@@ -267,7 +263,6 @@ class ZeroRewardModel(torch.nn.Module):  # NEW
         batch = input_ids.shape[0] if input_ids is not None else 1
         logits = torch.zeros(batch, 1, device=self.dummy.device)
         return SequenceClassifierOutput(logits=logits)
-
 
 reward_model = ZeroRewardModel()          # NEW
 value_model = policy_model                # NEW (share weights with policy)
@@ -297,7 +292,7 @@ ppo_config = PPOConfig(
 # ---------------------------------------------------------------------------#
 ppo_trainer = PPOTrainer(
     args=ppo_config,
-    processing_class=tokenizer,     # was `tokenizer=` in v1
+    processing_class=tokenizer,
     model=policy_model,
     ref_model=ref_model,
     reward_model=reward_model,
@@ -360,7 +355,7 @@ for epoch in range(MAX_TRAINING_STEPS // BATCH_SIZE):
 # 6. Save final artefacts                                                    #
 # ---------------------------------------------------------------------------#
 print("\n🎉 Training finished.")
-print(f"Best batch‑average reward: {best_reward:.3f}")
+print(f"Best batch-average reward: {best_reward:.3f}")
 final_dir = os.path.join(OUTPUT_DIR, "final_model")
 print(f"💾 Saving final model to {final_dir}")
 ppo_trainer.save_pretrained(final_dir)
