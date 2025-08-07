@@ -1,0 +1,44 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions for each activity
+site_survey = Transition(label='Site Survey')
+structural_audit = Transition(label='Structural Audit')
+layout_design = Transition(label='Layout Design')
+system_install = Transition(label='System Install')
+climate_setup = Transition(label='Climate Setup')
+water_testing = Transition(label='Water Testing')
+nutrient_mix = Transition(label='Nutrient Mix')
+seed_selection = Transition(label='Seed Selection')
+planting_prep = Transition(label='Planting Prep')
+growth_monitor = Transition(label='Growth Monitor')
+pest_inspect = Transition(label='Pest Inspect')
+harvest_plan = Transition(label='Harvest Plan')
+packaging_prep = Transition(label='Packaging Prep')
+distribution = Transition(label='Distribution')
+sustainability = Transition(label='Sustainability')
+
+# Define the root of the Partial Order Workflow Language model
+root = StrictPartialOrder(nodes=[
+    site_survey,
+    structural_audit,
+    layout_design,
+    system_install,
+    climate_setup,
+    water_testing,
+    nutrient_mix,
+    seed_selection,
+    planting_prep,
+    growth_monitor,
+    pest_inspect,
+    harvest_plan,
+    packaging_prep,
+    distribution,
+    sustainability
+])
+
+# Since there are no dependencies between the activities, we do not need to add any order edges explicitly.
+# The root PartialOrder object already represents the sequence of activities in the order they are defined.
+
+# Now, 'root' contains the POWL model for the urban vertical farming process.

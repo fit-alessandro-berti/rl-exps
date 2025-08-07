@@ -1,0 +1,47 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the transitions for each activity
+site_survey = Transition(label='Site Survey')
+system_design = Transition(label='System Design')
+climate_sim = Transition(label='Climate Sim')
+seed_select = Transition(label='Seed Select')
+module_setup = Transition(label='Module Setup')
+nutrient_mix = Transition(label='Nutrient Mix')
+water_cycle = Transition(label='Water Cycle')
+energy_link = Transition(label='Energy Link')
+sensor_install = Transition(label='Sensor Install')
+pest_detect = Transition(label='Pest Detect')
+growth_scan = Transition(label='Growth Scan')
+data_sync = Transition(label='Data Sync')
+community_meet = Transition(label='Community Meet')
+reg_compliance = Transition(label='Reg Compliance')
+system_test = Transition(label='System Test')
+maintenance_plan = Transition(label='Maintenance Plan')
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[
+    site_survey,
+    system_design,
+    climate_sim,
+    seed_select,
+    module_setup,
+    nutrient_mix,
+    water_cycle,
+    energy_link,
+    sensor_install,
+    pest_detect,
+    growth_scan,
+    data_sync,
+    community_meet,
+    reg_compliance,
+    system_test,
+    maintenance_plan
+])
+
+# Since the activities are in a linear sequence, there are no dependencies to define.
+# If dependencies were needed, they would be added here using root.order.add_edge(source, target)
+# For example, root.order.add_edge(site_survey, system_design) would define a dependency from site_survey to system_design.
+
+# The 'root' variable now contains the POWL model for the described process.
