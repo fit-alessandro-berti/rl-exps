@@ -160,7 +160,7 @@ def powl_reward_function(completions: List[str], positive_way: bool = True, **kw
                     reward_score += 0.05
 
             # Replace behavioral similarity with arcsin-based footprint reward
-            n_footprints = len(gen_footprints.get("footprints", []))  # Adjust key if needed
+            n_footprints = len(gen_footprints.get("sequence", [])) + len(gen_footprints.get("parallel", [])) # Adjust key if needed
             value = footprints_to_reward_arcsin(n_footprints)
             reward_score += 0.25 * (value if positive_way else 1.0 - value)
 
