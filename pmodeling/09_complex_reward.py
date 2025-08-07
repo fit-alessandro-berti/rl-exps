@@ -218,7 +218,7 @@ def assess_code_correctness(code_str: str) -> float:
     if any(op in code_str for op in operators):
         score += 0.2
 
-    return -1.0 + (4.0 * score / 3.0) if score <= 0.75 else 4.0 * (score - 0.75)
+    return min(score, 1.0)
 
 
 def get_powl_object_from_code(code_str: str):
