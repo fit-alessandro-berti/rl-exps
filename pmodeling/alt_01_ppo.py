@@ -16,13 +16,13 @@ from datasets import Dataset
 from transformers import (
     AutoTokenizer,
     AutoModelForSequenceClassification,
-    SequenceClassifierOutput,
 )
 from trl import (
     AutoModelForCausalLMWithValueHead,
     PPOConfig,
     PPOTrainer,
 )
+from transformers import SequenceClassifierOutput
 from trl.core import LengthSampler
 from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
 from pm4py.objects.process_tree.obj import Operator
