@@ -1,4 +1,4 @@
-# grpo_powl_generation.py
+# grpo_powl_generation_local_reward_fixed.py
 
 import os
 import json
@@ -26,7 +26,7 @@ if torch.cuda.is_available():
 # --- Directory and Model Configuration ---
 TRAIN_DATA_DIR = "training"
 MODEL_NAME = "Qwen/Qwen2.5-Coder-3B"
-OUTPUT_DIR = "grpo_qwen_complex_reward_step9"
+OUTPUT_DIR = "grpo_complex_reward_step9"
 
 # --- Training Hyperparameters ---
 MAX_PROMPT_TOKENS = 4096
@@ -39,10 +39,9 @@ MAX_TRAINING_STEPS = 1000
 NUM_GENERATIONS = 4
 MAX_DATASET_SAMPLES = 500
 
-# --- NEW: Logging and Saving Configuration ---
-LOGGING_STEPS = 1  # Print diagnostics every 10 steps
-SAVE_STEPS = 100  # Save a checkpoint every 100 steps
-
+# --- Logging and Saving Configuration ---
+LOGGING_STEPS = 1
+SAVE_STEPS = 100
 
 # ---------------------------------------------------------------------------#
 # 2. Prompt and Data Loading                                                  #
@@ -114,7 +113,7 @@ dataset = load_limited_dataset(TRAIN_DATA_DIR, max_samples=MAX_DATASET_SAMPLES)
 
 
 # ---------------------------------------------------------------------------#
-# 3. Helper Functions for New Reward Function                                #
+# 3. NEW REWARD FUNCTION (Local Evaluation)                                   #
 # ---------------------------------------------------------------------------#
 
 def extract_activities_from_prompt(prompt: str) -> Set[str]:
@@ -122,11 +121,9 @@ def extract_activities_from_prompt(prompt: str) -> Set[str]:
     Extracts the expected activities from the prompt.
     """
     activities = set()
-    # Look for the ACTIVITIES line in the prompt
     match = re.search(r"ACTIVITIES.*?:\s*\[(.*?)\]", prompt, re.DOTALL)
     if match:
         activities_str = match.group(1)
-        # Extract individual activity names
         for activity in re.findall(r"'([^']+)'", activities_str):
             activities.add(activity)
     return activities
@@ -135,12 +132,10 @@ def extract_activities_from_prompt(prompt: str) -> Set[str]:
 def extract_activities_from_code(code_str: str) -> Tuple[Set[str], bool]:
     """
     Extracts activities defined in the generated code.
-    Returns a tuple of (activities_set, has_valid_syntax)
     """
     activities = set()
     has_valid_syntax = True
 
-    # Clean code string
     code_str = code_str.strip()
     if code_str.startswith("```python"):
         code_str = code_str[len("```python"):].strip()
@@ -148,18 +143,13 @@ def extract_activities_from_code(code_str: str) -> Tuple[Set[str], bool]:
         code_str = code_str[:-len("```")].strip()
 
     try:
-        # Parse the code as AST to check syntax
-        tree = ast.parse(code_str)
+        ast.parse(code_str)
         has_valid_syntax = True
-
-        # Extract Transition labels using regex (simpler approach)
         transition_pattern = r"Transition\s*\(\s*label\s*=\s*['\"]([^'\"]+)['\"]"
         for match in re.finditer(transition_pattern, code_str):
             activities.add(match.group(1))
-
     except SyntaxError:
         has_valid_syntax = False
-        # Still try to extract activities with regex even if syntax is invalid
         transition_pattern = r"Transition\s*\(\s*label\s*=\s*['\"]([^'\"]+)['\"]"
         for match in re.finditer(transition_pattern, code_str):
             activities.add(match.group(1))
@@ -174,7 +164,6 @@ def assess_code_correctness(code_str: str) -> float:
     """
     score = 0.0
 
-    # Clean code string
     code_str = code_str.strip()
     if code_str.startswith("```python"):
         code_str = code_str[len("```python"):].strip()
@@ -186,15 +175,10 @@ def assess_code_correctness(code_str: str) -> float:
         ast.parse(code_str)
         score += 0.2
     except SyntaxError:
-        return score  # If syntax is invalid, return early
+        return score
 
     # Check 2: Has required imports (0.2 points)
-    required_imports = [
-        "pm4py",
-        "StrictPartialOrder",
-        "OperatorPOWL",
-        "Transition"
-    ]
+    required_imports = ["pm4py", "StrictPartialOrder", "OperatorPOWL", "Transition"]
     import_count = sum(1 for imp in required_imports if imp in code_str)
     score += 0.2 * (import_count / len(required_imports))
 
@@ -202,13 +186,8 @@ def assess_code_correctness(code_str: str) -> float:
     if re.search(r'\broot\s*=', code_str):
         score += 0.2
 
-    # Check 4: Uses POWL constructors correctly (0.2 points)
-    powl_constructors = [
-        "Transition",
-        "SilentTransition",
-        "OperatorPOWL",
-        "StrictPartialOrder"
-    ]
+    # Check 4: Uses POWL constructors (0.2 points)
+    powl_constructors = ["Transition", "SilentTransition", "OperatorPOWL", "StrictPartialOrder"]
     constructor_count = sum(1 for cons in powl_constructors if cons + "(" in code_str)
     if constructor_count > 0:
         score += min(0.2, 0.05 * constructor_count)
@@ -218,7 +197,7 @@ def assess_code_correctness(code_str: str) -> float:
     if any(op in code_str for op in operators):
         score += 0.2
 
-    return min(score, 1.0)
+    return min(1.0, score)
 
 
 def get_powl_object_from_code(code_str: str):
@@ -246,96 +225,74 @@ def get_powl_object_from_code(code_str: str):
         return None
 
 
-# ---------------------------------------------------------------------------#
-# 4. New Reward Function                                                      #
-# ---------------------------------------------------------------------------#
-
-def powl_reward_function(completions: List[str], **kwargs) -> List[float]:
+def calculate_reward_components(prompt: str, generated_code: str, reference_code: str) -> float:
     """
-    New reward function based on:
-    1. Activity similarity (0-1): How well activities match the prompt
-    2. Code correctness (0-1): Correctness of Python code for POWL
-    3. Behavioral similarity (0-1): If code executes, add behavioral similarity
-
-    Returns a list of floats in range [-1, 1].
+    Evaluates a single generated model and returns a reward score.
     """
-    prompts = kwargs.get("prompt", [])
-    reference_completions = kwargs.get("reference_completion", [])
+    # Component 1: Activity Similarity
+    expected_activities = extract_activities_from_prompt(prompt)
+    generated_activities, _ = extract_activities_from_code(generated_code)
+
+    activity_similarity = 0.0
+    if expected_activities:
+        intersection = expected_activities.intersection(generated_activities)
+        union = expected_activities.union(generated_activities)
+        if union:
+            activity_similarity = len(intersection) / len(union)
+        if expected_activities.issubset(generated_activities):
+            activity_similarity = min(1.0, activity_similarity + 0.2)
+
+    # Component 2: Code Correctness
+    code_correctness = assess_code_correctness(generated_code)
+
+    # Component 3: Behavioral Similarity
+    behavioral_similarity = 0.0
+    gen_powl = get_powl_object_from_code(generated_code)
+    ref_powl = get_powl_object_from_code(reference_code)
+
+    if gen_powl is not None and ref_powl is not None:
+        try:
+            # Calculate behavioral similarity which is in [0, 1]
+            similarity = pm4py.behavioral_similarity(ref_powl, gen_powl)
+            # Normalize to be more impactful
+            behavioral_similarity = float(similarity.get("sim", 0.0))
+        except Exception:
+            behavioral_similarity = 0.1  # Small reward for executable code
+
+    # Compute total score and reward
+    total_score = (
+            0.3 * activity_similarity +
+            0.3 * code_correctness +
+            0.4 * behavioral_similarity
+    )
+
+    reward = -1.0 + 2.0 * total_score
+    return reward
+
+
+def local_evaluation_reward_function(completions: List[str], **kwargs) -> List[float]:
+    """
+    Calculates rewards for a list of completions based on local evaluation metrics.
+    """
     rewards = []
+    prompts = kwargs["prompts"]
+    reference_completions = kwargs["reference_completions"]
 
-    for gen_code, prompt, ref_code in zip(completions, prompts, reference_completions):
-        # Clean generated code
-        gen_code = gen_code.split("```python")[-1].split("```")[0]
+    for i, completion in enumerate(completions):
+        prompt = prompts[i]
+        reference_completion = reference_completions[i]
 
-        print(f"\n--- Evaluating Generated Code ---")
-        print(f"Code snippet: {gen_code[:200]}...")
-
-        # Initialize reward components
-        activity_similarity = 0.0
-        code_correctness = 0.0
-        behavioral_similarity = 0.0
-
-        # Component 1: Activity Similarity (weight: 0.3)
-        expected_activities = extract_activities_from_prompt(prompt)
-        generated_activities, _ = extract_activities_from_code(gen_code)
-
-        if expected_activities:
-            # Calculate Jaccard similarity
-            intersection = expected_activities.intersection(generated_activities)
-            union = expected_activities.union(generated_activities)
-            if union:
-                activity_similarity = len(intersection) / len(union)
-
-            # Bonus for using all expected activities
-            if expected_activities.issubset(generated_activities):
-                activity_similarity = min(1.0, activity_similarity + 0.2)
-
-        print(f"Activity similarity: {activity_similarity:.3f}")
-        print(f"  Expected: {expected_activities}")
-        print(f"  Generated: {generated_activities}")
-
-        # Component 2: Code Correctness (weight: 0.3)
-        code_correctness = assess_code_correctness(gen_code)
-        print(f"Code correctness: {code_correctness:.3f}")
-
-        # Component 3: Behavioral Similarity (weight: 0.4)
-        # Only evaluated if code can be executed
-        gen_powl = get_powl_object_from_code(gen_code)
-        ref_powl = get_powl_object_from_code(ref_code)
-
-        if gen_powl is not None and ref_powl is not None:
-            try:
-                # Code executes successfully - add behavioral similarity
-                behavioral_similarity = pm4py.behavioral_similarity(ref_powl, gen_powl)
-                print(f"Behavioral similarity: {behavioral_similarity:.3f}")
-            except Exception as e:
-                print(f"Error computing behavioral similarity: {e}")
-                behavioral_similarity = 0.1  # Small reward for executable code
-        else:
-            print("Code does not execute or produce valid POWL object")
-            behavioral_similarity = 0.0
-
-        # Combine components with weights
-        total_score = (
-                0.3 * activity_similarity +
-                0.3 * code_correctness +
-                0.4 * behavioral_similarity
-        )
-
-        # Map to [-1, 1] range
-        reward = -1.0 + 2.0 * total_score
-
-        print(f"Total reward: {reward:.3f}")
+        reward = calculate_reward_components(prompt, completion, reference_completion)
         rewards.append(reward)
 
+    print(f"--- REWARDS FOR STEP: {[round(r, 3) for r in rewards]} ---")
     return rewards
 
 
 # ---------------------------------------------------------------------------#
-# 5. Model, Tokenizer, and Trainer Setup                                      #
+# 4. Model, Tokenizer, and Trainer Setup                                      #
 # ---------------------------------------------------------------------------#
 
-# --- Check for a local checkpoint to resume from ---
 model_load_path = MODEL_NAME
 resume_from_checkpoint = None
 if os.path.isdir(OUTPUT_DIR):
@@ -382,27 +339,21 @@ trainer = GRPOTrainer(
     model=model,
     args=training_args,
     train_dataset=dataset,
-    reward_funcs=[powl_reward_function],
+    reward_funcs=[local_evaluation_reward_function],
 )
 
 # ---------------------------------------------------------------------------#
-# 6. Training Execution                                                       #
+# 5. Training Execution                                                       #
 # ---------------------------------------------------------------------------#
 
-print("\n--- Starting GRPO Training ---")
+print("\n--- Starting GRPO Training with Local Evaluation Rewards ---")
 print(f"Logging diagnostics every {LOGGING_STEPS} steps.")
 print(f"Saving model checkpoint every {SAVE_STEPS} steps.")
-print("Reward function components:")
-print("  - Activity similarity (30%): Match between prompt and generated activities")
-print("  - Code correctness (30%): Python syntax and POWL structure validity")
-print("  - Behavioral similarity (40%): Process behavior match (if executable)")
-print("\nLook for 'loss', 'rewards/chosen', and 'rewards/rejected' in the logs below.")
+print("Look for 'loss', 'rewards/chosen', 'rewards/rejected', and 'REWARDS FOR STEP' in the logs below.")
 
-# Pass the checkpoint path to trainer.train() to handle optimizer/scheduler states
 trainer.train(resume_from_checkpoint=resume_from_checkpoint)
 
 print("\n--- Training Finished ---")
 
-# Save the final trained model
 trainer.save_model(OUTPUT_DIR)
 print(f"Final model and tokenizer saved to {OUTPUT_DIR}")
