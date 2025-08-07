@@ -1,0 +1,47 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, Transition
+
+# Define all activities as POWL transitions
+site_survey     = Transition(label='Site Survey')
+load_test       = Transition(label='Load Test')
+soil_sample     = Transition(label='Soil Sample')
+crop_select     = Transition(label='Crop Select')
+irrigation_plan = Transition(label='Irrigation Plan')
+permit_apply    = Transition(label='Permit Apply')
+material_order  = Transition(label='Material Order')
+bed_install     = Transition(label='Bed Install')
+pest_control    = Transition(label='Pest Control')
+solar_setup     = Transition(label='Solar Setup')
+staff_train     = Transition(label='Staff Train')
+market_outreach = Transition(label='Market Outreach')
+supplier_contact= Transition(label='Supplier Contact')
+system_setup    = Transition(label='System Setup')
+health_monitor  = Transition(label='Health Monitor')
+
+# Build the partial order
+root = StrictPartialOrder(nodes=[
+    site_survey, load_test, soil_sample, crop_select, irrigation_plan,
+    permit_apply, material_order, bed_install, pest_control,
+    solar_setup, staff_train, market_outreach, supplier_contact,
+    system_setup, health_monitor
+])
+
+# Add sequential edges
+root.order.add_edge(site_survey,     load_test)
+root.order.add_edge(load_test,       soil_sample)
+root.order.add_edge(soil_sample,     crop_select)
+root.order.add_edge(crop_select,     irrigation_plan)
+root.order.add_edge(irrigation_plan, permit_apply)
+root.order.add_edge(permit_apply,    material_order)
+root.order.add_edge(material_order,  bed_install)
+root.order.add_edge(bed_install,     pest_control)
+root.order.add_edge(pest_control,    solar_setup)
+root.order.add_edge(solar_setup,     staff_train)
+root.order.add_edge(staff_train,     market_outreach)
+root.order.add_edge(market_outreach, supplier_contact)
+root.order.add_edge(supplier_contact, system_setup)
+root.order.add_edge(system_setup,    health_monitor)
