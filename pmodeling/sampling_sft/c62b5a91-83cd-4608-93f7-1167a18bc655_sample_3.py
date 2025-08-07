@@ -1,0 +1,50 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define atomic activities
+artifact_intake    = Transition(label='Artifact Intake')
+condition_check    = Transition(label='Condition Check')
+provenance_research= Transition(label='Provenance Research')
+radiocarbon        = Transition(label='Radiocarbon Dating')
+spectroscopy       = Transition(label='Spectroscopy Scan')
+scientific_testing = Transition(label='Scientific Testing')
+legal_clearance    = Transition(label='Legal Clearance')
+heritage_compliance= Transition(label='Heritage Compliance')
+digital_archiving  = Transition(label='Digital Archiving')
+expert_review      = Transition(label='Expert Review')
+committee_vote     = Transition(label='Committee Vote')
+acquisition_approval= Transition(label='Acquisition Approval')
+conservation_plan  = Transition(label='Conservation Plan')
+storage_setup      = Transition(label='Storage Setup')
+stakeholder_update = Transition(label='Stakeholder Update')
+
+# Build the partial‐order workflow
+root = StrictPartialOrder(nodes=[
+    artifact_intake, condition_check, provenance_research,
+    radiocarbon, spectroscopy, scientific_testing,
+    legal_clearance, heritage_compliance,
+    digital_archiving, expert_review, committee_vote,
+    acquisition_approval, conservation_plan, storage_setup,
+    stakeholder_update
+])
+
+# Define the control‐flow dependencies
+root.order.add_edge(artifact_intake, condition_check)
+root.order.add_edge(condition_check, provenance_research)
+root.order.add_edge(provenance_research, scientific_testing)
+root.order.add_edge(scientific_testing, legal_clearance)
+root.order.add_edge(legal_clearance, heritage_compliance)
+root.order.add_edge(heritage_compliance, digital_archiving)
+root.order.add_edge(digital_archiving, expert_review)
+root.order.add_edge(expert_review, committee_vote)
+root.order.add_edge(committee_vote, acquisition_approval)
+root.order.add_edge(acquisition_approval, conservation_plan)
+root.order.add_edge(acquisition_approval, storage_setup)
+root.order.add_edge(conservation_plan, stakeholder_update)
+root.order.add_edge(storage_setup, stakeholder_update)
+
+# Loop for repeated stakeholder updates until approval
+skip = SilentTransition()
+stakeholder_loop = OperatorPOWL(operator=Operator.LOOP, children=[stakeholder_update, skip])
+root.order.add_edge(acquisition_approval, stakeholder_loop)
