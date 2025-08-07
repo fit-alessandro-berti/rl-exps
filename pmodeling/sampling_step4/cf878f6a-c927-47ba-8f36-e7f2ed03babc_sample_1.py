@@ -1,0 +1,52 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define each activity as a transition
+Site_Assess = Transition(label='Site Assess')
+Zoning_Check = Transition(label='Zoning Check')
+Design_Farm = Transition(label='Design Farm')
+Procure_Gear = Transition(label='Procure Gear')
+Install_Systems = Transition(label='Install Systems')
+Setup_Sensors = Transition(label='Setup Sensors')
+Select_Crops = Transition(label='Select Crops')
+Prepare_Sea = Transition(label='Prepare Seeds')
+Mix_Nutrients = Transition(label='Mix Nutrients')
+Monitor_Growth = Transition(label='Monitor Growth')
+Adjust_Climate = Transition(label='Adjust Climate')
+Robotic_Harvest = Transition(label='Robotic Harvest')
+Grade_Quality = Transition(label='Grade Quality')
+Pack_Produce = Transition(label='Pack Produce')
+Manage_Logistics = Transition(label='Manage Logistics')
+Market_Products = Transition(label='Market Products')
+Recycle_Waste = Transition(label='Recycle Waste')
+Audit_Systems = Transition(label='Audit Systems')
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[
+    Site_Assess, Zoning_Check, Design_Farm, Procure_Gear, Install_Systems, Setup_Sensors, 
+    Select_Crops, Prepare_Sea, Mix_Nutrients, Monitor_Growth, Adjust_Climate, Robotic_Harvest, 
+    Grade_Quality, Pack_Produce, Manage_Logistics, Market_Products, Recycle_Waste, Audit_Systems
+])
+
+# Define the order dependencies
+root.order.add_edge(Site_Assess, Zoning_Check)
+root.order.add_edge(Zoning_Check, Design_Farm)
+root.order.add_edge(Design_Farm, Procure_Gear)
+root.order.add_edge(Procure_Gear, Install_Systems)
+root.order.add_edge(Install_Systems, Setup_Sensors)
+root.order.add_edge(Setup_Sensors, Select_Crops)
+root.order.add_edge(Select_Crops, Prepare_Sea)
+root.order.add_edge(Prepare_Sea, Mix_Nutrients)
+root.order.add_edge(Mix_Nutrients, Monitor_Growth)
+root.order.add_edge(Monitor_Growth, Adjust_Climate)
+root.order.add_edge(Adjust_Climate, Robotic_Harvest)
+root.order.add_edge(Robotic_Harvest, Grade_Quality)
+root.order.add_edge(Grade_Quality, Pack_Produce)
+root.order.add_edge(Pack_Produce, Manage_Logistics)
+root.order.add_edge(Manage_Logistics, Market_Products)
+root.order.add_edge(Market_Products, Recycle_Waste)
+root.order.add_edge(Recycle_Waste, Audit_Systems)
+
+# Print the root to verify the model
+print(root)
