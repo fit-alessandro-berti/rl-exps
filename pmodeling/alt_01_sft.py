@@ -173,33 +173,26 @@ print("Model and Tokenizer loaded successfully.")
 # 4. Training Arguments Configuration                                         #
 # ---------------------------------------------------------------------------#
 
+# Minimal configuration for better compatibility
 training_args = TrainingArguments(
     output_dir=OUTPUT_DIR,
-    overwrite_output_dir=False,  # Don't overwrite, allows resuming
     num_train_epochs=NUM_EPOCHS,
     per_device_train_batch_size=PER_DEVICE_BATCH,
     per_device_eval_batch_size=PER_DEVICE_BATCH,
     gradient_accumulation_steps=GRAD_ACC_STEPS,
     gradient_checkpointing=True,  # Saves memory
-    optim="adamw_torch",
     learning_rate=LEARNING_RATE,
     warmup_steps=WARMUP_STEPS,
     logging_steps=LOGGING_STEPS,
     save_steps=SAVE_STEPS,
     eval_steps=EVAL_STEPS,
-    evaluation_strategy="steps",
     save_strategy="steps",
     save_total_limit=3,  # Keep only last 3 checkpoints
-    load_best_model_at_end=True,
-    metric_for_best_model="eval_loss",
-    greater_is_better=False,
     bf16=True,  # Use bfloat16 precision
-    tf32=True,  # Use tf32 on Ampere GPUs
-    dataloader_num_workers=4,
     remove_unused_columns=True,
-    push_to_hub=False,
     report_to="none",  # Can be "tensorboard", "wandb", etc.
     seed=SEED,
+    do_eval=True,  # Enable evaluation
 )
 
 
