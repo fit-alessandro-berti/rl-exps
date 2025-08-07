@@ -3,8 +3,8 @@ import json
 import random
 import torch
 from datasets import Dataset
-from transformers import AutoTokenizer, AutoModelForCausalLM, DataCollatorForCompletionOnlyLM
-from trl import SFTConfig, SFTTrainer
+from transformers import AutoTokenizer, AutoModelForCausalLM
+from trl import SFTConfig, SFTTrainer, DataCollatorForCompletionOnlyLM
 from typing import List
 
 # ---------------------------------------------------------------------------#
@@ -47,7 +47,7 @@ def get_powl_prompt(description: str, activities: List[str]) -> str:
 
 A partially ordered workflow language (POWL) is a partially ordered graph representation of a process, extended with control-flow operators for modeling choice and loop structures. There are four types of POWL models:
 - an activity (identified by its label, e.g., 'M' identifies the activity M). Silent activities with empty labels (tau labels) are also supported.
-- a choice of other POWL models (exclusive choice: X(A, B)).
+- a choice of other POWL models (exclusive choice: X(A, B}}.
 - a loop node (* (A, B)): execute A, then choose to exit or execute B then A again, repeated until exit.
 - a partial order: PO=(nodes={{...}}, order={{...}}), where order is a set of source-->target dependencies; unconnected nodes are concurrent.
 
