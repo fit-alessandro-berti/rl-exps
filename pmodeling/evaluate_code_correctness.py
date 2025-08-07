@@ -2,6 +2,7 @@
 """
 POWL Model Evaluation Script
 Computes activity similarity, code correctness, behavioral similarity, and reward.
+Handles generated files with _sample_N suffix pattern.
 """
 
 import os
@@ -13,7 +14,6 @@ import argparse
 import pm4py
 from pathlib import Path
 from typing import Set, Tuple, Dict
-from collections import defaultdict
 from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
 from pm4py.objects.process_tree.obj import Operator
 
@@ -211,6 +211,24 @@ def evaluate_model(prompt: str, generated_code: str, reference_code: str) -> Dic
     }
 
 
+def extract_base_name(filename: str) -> str:
+    """
+    Extracts base name from generated filename.
+    E.g., 'c4b38e75-a504-4414-83ea-160cc607139a_sample_1.py' -> 'c4b38e75-a504-4414-83ea-160cc607139a'
+    """
+    # Remove .py extension
+    name = filename
+    if name.endswith('.py'):
+        name = name[:-3]
+
+    # Remove _sample_N suffix using regex
+    pattern = r'^(.+?)(?:_sample_\d+)?$'
+    match = re.match(pattern, name)
+    if match:
+        return match.group(1)
+    return name
+
+
 def main():
     parser = argparse.ArgumentParser(description='Evaluate POWL model generation')
     parser.add_argument('prompt_dir', help='Directory containing prompts (textual_descriptions)')
@@ -220,7 +238,7 @@ def main():
 
     args = parser.parse_args()
 
-    # Get all prompt files
+    # Get all directories
     prompt_dir = Path(args.prompt_dir)
     reference_dir = Path(args.reference_dir)
     generated_dir = Path(args.generated_dir)
@@ -235,54 +253,68 @@ def main():
     generated_files = sorted(generated_dir.glob('*.py'))
     print(f"Found {len(generated_files)} generated files")
 
-    for generated_file in generated_files:
-        # Extract base name from generated file (remove _sample_N suffix)
-        gen_name = generated_file.stem
-        match = re.match(r'^(.+?)(?:_sample_\d+)?')
+    # Group generated files by base name
+    generated_by_base = {}
+    for gen_file in generated_files:
+        base_name = extract_base_name(gen_file.name)
+        if base_name not in generated_by_base:
+            generated_by_base[base_name] = []
+        generated_by_base[base_name].append(gen_file)
 
-        if __name__ == '__main__':
-            main(), gen_name)
-        if match:
-            base_name = match.group(1)
-        else:
-            base_name = gen_name
+    print(f"Found {len(generated_by_base)} unique base models with samples")
 
-        # Find corresponding prompt and reference files
+    # Process each base model
+    for base_name, gen_files in generated_by_base.items():
         prompt_file = prompt_dir / f"{base_name}.json"
         reference_file = reference_dir / f"{base_name}.py"
 
         if not prompt_file.exists():
-            print(f"Skipping {gen_name}: prompt file not found for base {base_name}")
+            print(f"Warning: prompt file not found for {base_name}")
             continue
 
         if not reference_file.exists():
-            print(f"Skipping {gen_name}: reference file not found for base {base_name}")
+            print(f"Warning: reference file not found for {base_name}")
             continue
 
         # Load prompt
-        with open(prompt_file, 'r', encoding='utf-8') as f:
-            prompt_data = json.load(f)
-        prompt = get_powl_prompt(prompt_data["description"], prompt_data["activities"])
+        try:
+            with open(prompt_file, 'r', encoding='utf-8') as f:
+                prompt_data = json.load(f)
+            prompt = get_powl_prompt(prompt_data["description"], prompt_data["activities"])
+        except Exception as e:
+            print(f"Error loading prompt for {base_name}: {e}")
+            continue
 
         # Load reference code
-        with open(reference_file, 'r', encoding='utf-8') as f:
-            reference_code = f.read()
+        try:
+            with open(reference_file, 'r', encoding='utf-8') as f:
+                reference_code = f.read()
+        except Exception as e:
+            print(f"Error loading reference for {base_name}: {e}")
+            continue
 
-        # Load generated code
-        with open(generated_file, 'r', encoding='utf-8') as f:
-            generated_code = f.read()
+        # Evaluate each sample for this base model
+        for gen_file in gen_files:
+            try:
+                # Load generated code
+                with open(gen_file, 'r', encoding='utf-8') as f:
+                    generated_code = f.read()
 
-        # Evaluate
-        print(f"Evaluating {gen_name}...")
-        scores = evaluate_model(prompt, generated_code, reference_code)
-        scores['filename'] = gen_name  # Use full generated filename
-        scores['base_name'] = base_name  # Also store base name
-        results.append(scores)
+                # Evaluate
+                print(f"Evaluating {gen_file.name}...")
+                scores = evaluate_model(prompt, generated_code, reference_code)
+                scores['filename'] = gen_file.stem  # filename without .py
+                scores['base_model'] = base_name
+                results.append(scores)
+
+            except Exception as e:
+                print(f"Error evaluating {gen_file.name}: {e}")
+                continue
 
     # Write results to CSV
     if results:
         with open(args.output, 'w', newline='') as f:
-            fieldnames = ['filename', 'base_name', 'activity_similarity', 'code_correctness',
+            fieldnames = ['filename', 'base_model', 'activity_similarity', 'code_correctness',
                           'behavioral_similarity', 'reward']
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
@@ -291,30 +323,34 @@ def main():
         print(f"\nResults saved to {args.output}")
 
         # Print summary
+        print(f"\n=== SUMMARY ===")
+        print(f"Files evaluated: {len(results)}")
+
         avg_activity = sum(r['activity_similarity'] for r in results) / len(results)
         avg_correctness = sum(r['code_correctness'] for r in results) / len(results)
         avg_behavioral = sum(r['behavioral_similarity'] for r in results) / len(results)
         avg_reward = sum(r['reward'] for r in results) / len(results)
 
-        print(f"\n=== SUMMARY ===")
-        print(f"Files evaluated: {len(results)}")
         print(f"Avg Activity Similarity: {avg_activity:.3f}")
         print(f"Avg Code Correctness: {avg_correctness:.3f}")
         print(f"Avg Behavioral Similarity: {avg_behavioral:.3f}")
         print(f"Avg Reward: {avg_reward:.3f}")
 
-        # Also print per-base-name averages if there are multiple samples
-        from collections import defaultdict
-        base_scores = defaultdict(list)
+        # Per base model statistics
+        print(f"\n=== PER MODEL STATISTICS ===")
+        base_models = {}
         for r in results:
-            base_scores[r['base_name']].append(r['reward'])
+            base = r['base_model']
+            if base not in base_models:
+                base_models[base] = []
+            base_models[base].append(r['reward'])
 
-        if any(len(scores) > 1 for scores in base_scores.values()):
-            print(f"\n=== PER-BASE AVERAGES (for files with multiple samples) ===")
-            for base, scores in sorted(base_scores.items()):
-                if len(scores) > 1:
-                    avg = sum(scores) / len(scores)
-                    print(f"{base}: {len(scores)} samples, avg reward: {avg:.3f}")
+        for base, rewards in list(base_models.items())[:5]:  # Show first 5
+            avg = sum(rewards) / len(rewards)
+            print(f"{base}: {len(rewards)} samples, avg reward: {avg:.3f}")
+
+        if len(base_models) > 5:
+            print(f"... and {len(base_models) - 5} more models")
     else:
         print("No files were evaluated")
 
