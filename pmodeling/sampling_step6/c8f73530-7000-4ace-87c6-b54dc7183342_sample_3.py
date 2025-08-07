@@ -1,0 +1,49 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the transitions for each activity
+milk_sourcing = Transition(label='Milk Sourcing')
+quality_testing = Transition(label='Quality Testing')
+milk_pasteurize = Transition(label='Milk Pasteurize')
+culture_inoculate = Transition(label='Culture Inoculate')
+coagulation = Transition(label='Coagulation')
+curd_cutting = Transition(label='Curd Cutting')
+whey_drain = Transition(label='Whey Drain')
+pressing = Transition(label='Pressing')
+salting = Transition(label='Salting')
+aging_control = Transition(label='Aging Control')
+sensory_audit = Transition(label='Sensory Audit')
+packaging_design = Transition(label='Packaging Design')
+label_approval = Transition(label='Label Approval')
+order_customization = Transition(label='Order Customization')
+logistics_plan = Transition(label='Logistics Plan')
+market_delivery = Transition(label='Market Delivery')
+customer_feedback = Transition(label='Customer Feedback')
+regulatory_check = Transition(label='Regulatory Check')
+
+# Define the root Partial Order
+root = StrictPartialOrder(nodes=[
+    milk_sourcing,
+    quality_testing,
+    milk_pasteurize,
+    culture_inoculate,
+    coagulation,
+    curd_cutting,
+    whey_drain,
+    pressing,
+    salting,
+    aging_control,
+    sensory_audit,
+    packaging_design,
+    label_approval,
+    order_customization,
+    logistics_plan,
+    market_delivery,
+    customer_feedback,
+    regulatory_check
+])
+# No explicit order dependencies are defined in the problem description, so we assume all activities are concurrent
+# Therefore, we don't need to add any edges to the order.
+
+# The final result is stored in the 'root' variable.

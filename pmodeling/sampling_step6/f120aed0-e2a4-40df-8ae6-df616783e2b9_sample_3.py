@@ -1,0 +1,37 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+rack_design = Transition(label='Rack Design')
+system_setup = Transition(label='System Setup')
+climate_calibrate = Transition(label='Climate Calibrate')
+nutrient_prep = Transition(label='Nutrient Prep')
+crop_select = Transition(label='Crop Select')
+seed_germinate = Transition(label='Seed Germinate')
+sensor_deploy = Transition(label='Sensor Deploy')
+pest_control = Transition(label='Pest Control')
+harvest_automate = Transition(label='Harvest Automate')
+quality_check = Transition(label='Quality Check')
+pack_produce = Transition(label='Pack Produce')
+data_analyze = Transition(label='Data Analyze')
+engage_community = Transition(label='Engage Community')
+logistics_plan = Transition(label='Logistics Plan')
+
+root = StrictPartialOrder(nodes=[
+    site_survey,
+    rack_design,
+    system_setup,
+    climate_calibrate,
+    nutrient_prep,
+    crop_select,
+    seed_germinate,
+    sensor_deploy,
+    pest_control,
+    harvest_automate,
+    quality_check,
+    pack_produce,
+    data_analyze,
+    engage_community,
+    logistics_plan
+])

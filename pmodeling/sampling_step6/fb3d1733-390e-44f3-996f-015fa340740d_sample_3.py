@@ -1,0 +1,45 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the transitions (activities) with their names
+initial_assess = Transition(label='Initial Assess')
+disassemble_parts = Transition(label='Disassemble Parts')
+ultrasonic_clean = Transition(label='Ultrasonic Clean')
+inspect_components = Transition(label='Inspect Components')
+fabricate_gears = Transition(label='Fabricate Gears')
+dial_restoration = Transition(label='Dial Restoration')
+repaint_markers = Transition(label='Repaint Markers')
+reassemble_movement = Transition(label='Reassemble Movement')
+lubricate_bearings = Transition(label='Lubricate Bearings')
+calibrate_timing = Transition(label='Calibrate Timing')
+polish_case = Transition(label='Polish Case')
+re_case_watch = Transition(label='Re-case Watch')
+quality_testing = Transition(label='Quality Testing')
+document_process = Transition(label='Document Process')
+package_product = Transition(label='Package Product')
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[
+    initial_assess,
+    disassemble_parts,
+    ultrasonic_clean,
+    inspect_components,
+    fabricate_gears,
+    dial_restoration,
+    repaint_markers,
+    reassemble_movement,
+    lubricate_bearings,
+    calibrate_timing,
+    polish_case,
+    re_case_watch,
+    quality_testing,
+    document_process,
+    package_product
+])
+
+# Add dependencies if needed (for example, initial_assess depends on ultrasonic_clean)
+# root.order.add_edge(ultrasonic_clean, initial_assess)
+
+# If you want to print the model
+# print(pm4py.serialize(root))

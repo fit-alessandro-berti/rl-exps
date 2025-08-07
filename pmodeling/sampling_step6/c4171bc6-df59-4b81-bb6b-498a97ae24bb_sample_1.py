@@ -1,0 +1,46 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities with exact names
+milk_sourcing = Transition(label='Milk Sourcing')
+quality_testing = Transition(label='Quality Testing')
+milk_pasteurize = Transition(label='Milk Pasteurize')
+curd_formation = Transition(label='Curd Formation')
+whey_separation = Transition(label='Whey Separation')
+press_cheese = Transition(label='Press Cheese')
+salt_application = Transition(label='Salt Application')
+controlled_aging = Transition(label='Controlled Aging')
+sensory_check = Transition(label='Sensory Check')
+batch_packaging = Transition(label='Batch Packaging')
+label_printing = Transition(label='Label Printing')
+cold_storage = Transition(label='Cold Storage')
+logistics_plan = Transition(label='Logistics Plan')
+retail_delivery = Transition(label='Retail Delivery')
+feedback_review = Transition(label='Feedback Review')
+demand_forecast = Transition(label='Demand Forecast')
+provenance_track = Transition(label='Provenance Track')
+
+# Define the partial order model
+root = StrictPartialOrder(nodes=[
+    milk_sourcing,
+    quality_testing,
+    milk_pasteurize,
+    curd_formation,
+    whey_separation,
+    press_cheese,
+    salt_application,
+    controlled_aging,
+    sensory_check,
+    batch_packaging,
+    label_printing,
+    cold_storage,
+    logistics_plan,
+    retail_delivery,
+    feedback_review,
+    demand_forecast,
+    provenance_track
+])
+
+# Print the root node
+print(root)

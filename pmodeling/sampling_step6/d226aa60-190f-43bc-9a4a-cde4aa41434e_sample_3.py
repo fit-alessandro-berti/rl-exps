@@ -1,0 +1,47 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions for each activity
+seed_select = Transition(label='Seed Select')
+trend_analyze = Transition(label='Trend Analyze')
+nutrient_mix = Transition(label='Nutrient Mix')
+auto_plant = Transition(label='Auto Plant')
+sensor_check = Transition(label='Sensor Check')
+data_analyze = Transition(label='Data Analyze')
+water_adjust = Transition(label='Water Adjust')
+light_control = Transition(label='Light Control')
+humidity_monitor = Transition(label='Humidity Monitor')
+pest_inspect = Transition(label='Pest Inspect')
+growth_forecast = Transition(label='Growth Forecast')
+harvest_plan = Transition(label='Harvest Plan')
+rapid_cool = Transition(label='Rapid Cool')
+quality_grade = Transition(label='Quality Grade')
+eco_package = Transition(label='Eco Package')
+logistics_prep = Transition(label='Logistics Prep')
+feedback_collect = Transition(label='Feedback Collect')
+system_maintain = Transition(label='System Maintain')
+
+# Define the root process as a strict partial order
+root = StrictPartialOrder(nodes=[
+    seed_select,
+    trend_analyze,
+    nutrient_mix,
+    auto_plant,
+    sensor_check,
+    data_analyze,
+    water_adjust,
+    light_control,
+    humidity_monitor,
+    pest_inspect,
+    growth_forecast,
+    harvest_plan,
+    rapid_cool,
+    quality_grade,
+    eco_package,
+    logistics_prep,
+    feedback_collect,
+    system_maintain
+])
+
+# No need to define order as it's a strict partial order and the order is naturally defined by the sequence of activities
+print(root)

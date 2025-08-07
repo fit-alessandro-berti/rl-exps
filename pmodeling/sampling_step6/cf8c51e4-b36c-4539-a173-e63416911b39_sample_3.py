@@ -1,0 +1,40 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition
+
+# Define the transitions (activities) using the exact names provided
+site_analysis = Transition(label='Site Analysis')
+zoning_approval = Transition(label='Zoning Approval')
+structural_check = Transition(label='Structural Check')
+building_retrofit = Transition(label='Building Retrofit')
+hydroponic_setup = Transition(label='Hydroponic Setup')
+climate_control = Transition(label='Climate Control')
+nutrient_design = Transition(label='Nutrient Design')
+staff_hiring = Transition(label='Staff Hiring')
+staff_training = Transition(label='Staff Training')
+software_install = Transition(label='Software Install')
+system_testing = Transition(label='System Testing')
+crop_planting = Transition(label='Crop Planting')
+growth_monitor = Transition(label='Growth Monitor')
+pest_control = Transition(label='Pest Control')
+harvest_plan = Transition(label='Harvest Plan')
+
+# Define the partial order (workflow)
+root = StrictPartialOrder(nodes=[site_analysis, zoning_approval, structural_check, building_retrofit, hydroponic_setup, climate_control, nutrient_design, staff_hiring, staff_training, software_install, system_testing, crop_planting, growth_monitor, pest_control, harvest_plan])
+
+# Add dependencies if any (in this case, they are sequential)
+# root.order.add_edge(site_analysis, zoning_approval)
+# root.order.add_edge(site_analysis, structural_check)
+# root.order.add_edge(site_analysis, building_retrofit)
+# root.order.add_edge(zoning_approval, hydroponic_setup)
+# root.order.add_edge(zoning_approval, climate_control)
+# root.order.add_edge(zoning_approval, nutrient_design)
+# root.order.add_edge(structural_check, staff_hiring)
+# root.order.add_edge(structural_check, staff_training)
+# root.order.add_edge(structural_check, software_install)
+# root.order.add_edge(structural_check, system_testing)
+# root.order.add_edge(hydroponic_setup, crop_planting)
+# root.order.add_edge(hydroponic_setup, growth_monitor)
+# root.order.add_edge(hydroponic_setup, pest_control)
+# root.order.add_edge(hydroponic_setup, harvest_plan)
+
+# Print the root to verify the model
+print(root)
