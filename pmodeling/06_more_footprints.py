@@ -131,9 +131,12 @@ def get_powl_object_from_code(code_str: str):
     except Exception:
         return None
 
-def footprints_to_reward_arcsin(n_footprints, max_footprints=150):
-    x = min(1.0, n_footprints / max_footprints)
-    return math.asin(x) / (math.pi / 2)
+def footprints_to_reward_arctan(n_footprints, scale=0.05):
+    """
+    Arctan-based mapping from number of footprints to [0,1).
+    """
+    x = scale * n_footprints
+    return math.atan(x) / (math.pi / 2)
 
 def powl_reward_function(completions: List[str], positive_way: bool = True, **kwargs) -> List[float]:
     reference_completions = kwargs["reference_completion"]
@@ -161,7 +164,7 @@ def powl_reward_function(completions: List[str], positive_way: bool = True, **kw
 
             # Replace behavioral similarity with arcsin-based footprint reward
             n_footprints = len(gen_footprints.get("sequence", [])) + len(gen_footprints.get("parallel", [])) # Adjust key if needed
-            value = footprints_to_reward_arcsin(n_footprints)
+            value = footprints_to_reward_arctan(n_footprints)
             reward_score += 0.25 * (value if positive_way else 1.0 - value)
 
             # Final shaping
