@@ -15,12 +15,14 @@ import pm4py
 from datasets import Dataset
 from transformers import (
     AutoTokenizer,
-    AutoModelForCausalLM,
-    AutoModelForCausalLMWithValueHead,  # value head wrapper
-    AutoModelForSequenceClassification,  # NEW – tiny dummy reward model
-    SequenceClassifierOutput,            # NEW – for the dummy model
+    AutoModelForSequenceClassification,
+    SequenceClassifierOutput,
 )
-from trl import PPOConfig, PPOTrainer      # TRL ≥ 0.22
+from trl import (
+    AutoModelForCausalLMWithValueHead,
+    PPOConfig,
+    PPOTrainer,
+)
 from trl.core import LengthSampler
 from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
 from pm4py.objects.process_tree.obj import Operator
