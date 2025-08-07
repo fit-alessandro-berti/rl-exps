@@ -1,0 +1,28 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define each activity as a Transition object
+site_survey = Transition(label='Site Survey')
+climate_study = Transition(label='Climate Study')
+system_design = Transition(label='System Design')
+seed_selection = Transition(label='Seed Selection')
+unit_install = Transition(label='Unit Install')
+sensor_setup = Transition(label='Sensor Setup')
+nutrient_mix = Transition(label='Nutrient Mix')
+energy_audit = Transition(label='Energy Audit')
+pest_control = Transition(label='Pest Control')
+crop_plan = Transition(label='Crop Plan')
+quality_check = Transition(label='Quality Check')
+yield_forecast = Transition(label='Yield Forecast')
+supply_sync = Transition(label='Supply Sync')
+staff_train = Transition(label='Staff Train')
+data_review = Transition(label='Data Review')
+
+# Define the root node as a StrictPartialOrder object
+root = StrictPartialOrder(nodes=[site_survey, climate_study, system_design, seed_selection, unit_install, sensor_setup, nutrient_mix, energy_audit, pest_control, crop_plan, quality_check, yield_forecast, supply_sync, staff_train, data_review])
+
+# Add dependencies between activities as needed (not shown in this example)
+# For example, you might add an edge like root.order.add_edge(site_survey, climate_study) to represent a dependency between site_survey and climate_study.
+
+# The root variable now holds the entire POWL model for the urban vertical farming facility establishment process.
