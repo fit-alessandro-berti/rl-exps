@@ -1,0 +1,41 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_select = Transition(label='Site Select')
+env_assess = Transition(label='Env Assess')
+design_modules = Transition(label='Design Modules')
+hydroponics_setup = Transition(label='Hydroponics Setup')
+software_dev = Transition(label='Software Dev')
+seed_choose = Transition(label='Seed Choose')
+led_install = Transition(label='LED Install')
+train_staff = Transition(label='Train Staff')
+compliance_check = Transition(label='Compliance Check')
+engage_community = Transition(label='Engage Community')
+plant_crops = Transition(label='Plant Crops')
+monitor_growth = Transition(label='Monitor Growth')
+optimize_yields = Transition(label='Optimize Yields')
+waste_manage = Transition(label='Waste Manage')
+energy_audit = Transition(label='Energy Audit')
+water_recycle = Transition(label='Water Recycle')
+
+skip = SilentTransition()
+
+site_select_loop = OperatorPOWL(operator=Operator.LOOP, children=[site_select, env_assess])
+design_modules_loop = OperatorPOWL(operator=Operator.LOOP, children=[design_modules, hydroponics_setup])
+software_dev_loop = OperatorPOWL(operator=Operator.LOOP, children=[software_dev, seed_choose])
+led_install_loop = OperatorPOWL(operator=Operator.LOOP, children=[led_install, train_staff])
+compliance_check_loop = OperatorPOWL(operator=Operator.LOOP, children=[compliance_check, engage_community])
+plant_crops_loop = OperatorPOWL(operator=Operator.LOOP, children=[plant_crops, monitor_growth])
+optimize_yields_loop = OperatorPOWL(operator=Operator.LOOP, children=[optimize_yields, waste_manage])
+energy_audit_loop = OperatorPOWL(operator=Operator.LOOP, children=[energy_audit, water_recycle])
+
+root = StrictPartialOrder(nodes=[site_select_loop, design_modules_loop, software_dev_loop, led_install_loop, compliance_check_loop, plant_crops_loop, optimize_yields_loop, energy_audit_loop])
+root.order.add_edge(site_select_loop, design_modules_loop)
+root.order.add_edge(design_modules_loop, hydroponics_setup)
+root.order.add_edge(software_dev_loop, seed_choose)
+root.order.add_edge(led_install_loop, train_staff)
+root.order.add_edge(compliance_check_loop, engage_community)
+root.order.add_edge(plant_crops_loop, monitor_growth)
+root.order.add_edge(optimize_yields_loop, waste_manage)
+root.order.add_edge(energy_audit_loop, water_recycle)

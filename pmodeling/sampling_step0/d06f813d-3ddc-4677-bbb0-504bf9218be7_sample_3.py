@@ -1,0 +1,76 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions for each activity
+ProvenanceCheck = Transition(label='Provenance Check')
+SpecimenSampling = Transition(label='Specimen Sampling')
+SpectroscopyTest = Transition(label='Spectroscopy Test')
+RadiocarbonDate = Transition(label='Radiocarbon Date')
+MaterialAnalysis = Transition(label='Material Analysis')
+ForensicReview = Transition(label='Forensic Review')
+ExpertConsult = Transition(label='Expert Consult')
+LegalVerify = Transition(label='Legal Verify')
+OwnershipAudit = Transition(label='Ownership Audit')
+RiskAssess = Transition(label='Risk Assess')
+InsuranceQuote = Transition(label='Insurance Quote')
+ConditionReport = Transition(label='Condition Report')
+Documentation = Transition(label='Documentation')
+CommitteeReview = Transition(label='Committee Review')
+FinalApproval = Transition(label='Final Approval')
+
+# Define silent transitions
+skip = SilentTransition()
+
+# Define loops and choices
+ProvenanceLoop = OperatorPOWL(operator=Operator.LOOP, children=[ProvenanceCheck, skip])
+SpecimenSamplingLoop = OperatorPOWL(operator=Operator.LOOP, children=[SpecimenSampling, skip])
+SpectroscopyLoop = OperatorPOWL(operator=Operator.LOOP, children=[SpectroscopyTest, skip])
+RadiocarbonLoop = OperatorPOWL(operator=Operator.LOOP, children=[RadiocarbonDate, skip])
+MaterialAnalysisLoop = OperatorPOWL(operator=Operator.LOOP, children=[MaterialAnalysis, skip])
+ForensicReviewLoop = OperatorPOWL(operator=Operator.LOOP, children=[ForensicReview, skip])
+ExpertConsultLoop = OperatorPOWL(operator=Operator.LOOP, children=[ExpertConsult, skip])
+LegalVerifyLoop = OperatorPOWL(operator=Operator.LOOP, children=[LegalVerify, skip])
+OwnershipAuditLoop = OperatorPOWL(operator=Operator.LOOP, children=[OwnershipAudit, skip])
+RiskAssessLoop = OperatorPOWL(operator=Operator.LOOP, children=[RiskAssess, skip])
+InsuranceQuoteLoop = OperatorPOWL(operator=Operator.LOOP, children=[InsuranceQuote, skip])
+ConditionReportLoop = OperatorPOWL(operator=Operator.LOOP, children=[ConditionReport, skip])
+DocumentationLoop = OperatorPOWL(operator=Operator.LOOP, children=[Documentation, skip])
+CommitteeReviewLoop = OperatorPOWL(operator=Operator.LOOP, children=[CommitteeReview, skip])
+FinalApprovalLoop = OperatorPOWL(operator=Operator.LOOP, children=[FinalApproval, skip])
+
+# Define choices
+ProvenanceChoice = OperatorPOWL(operator=Operator.XOR, children=[ProvenanceLoop, skip])
+SpecimenSamplingChoice = OperatorPOWL(operator=Operator.XOR, children=[SpecimenSamplingLoop, skip])
+SpectroscopyChoice = OperatorPOWL(operator=Operator.XOR, children=[SpectroscopyLoop, skip])
+RadiocarbonChoice = OperatorPOWL(operator=Operator.XOR, children=[RadiocarbonLoop, skip])
+MaterialAnalysisChoice = OperatorPOWL(operator=Operator.XOR, children=[MaterialAnalysisLoop, skip])
+ForensicReviewChoice = OperatorPOWL(operator=Operator.XOR, children=[ForensicReviewLoop, skip])
+ExpertConsultChoice = OperatorPOWL(operator=Operator.XOR, children=[ExpertConsultLoop, skip])
+LegalVerifyChoice = OperatorPOWL(operator=Operator.XOR, children=[LegalVerifyLoop, skip])
+OwnershipAuditChoice = OperatorPOWL(operator=Operator.XOR, children=[OwnershipAuditLoop, skip])
+RiskAssessChoice = OperatorPOWL(operator=Operator.XOR, children=[RiskAssessLoop, skip])
+InsuranceQuoteChoice = OperatorPOWL(operator=Operator.XOR, children=[InsuranceQuoteLoop, skip])
+ConditionReportChoice = OperatorPOWL(operator=Operator.XOR, children=[ConditionReportLoop, skip])
+DocumentationChoice = OperatorPOWL(operator=Operator.XOR, children=[DocumentationLoop, skip])
+CommitteeReviewChoice = OperatorPOWL(operator=Operator.XOR, children=[CommitteeReviewLoop, skip])
+FinalApprovalChoice = OperatorPOWL(operator=Operator.XOR, children=[FinalApprovalLoop, skip])
+
+# Define the root node
+root = StrictPartialOrder(nodes=[ProvenanceChoice, SpecimenSamplingChoice, SpectroscopyChoice, RadiocarbonChoice, MaterialAnalysisChoice, ForensicReviewChoice, ExpertConsultChoice, LegalVerifyChoice, OwnershipAuditChoice, RiskAssessChoice, InsuranceQuoteChoice, ConditionReportChoice, DocumentationChoice, CommitteeReviewChoice, FinalApprovalChoice])
+root.order.add_edge(ProvenanceChoice, SpecimenSamplingChoice)
+root.order.add_edge(SpecimenSamplingChoice, SpectroscopyChoice)
+root.order.add_edge(SpectroscopyChoice, RadiocarbonChoice)
+root.order.add_edge(RadiocarbonChoice, MaterialAnalysisChoice)
+root.order.add_edge(MaterialAnalysisChoice, ForensicReviewChoice)
+root.order.add_edge(ForensicReviewChoice, ExpertConsultChoice)
+root.order.add_edge(ExpertConsultChoice, LegalVerifyChoice)
+root.order.add_edge(LegalVerifyChoice, OwnershipAuditChoice)
+root.order.add_edge(OwnershipAuditChoice, RiskAssessChoice)
+root.order.add_edge(RiskAssessChoice, InsuranceQuoteChoice)
+root.order.add_edge(InsuranceQuoteChoice, ConditionReportChoice)
+root.order.add_edge(ConditionReportChoice, DocumentationChoice)
+root.order.add_edge(DocumentationChoice, CommitteeReviewChoice)
+root.order.add_edge(CommitteeReviewChoice, FinalApprovalChoice)
+
+print(root)
