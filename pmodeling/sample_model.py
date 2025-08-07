@@ -26,6 +26,7 @@ MAX_NEW_TOKENS = 4096
 TEMPERATURE = 0.7
 TOP_P = 0.9
 
+
 # ---------------------------------------------------------------------------#
 # 2. Prompt Function                                                          #
 # ---------------------------------------------------------------------------#
@@ -64,6 +65,7 @@ ACTIVITIES (use these exactly, same names): [{activities_str}]
 Respond with valid Python code only, defining 'root'.
 """
 
+
 # ---------------------------------------------------------------------------#
 # 3. Model Loading                                                            #
 # ---------------------------------------------------------------------------#
@@ -80,6 +82,7 @@ model = AutoModelForCausalLM.from_pretrained(
 model.eval()  # Set to evaluation mode
 print("Model loaded successfully.")
 
+
 # ---------------------------------------------------------------------------#
 # 4. Sampling Function                                                        #
 # ---------------------------------------------------------------------------#
@@ -90,7 +93,7 @@ def generate_samples(prompt: str, num_samples: int) -> List[str]:
     """
     inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=4096)
     inputs = {k: v.to(model.device) for k, v in inputs.items()}
-    
+
     samples = []
     with torch.no_grad():
         for i in range(num_samples):
@@ -103,20 +106,21 @@ def generate_samples(prompt: str, num_samples: int) -> List[str]:
                 pad_token_id=tokenizer.pad_token_id,
                 eos_token_id=tokenizer.eos_token_id
             )
-            
+
             # Decode the generated text
             generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-            
+
             # Extract only the generated part (after the prompt)
             if prompt in generated_text:
                 generated_code = generated_text[len(prompt):].strip()
             else:
                 generated_code = generated_text.strip()
-            
+
             samples.append(generated_code)
-            print(f"  Sample {i+1}/{num_samples} generated")
-    
+            print(f"  Sample {i + 1}/{num_samples} generated")
+
     return samples
+
 
 def extract_code_from_response(response: str) -> str:
     """
@@ -128,9 +132,10 @@ def extract_code_from_response(response: str) -> str:
         if len(parts) > 1:
             code_part = parts[1].split("```")[0]
             return code_part.strip()
-    
+
     # If no code blocks, assume the entire response is code
     return response.strip()
+
 
 # ---------------------------------------------------------------------------#
 # 5. Main Sampling Loop                                                       #
@@ -139,49 +144,56 @@ def extract_code_from_response(response: str) -> str:
 def main():
     # Create output directory
     os.makedirs(OUTPUT_DIR, exist_ok=True)
-    
+
     # Load test descriptions
     desc_folder = os.path.join(TEST_DATA_DIR, "textual_descriptions")
     if not os.path.exists(desc_folder):
         raise FileNotFoundError(f"Test descriptions directory not found: {desc_folder}")
-    
+
     # Get all JSON files
     json_files = [f for f in os.listdir(desc_folder) if f.endswith('.json')]
     print(f"Found {len(json_files)} test descriptions")
-    
+
     # Process each description
     for idx, json_file in enumerate(json_files, 1):
         base_name = os.path.splitext(json_file)[0]
         json_path = os.path.join(desc_folder, json_file)
-        
+
         print(f"\n[{idx}/{len(json_files)}] Processing {base_name}...")
-        
+
         # Load description
         with open(json_path, 'r', encoding='utf-8') as f:
             desc_data = json.load(f)
-        
+
         # Generate prompt
         prompt = get_powl_prompt(desc_data["description"], desc_data["activities"])
-        
+
         # Generate samples
         samples = generate_samples(prompt, NUM_SAMPLES_PER_DESCRIPTION)
-        
+
         # Save samples
         for sample_idx, sample in enumerate(samples, 1):
             # Extract code from response
             code = extract_code_from_response(sample)
-            
-            # Save to file
+
+            # Prepare file path
             output_filename = f"{base_name}_sample_{sample_idx}.py"
             output_path = os.path.join(OUTPUT_DIR, output_filename)
-            
+
+            # Skip if file already exists
+            if os.path.exists(output_path):
+                print(f"  Skipping sample {sample_idx}: {output_filename} already exists")
+                continue
+
+            # Save to file
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(code)
-            
+
             print(f"  Saved sample {sample_idx} to {output_filename}")
 
-    print(f"\n✅ Sampling complete! Generated {len(json_files) * NUM_SAMPLES_PER_DESCRIPTION} samples")
+    print(f"\n✅ Sampling complete! Generated up to {len(json_files) * NUM_SAMPLES_PER_DESCRIPTION} samples")
     print(f"Results saved to {OUTPUT_DIR}/")
+
 
 if __name__ == "__main__":
     main()
