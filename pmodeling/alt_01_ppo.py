@@ -7,13 +7,12 @@ import pm4py
 import re
 import requests
 from datasets import Dataset
-from transformers import AutoTokenizer, AutoModelForCausalLM, DataCollatorWithPadding
-from trl import PPOConfig, PPOTrainer
+from transformers import AutoTokenizer, DataCollatorWithPadding
+from trl import PPOConfig, PPOTrainer, AutoModelForCausalLMWithValueHead
 from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
 from pm4py.objects.process_tree.obj import Operator
 from typing import List, Dict
-from torch.utils.data import DataLoader
-import itertools
+from torch import nn
 # ---------------------------------------------------------------------------#
 # 1. Configuration & Hyperparameters #
 # ---------------------------------------------------------------------------#
@@ -41,14 +40,6 @@ SAVE_STEPS = 100
 # --- OpenAI API Configuration ---
 OPENAI_API_URL = "https://api.openai.com/v1/chat/completions"
 OPENAI_MODEL = "gpt-4.1-mini"
-# --- Generation kwargs for sampling ---
-GENERATION_KWARGS = {
-    "max_new_tokens": MAX_COMPLETION_TOKENS,
-    "temperature": 0.7,
-    "top_k": 50,
-    "top_p": 0.95,
-    "do_sample": True
-}
 # ---------------------------------------------------------------------------#
 # 2. Prompt and Data Loading #
 # ---------------------------------------------------------------------------#
@@ -176,6 +167,7 @@ def openai_grading_reward_function(prompts: List[str], completions: List[str]) -
         if grades is None or not isinstance(grades, list) or len(grades) != len(completions):
             print(f"ERROR: OpenAI response was malformed. Received: {grades_str}")
             return [BAD_REWARD] * len(completions)
+        print(f"--- GRADES: {grades} ---")
         return [float(g) for g in grades]
     except requests.RequestException as e:
         print(f"ERROR: OpenAI API request failed: {e}")
@@ -184,17 +176,38 @@ def openai_grading_reward_function(prompts: List[str], completions: List[str]) -
         print(f"ERROR: Failed to parse OpenAI response: {e}. Response text: {response.text}")
         return [BAD_REWARD] * len(completions)
 # ---------------------------------------------------------------------------#
-# 4. Model, Tokenizer, and Trainer Setup #
+# 4. Custom Reward Model #
+# ---------------------------------------------------------------------------#
+class CustomRewardModel(nn.Module):
+    def __init__(self, tokenizer):
+        super().__init__()
+        self.tokenizer = tokenizer
+
+    def forward(self, input_ids, attention_mask=None, **kwargs):
+        full_texts = self.tokenizer.batch_decode(input_ids, skip_special_tokens=True)
+        prompts = []
+        completions = []
+        split_str = "Respond with valid Python code only, defining 'root'."
+        for full_text in full_texts:
+            split_index = full_text.rfind(split_str) + len(split_str) if split_str in full_text else 0
+            prompt = full_text[:split_index]
+            completion = full_text[split_index:].strip()
+            prompts.append(prompt)
+            completions.append(completion)
+        grades = openai_grading_reward_function(prompts, completions)
+        return torch.tensor(grades, device=input_ids.device).unsqueeze(-1)
+# ---------------------------------------------------------------------------#
+# 5. Model, Tokenizer, and Trainer Setup #
 # ---------------------------------------------------------------------------#
 model_load_path = MODEL_NAME
-step_start = 0
+resume_from_checkpoint = None
 if os.path.isdir(OUTPUT_DIR):
     checkpoints = [d for d in os.listdir(OUTPUT_DIR) if d.startswith("checkpoint-")]
     if checkpoints:
         latest_checkpoint = max(checkpoints, key=lambda d: int(re.search(r'-(\d+)$', d).group(1)))
         model_load_path = os.path.join(OUTPUT_DIR, latest_checkpoint)
-        step_start = int(re.search(r'-(\d+)$', latest_checkpoint).group(1))
-        print(f"✅ Resuming training from checkpoint: {model_load_path} at step {step_start}")
+        resume_from_checkpoint = model_load_path
+        print(f"✅ Resuming training from checkpoint: {model_load_path}")
     else:
         print(f"🏁 No checkpoint found in '{OUTPUT_DIR}'. Starting from base model: {MODEL_NAME}")
 else:
@@ -202,77 +215,51 @@ else:
 print("\nInitializing Tokenizer and Model...")
 tokenizer = AutoTokenizer.from_pretrained(model_load_path, padding_side="left", use_fast=False)
 tokenizer.pad_token = tokenizer.eos_token
-model = AutoModelForCausalLM.from_pretrained(
+model = AutoModelForCausalLMWithValueHead.from_pretrained(
     model_load_path,
     torch_dtype=torch.bfloat16,
     device_map="auto"
 )
 print("Model and Tokenizer loaded successfully.")
+custom_reward_model = CustomRewardModel(tokenizer)
 training_args = PPOConfig(
     output_dir=OUTPUT_DIR,
-    batch_size=PER_DEVICE_BATCH * GRAD_ACC_STEPS,
-    mini_batch_size=PER_DEVICE_BATCH,
+    per_device_train_batch_size=PER_DEVICE_BATCH,
     gradient_accumulation_steps=GRAD_ACC_STEPS,
     learning_rate=LEARNING_RATE,
-    #init_kl_coef=KL_BETA,
-    #max_prompt_length=MAX_PROMPT_TOKENS,
+    kl_coef=KL_BETA,
+    max_steps=MAX_TRAINING_STEPS,
+    remove_unused_columns=False,
     bf16=True,
     logging_steps=LOGGING_STEPS,
     save_steps=SAVE_STEPS,
+    report_to="none",
 )
 # Prepare dataset for PPO
 def preprocess_function(sample):
     return {
-        "query": sample["prompt"],
-        "input_ids": tokenizer(sample["prompt"], truncation=True, max_length=MAX_PROMPT_TOKENS).input_ids
+        "query": sample["prompt"]
     }
 dataset = dataset.map(preprocess_function, remove_columns=dataset.column_names)
 data_collator = DataCollatorWithPadding(tokenizer=tokenizer)
 trainer = PPOTrainer(
+    args=training_args,
+    processing_class=tokenizer,
     model=model,
     ref_model=None,
-    args=training_args,
+    reward_model=custom_reward_model,
     train_dataset=dataset,
-    #tokenizer=tokenizer,
+    value_model=None,
     data_collator=data_collator,
 )
 # ---------------------------------------------------------------------------#
-# 5. Training Execution #
+# 6. Training Execution #
 # ---------------------------------------------------------------------------#
 print("\n--- Starting PPO Training with OpenAI-based Rewards ---")
 print(f"Logging diagnostics every {LOGGING_STEPS} steps.")
 print(f"Saving model checkpoint every {SAVE_STEPS} steps.")
-print("Look for 'loss', 'rewards/mean', and 'GRADES FOR STEP' in the logs below.")
-dataloader = DataLoader(
-    dataset,
-    batch_size=training_args.batch_size,
-    shuffle=True,
-    collate_fn=trainer.data_collator,
-    drop_last=True
-)
-data_iterator = itertools.cycle(dataloader)
-for step in range(step_start, MAX_TRAINING_STEPS):
-    batch = next(data_iterator)
-    query_tensors = batch["input_ids"]
-    attention_mask = batch["attention_mask"]
-    generation_kwargs["pad_token_id"] = tokenizer.pad_token_id
-    generation_kwargs["eos_token_id"] = tokenizer.eos_token_id
-    response_tensors = trainer.generate(
-        query_tensors,
-        attention_mask=attention_mask,
-        return_prompt=False,
-        **GENERATION_KWARGS
-    )
-    completions = tokenizer.batch_decode(response_tensors, skip_special_tokens=True)
-    prompts_text = batch["query"]
-    rewards_num = openai_grading_reward_function(prompts_text, completions)
-    print(f"--- GRADES FOR STEP {step}: {rewards_num} ---")
-    rewards = [torch.tensor(r) for r in rewards_num]
-    stats = trainer.step(query_tensors, response_tensors, rewards)
-    if (step + 1) % LOGGING_STEPS == 0:
-        trainer.log(stats)
-    if (step + 1) % SAVE_STEPS == 0 and (step + 1) > 0:
-        trainer.save_model(os.path.join(OUTPUT_DIR, f"checkpoint-{step + 1}"))
+print("Look for 'loss', 'rewards/mean', and 'GRADES' in the logs below.")
+trainer.train(resume_from_checkpoint=resume_from_checkpoint)
 print("\n--- Training Finished ---")
 trainer.save_model(OUTPUT_DIR)
 print(f"Final model and tokenizer saved to {OUTPUT_DIR}")
