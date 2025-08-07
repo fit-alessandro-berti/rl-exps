@@ -44,7 +44,8 @@ A partially ordered workflow language (POWL) is a partially ordered graph repres
 - a loop node (* (A, B)): execute A, then choose to exit or execute B then A again, repeated until exit.
 - a partial order: PO=(nodes={{...}}, order={{...}}), where order is a set of source-->target dependencies; unconnected nodes are concurrent.
 
-Example code:```python
+Example code:
+```python
 import pm4py
 from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
 from pm4py.objects.process_tree.obj import Operator
@@ -154,10 +155,25 @@ def main():
     json_files = [f for f in os.listdir(desc_folder) if f.endswith('.json')]
     print(f"Found {len(json_files)} test descriptions")
 
+    skipped_files = 0
+    total_files = 0
+
     # Process each description
     for idx, json_file in enumerate(json_files, 1):
         base_name = os.path.splitext(json_file)[0]
         json_path = os.path.join(desc_folder, json_file)
+
+        # Determine output sample files for this description
+        output_filenames = [f"{base_name}_sample_{i + 1}.py" for i in range(NUM_SAMPLES_PER_DESCRIPTION)]
+        output_paths = [os.path.join(OUTPUT_DIR, fname) for fname in output_filenames]
+        existing_outputs = [os.path.exists(path) for path in output_paths]
+
+        # If all sample files already exist, skip this description
+        if all(existing_outputs):
+            print(
+                f"\n[{idx}/{len(json_files)}] Skipping {base_name}: all {NUM_SAMPLES_PER_DESCRIPTION} samples already exist.")
+            skipped_files += 1
+            continue
 
         print(f"\n[{idx}/{len(json_files)}] Processing {base_name}...")
 
@@ -168,30 +184,25 @@ def main():
         # Generate prompt
         prompt = get_powl_prompt(desc_data["description"], desc_data["activities"])
 
-        # Generate samples
-        samples = generate_samples(prompt, NUM_SAMPLES_PER_DESCRIPTION)
+        # Generate only the number of *missing* samples
+        num_samples_to_generate = NUM_SAMPLES_PER_DESCRIPTION - sum(existing_outputs)
+        samples = generate_samples(prompt, num_samples_to_generate)
 
-        # Save samples
-        for sample_idx, sample in enumerate(samples, 1):
-            # Extract code from response
-            code = extract_code_from_response(sample)
-
-            # Prepare file path
-            output_filename = f"{base_name}_sample_{sample_idx}.py"
-            output_path = os.path.join(OUTPUT_DIR, output_filename)
-
-            # Skip if file already exists
-            if os.path.exists(output_path):
-                print(f"  Skipping sample {sample_idx}: {output_filename} already exists")
+        # Save missing samples
+        sample_iter = iter(samples)
+        for sample_idx, (output_path, already_exists) in enumerate(zip(output_paths, existing_outputs), 1):
+            if already_exists:
+                print(f"  Skipping sample {sample_idx}: {os.path.basename(output_path)} already exists")
                 continue
-
-            # Save to file
+            # Extract code from response
+            code = extract_code_from_response(next(sample_iter))
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(code)
+            print(f"  Saved sample {sample_idx} to {os.path.basename(output_path)}")
+            total_files += 1
 
-            print(f"  Saved sample {sample_idx} to {output_filename}")
-
-    print(f"\n✅ Sampling complete! Generated up to {len(json_files) * NUM_SAMPLES_PER_DESCRIPTION} samples")
+    print(
+        f"\n✅ Sampling complete! {total_files} new samples generated, {skipped_files} descriptions skipped (all samples already existed).")
     print(f"Results saved to {OUTPUT_DIR}/")
 
 
