@@ -25,8 +25,8 @@ if torch.cuda.is_available():
 
 # --- Directory and Model Configuration ---
 TRAIN_DATA_DIR = "training"
-MODEL_NAME = "./grpo_qwen_powl_generator_openai_reward"
-OUTPUT_DIR = "grpo_qwen_powl_generator"
+MODEL_NAME = "Qwen/Qwen2.5-Coder-3B"
+OUTPUT_DIR = "grpo_qwen_complex_reward_step9"
 
 # --- Training Hyperparameters ---
 MAX_PROMPT_TOKENS = 4096
