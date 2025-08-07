@@ -7,8 +7,8 @@ import pm4py
 import re
 import requests
 from datasets import Dataset
-from transformers import AutoTokenizer, DataCollatorWithPadding
-from trl import PPOConfig, PPOTrainer, AutoModelForCausalLMWithValueHead
+from transformers import AutoTokenizer, DataCollatorWithPadding, AutoModelForCausalLM
+from trl import PPOConfig, PPOTrainer
 from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
 from pm4py.objects.process_tree.obj import Operator
 from typing import List, Dict
@@ -51,7 +51,7 @@ def get_powl_prompt(description: str, activities: List[str]) -> str:
     return f"""Generate a POWL model for the following process, saving the final result in the variable 'root'.
 A partially ordered workflow language (POWL) is a partially ordered graph representation of a process, extended with control-flow operators for modeling choice and loop structures. There are four types of POWL models:
 - an activity (identified by its label, e.g., 'M' identifies the activity M). Silent activities with empty labels (tau labels) are also supported.
-- a choice of other POWL models (exclusive choice: X(A, B)).
+- a choice of other POWL models (exclusive choice: X(A, B}}.
 - a loop node (* (A, B)): execute A, then choose to exit or execute B then A again, repeated until exit.
 - a partial order: PO=(nodes={{...}}, order={{...}}), where order is a set of source-->target dependencies; unconnected nodes are concurrent.
 Example code:```python
@@ -215,7 +215,7 @@ else:
 print("\nInitializing Tokenizer and Model...")
 tokenizer = AutoTokenizer.from_pretrained(model_load_path, padding_side="left", use_fast=False)
 tokenizer.pad_token = tokenizer.eos_token
-model = AutoModelForCausalLMWithValueHead.from_pretrained(
+model = AutoModelForCausalLM.from_pretrained(
     model_load_path,
     torch_dtype=torch.bfloat16,
     device_map="auto"
