@@ -275,7 +275,7 @@ ppo_config = PPOConfig(
     logging_steps=LOGGING_STEPS,
     report_to="none",
     batch_size=PER_DEVICE_BATCH,
-    forward_batch_size=PER_DEVICE_BATCH
+    #forward_batch_size=PER_DEVICE_BATCH
 )
 
 # --- PPO Trainer Initialization ---
