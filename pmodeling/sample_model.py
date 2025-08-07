@@ -2,6 +2,7 @@ import os
 import json
 import random
 import torch
+import argparse
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from typing import List
 import pm4py
@@ -17,10 +18,8 @@ torch.manual_seed(SEED)
 if torch.cuda.is_available():
     torch.cuda.manual_seed_all(SEED)
 
-# --- Directory and Model Configuration ---
+# --- Default Configuration ---
 TEST_DATA_DIR = "test"
-MODEL_PATH = "./grpo_qwen_powl_generator"  # Path to the trained model
-OUTPUT_DIR = "sampling"
 NUM_SAMPLES_PER_DESCRIPTION = 4  # Generate 4 samples per description
 MAX_NEW_TOKENS = 4096
 TEMPERATURE = 0.7
@@ -71,24 +70,30 @@ Respond with valid Python code only, defining 'root'.
 # 3. Model Loading                                                            #
 # ---------------------------------------------------------------------------#
 
-print(f"Loading model from {MODEL_PATH}...")
-tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH, padding_side="left", use_fast=False)
-tokenizer.pad_token = tokenizer.eos_token
+def load_model(model_path: str):
+    """
+    Load the model and tokenizer from the specified path.
+    """
+    print(f"Loading model from {model_path}...")
+    tokenizer = AutoTokenizer.from_pretrained(model_path, padding_side="left", use_fast=False)
+    tokenizer.pad_token = tokenizer.eos_token
 
-model = AutoModelForCausalLM.from_pretrained(
-    MODEL_PATH,
-    torch_dtype=torch.bfloat16,
-    device_map="auto"
-)
-model.eval()  # Set to evaluation mode
-print("Model loaded successfully.")
+    model = AutoModelForCausalLM.from_pretrained(
+        model_path,
+        torch_dtype=torch.bfloat16,
+        device_map="auto"
+    )
+    model.eval()  # Set to evaluation mode
+    print("Model loaded successfully.")
+    
+    return model, tokenizer
 
 
 # ---------------------------------------------------------------------------#
 # 4. Sampling Function                                                        #
 # ---------------------------------------------------------------------------#
 
-def generate_samples(prompt: str, num_samples: int) -> List[str]:
+def generate_samples(prompt: str, num_samples: int, model, tokenizer) -> List[str]:
     """
     Generate multiple samples from the model for a given prompt.
     """
@@ -139,15 +144,92 @@ def extract_code_from_response(response: str) -> str:
 
 
 # ---------------------------------------------------------------------------#
-# 5. Main Sampling Loop                                                       #
+# 5. Argument Parser                                                          #
+# ---------------------------------------------------------------------------#
+
+def parse_arguments():
+    """
+    Parse command-line arguments.
+    """
+    parser = argparse.ArgumentParser(
+        description="Generate POWL model samples using a trained language model",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    
+    parser.add_argument(
+        '--model-path',
+        type=str,
+        required=True,
+        help='Path to the trained model directory'
+    )
+    
+    parser.add_argument(
+        '--output-dir',
+        type=str,
+        required=True,
+        help='Directory to save the generated samples'
+    )
+    
+    parser.add_argument(
+        '--test-data-dir',
+        type=str,
+        default=TEST_DATA_DIR,
+        help='Directory containing test descriptions'
+    )
+    
+    parser.add_argument(
+        '--num-samples',
+        type=int,
+        default=NUM_SAMPLES_PER_DESCRIPTION,
+        help='Number of samples to generate per description'
+    )
+    
+    parser.add_argument(
+        '--max-new-tokens',
+        type=int,
+        default=MAX_NEW_TOKENS,
+        help='Maximum number of new tokens to generate'
+    )
+    
+    parser.add_argument(
+        '--temperature',
+        type=float,
+        default=TEMPERATURE,
+        help='Sampling temperature'
+    )
+    
+    parser.add_argument(
+        '--top-p',
+        type=float,
+        default=TOP_P,
+        help='Top-p sampling parameter'
+    )
+    
+    return parser.parse_args()
+
+
+# ---------------------------------------------------------------------------#
+# 6. Main Sampling Loop                                                       #
 # ---------------------------------------------------------------------------#
 
 def main():
+    # Parse arguments
+    args = parse_arguments()
+    
+    # Update global variables with argument values
+    global MAX_NEW_TOKENS, TEMPERATURE, TOP_P
+    MAX_NEW_TOKENS = args.max_new_tokens
+    TEMPERATURE = args.temperature
+    TOP_P = args.top_p
+    
+    # Load model
+    model, tokenizer = load_model(args.model_path)
+    
     # Create output directory
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    os.makedirs(args.output_dir, exist_ok=True)
 
     # Load test descriptions
-    desc_folder = os.path.join(TEST_DATA_DIR, "textual_descriptions")
+    desc_folder = os.path.join(args.test_data_dir, "textual_descriptions")
     if not os.path.exists(desc_folder):
         raise FileNotFoundError(f"Test descriptions directory not found: {desc_folder}")
 
@@ -164,14 +246,14 @@ def main():
         json_path = os.path.join(desc_folder, json_file)
 
         # Determine output sample files for this description
-        output_filenames = [f"{base_name}_sample_{i + 1}.py" for i in range(NUM_SAMPLES_PER_DESCRIPTION)]
-        output_paths = [os.path.join(OUTPUT_DIR, fname) for fname in output_filenames]
+        output_filenames = [f"{base_name}_sample_{i + 1}.py" for i in range(args.num_samples)]
+        output_paths = [os.path.join(args.output_dir, fname) for fname in output_filenames]
         existing_outputs = [os.path.exists(path) for path in output_paths]
 
         # If all sample files already exist, skip this description
         if all(existing_outputs):
             print(
-                f"\n[{idx}/{len(json_files)}] Skipping {base_name}: all {NUM_SAMPLES_PER_DESCRIPTION} samples already exist.")
+                f"\n[{idx}/{len(json_files)}] Skipping {base_name}: all {args.num_samples} samples already exist.")
             skipped_files += 1
             continue
 
@@ -185,8 +267,8 @@ def main():
         prompt = get_powl_prompt(desc_data["description"], desc_data["activities"])
 
         # Generate only the number of *missing* samples
-        num_samples_to_generate = NUM_SAMPLES_PER_DESCRIPTION - sum(existing_outputs)
-        samples = generate_samples(prompt, num_samples_to_generate)
+        num_samples_to_generate = args.num_samples - sum(existing_outputs)
+        samples = generate_samples(prompt, num_samples_to_generate, model, tokenizer)
 
         # Save missing samples
         sample_iter = iter(samples)
@@ -203,7 +285,7 @@ def main():
 
     print(
         f"\n✅ Sampling complete! {total_files} new samples generated, {skipped_files} descriptions skipped (all samples already existed).")
-    print(f"Results saved to {OUTPUT_DIR}/")
+    print(f"Results saved to {args.output_dir}/")
 
 
 if __name__ == "__main__":
