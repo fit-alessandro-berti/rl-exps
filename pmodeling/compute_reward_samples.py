@@ -7,9 +7,9 @@ from pm4py.objects.process_tree.obj import Operator
 # ---------------------------------------------------------------------------#
 # 1. Configuration                                                            #
 # ---------------------------------------------------------------------------#
-SAMPLING_DIR = "sampling_step2"
+SAMPLING_DIR = "sampling_step1"
 TEST_POWL_DIR = "test/powl"
-OUTPUT_CSV = "reward_scores_step2.csv"
+OUTPUT_CSV = "reward_scores_step1.csv"
 
 # ---------------------------------------------------------------------------#
 # 2. Helper Functions                                                         #
@@ -40,10 +40,10 @@ def get_powl_object_from_code(code_str: str):
         print(f"    Error parsing POWL: {e}")
         return None
 
-def compute_reward_score(generated_code: str, reference_code: str) -> float:
+def compute_reward_score(generated_code: str, reference_code: str) -> tuple:
     """
     Calculates reward based on behavioral similarity between generated and reference POWL models.
-    Returns a float reward score.
+    Returns a tuple of (float reward score, int footprint count or None).
     """
     BAD_REWARD = -1.0
     PARTIAL_FAIL_REWARD = -0.5
@@ -53,10 +53,11 @@ def compute_reward_score(generated_code: str, reference_code: str) -> float:
     gen_powl = get_powl_object_from_code(generated_code)
     
     if gen_powl is None or ref_powl is None:
-        return BAD_REWARD
+        return BAD_REWARD, None
     
     try:
         reward_score = 0.6  # Base reward for valid POWL object
+        footprint_count = None
         
         # Compare footprints
         ref_footprints = pm4py.discover_footprints(ref_powl)
@@ -75,11 +76,18 @@ def compute_reward_score(generated_code: str, reference_code: str) -> float:
         
         # Convert to [-1, 1] range as in original
         final_reward = -1.0 + 2.0 * reward_score
-        return final_reward
+        
+        # Calculate footprint count for correctly translated models (reward > threshold)
+        if final_reward > 0:  # Consider positive reward as correctly translated
+            sequence_count = len(gen_footprints.get("sequence", []))
+            parallel_count = len(gen_footprints.get("parallel", []))
+            footprint_count = sequence_count + parallel_count
+        
+        return final_reward, footprint_count
         
     except Exception as e:
         print(f"    Error computing similarity: {e}")
-        return PARTIAL_FAIL_REWARD
+        return PARTIAL_FAIL_REWARD, None
 
 # ---------------------------------------------------------------------------#
 # 3. Main Processing                                                          #
@@ -132,18 +140,20 @@ def main():
             with open(reference_path, 'r', encoding='utf-8') as f:
                 reference_code = f.read()
             
-            # Compute reward score
-            reward = compute_reward_score(generated_code, reference_code)
+            # Compute reward score and footprint count
+            reward, footprint_count = compute_reward_score(generated_code, reference_code)
             
             # Store result
             results.append({
                 'base_name': base_name,
                 'sample_number': sample_num,
                 'sample_file': sample_file,
-                'reward_score': reward
+                'reward_score': reward,
+                'footprint_count': footprint_count
             })
             
-            print(f"  Reward score: {reward:.4f}")
+            footprint_str = f", Footprints: {footprint_count}" if footprint_count is not None else ""
+            print(f"  Reward score: {reward:.4f}{footprint_str}")
             processed += 1
             
         except Exception as e:
@@ -154,7 +164,7 @@ def main():
     # Write results to CSV
     if results:
         with open(OUTPUT_CSV, 'w', newline='', encoding='utf-8') as csvfile:
-            fieldnames = ['base_name', 'sample_number', 'sample_file', 'reward_score']
+            fieldnames = ['base_name', 'sample_number', 'sample_file', 'reward_score', 'footprint_count']
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             
             writer.writeheader()
@@ -176,6 +186,19 @@ def main():
         print(f"  - Average: {avg_reward:.4f}")
         print(f"  - Min: {min_reward:.4f}")
         print(f"  - Max: {max_reward:.4f}")
+        
+        # Compute footprint statistics for correctly translated models
+        footprint_counts = [r['footprint_count'] for r in results if r['footprint_count'] is not None]
+        if footprint_counts:
+            avg_footprints = sum(footprint_counts) / len(footprint_counts)
+            min_footprints = min(footprint_counts)
+            max_footprints = max(footprint_counts)
+            
+            print(f"\nFootprint Statistics (for correctly translated models):")
+            print(f"  - Correctly translated: {len(footprint_counts)}/{len(results)} models")
+            print(f"  - Average footprints: {avg_footprints:.2f}")
+            print(f"  - Min footprints: {min_footprints}")
+            print(f"  - Max footprints: {max_footprints}")
     else:
         print("\n⚠️ No results to save")
 
