@@ -26,7 +26,7 @@ if torch.cuda.is_available():
 # --- Directory and Model Configuration ---
 TRAIN_DATA_DIR = "training"
 MODEL_NAME = "Qwen/Qwen2.5-Coder-3B"
-OUTPUT_DIR = "grpo_complex_reward_step9"
+OUTPUT_DIR = "grpo_qwen_powl_generator_local_reward"
 
 # --- Training Hyperparameters ---
 MAX_PROMPT_TOKENS = 4096
@@ -42,6 +42,7 @@ MAX_DATASET_SAMPLES = 500
 # --- Logging and Saving Configuration ---
 LOGGING_STEPS = 1
 SAVE_STEPS = 100
+
 
 # ---------------------------------------------------------------------------#
 # 2. Prompt and Data Loading                                                  #
@@ -110,6 +111,10 @@ def load_limited_dataset(data_dir: str, max_samples: int) -> Dataset:
 
 
 dataset = load_limited_dataset(TRAIN_DATA_DIR, max_samples=MAX_DATASET_SAMPLES)
+
+# --- FIX ---
+# Create a lookup map to find reference completions from prompts.
+prompt_to_reference_map = {item['prompt']: item['reference_completion'] for item in dataset}
 
 
 # ---------------------------------------------------------------------------#
@@ -276,13 +281,20 @@ def local_evaluation_reward_function(completions: List[str], **kwargs) -> List[f
     """
     rewards = []
     prompts = kwargs["prompts"]
-    reference_completions = kwargs["reference_completions"]
 
     for i, completion in enumerate(completions):
         prompt = prompts[i]
-        reference_completion = reference_completions[i]
+        # --- FIX ---
+        # Retrieve the reference completion from the global map.
+        reference_completion = prompt_to_reference_map.get(prompt)
 
-        reward = calculate_reward_components(prompt, completion, reference_completion)
+        if reference_completion is None:
+            # This should not happen if the dataset is processed correctly
+            print(f"WARNING: Could not find reference completion for prompt: {prompt[:100]}...")
+            reward = -1.0
+        else:
+            reward = calculate_reward_components(prompt, completion, reference_completion)
+
         rewards.append(reward)
 
     print(f"--- REWARDS FOR STEP: {[round(r, 3) for r in rewards]} ---")
