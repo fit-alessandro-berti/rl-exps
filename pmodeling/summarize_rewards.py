@@ -49,6 +49,6 @@ def summarize_csvs(file_list, output_csv):
 
 
 # Example usage:
-file_list = ['reward_scores_step0.csv', 'reward_scores_step1.csv', 'reward_scores_step2.csv', 'reward_scores_step3.csv', 'reward_scores_step4.csv', 'reward_scores_step5.csv']
+file_list = ['reward_scores_step0.csv', 'reward_scores_sft.csv', 'reward_scores_step1.csv', 'reward_scores_step2.csv', 'reward_scores_step3.csv', 'reward_scores_step4.csv', 'reward_scores_step5.csv', 'reward_scores_step6.csv']
 output_csv = 'summary.csv'
 summarize_csvs(file_list, output_csv)
