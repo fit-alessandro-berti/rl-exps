@@ -1,0 +1,40 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+env_analysis = Transition(label='Env Analysis')
+module_design = Transition(label='Module Design')
+seed_selection = Transition(label='Seed Selection')
+nutrient_mix = Transition(label='Nutrient Mix')
+climate_setup = Transition(label='Climate Setup')
+led_install = Transition(label='LED Install')
+sensor_deploy = Transition(label='Sensor Deploy')
+pest_control = Transition(label='Pest Control')
+waste_recycle = Transition(label='Waste Recycle')
+hydro_test = Transition(label='Hydro Test')
+staff_train = Transition(label='Staff Train')
+yield_forecast = Transition(label='Yield Forecast')
+market_plan = Transition(label='Market Plan')
+data_review = Transition(label='Data Review')
+
+skip = SilentTransition()
+
+site_survey_env_analysis = OperatorPOWL(operator=Operator.XOR, children=[site_survey, env_analysis])
+module_design_seed_selection = OperatorPOWL(operator=Operator.XOR, children=[module_design, seed_selection])
+nutrient_mix_climate_setup = OperatorPOWL(operator=Operator.XOR, children=[nutrient_mix, climate_setup])
+led_install_sensor_deploy = OperatorPOWL(operator=Operator.XOR, children=[led_install, sensor_deploy])
+pest_control_waste_recycle = OperatorPOWL(operator=Operator.XOR, children=[pest_control, waste_recycle])
+hydro_test_staff_train = OperatorPOWL(operator=Operator.XOR, children=[hydro_test, staff_train])
+yield_forecast_market_plan = OperatorPOWL(operator=Operator.XOR, children=[yield_forecast, market_plan])
+data_review = Transition(label='Data Review')
+
+root = StrictPartialOrder(nodes=[site_survey, env_analysis, module_design, seed_selection, nutrient_mix, climate_setup, led_install, sensor_deploy, pest_control, waste_recycle, hydro_test, staff_train, yield_forecast, market_plan, data_review])
+root.order.add_edge(site_survey, env_analysis)
+root.order.add_edge(module_design, seed_selection)
+root.order.add_edge(nutrient_mix, climate_setup)
+root.order.add_edge(led_install, sensor_deploy)
+root.order.add_edge(pest_control, waste_recycle)
+root.order.add_edge(hydro_test, staff_train)
+root.order.add_edge(yield_forecast, market_plan)
+root.order.add_edge(data_review, market_plan)

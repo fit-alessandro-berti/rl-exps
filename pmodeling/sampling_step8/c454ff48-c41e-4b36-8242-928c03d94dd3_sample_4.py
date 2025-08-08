@@ -1,0 +1,40 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_assess = Transition(label='Site Assess')
+permit_obtain = Transition(label='Permit Obtain')
+soil_testing = Transition(label='Soil Testing')
+crop_select = Transition(label='Crop Select')
+irrigation_setup = Transition(label='Irrigation Setup')
+drainage_install = Transition(label='Drainage Install')
+energy_integrate = Transition(label='Energy Integrate')
+staff_train = Transition(label='Staff Train')
+pest_control = Transition(label='Pest Control')
+logistics_plan = Transition(label='Logistics Plan')
+supply_coordinate = Transition(label='Supply Coordinate')
+distribution_map = Transition(label='Distribution Map')
+community_engage = Transition(label='Community Engage')
+monitoring_setup = Transition(label='Monitoring Setup')
+yield_optimize = Transition(label='Yield Optimize')
+
+skip = SilentTransition()
+loop = OperatorPOWL(operator=Operator.LOOP, children=[site_assess, permit_obtain])
+xor = OperatorPOWL(operator=Operator.XOR, children=[soil_testing, skip])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[crop_select, xor])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[irrigation_setup, xor2])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[drainage_install, xor3])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[energy_integrate, xor4])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[staff_train, xor5])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[pest_control, xor6])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[logistics_plan, xor7])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[supply_coordinate, xor8])
+xor10 = OperatorPOWL(operator=Operator.XOR, children=[distribution_map, xor9])
+xor11 = OperatorPOWL(operator=Operator.XOR, children=[community_engage, xor10])
+xor12 = OperatorPOWL(operator=Operator.XOR, children=[monitoring_setup, xor11])
+xor13 = OperatorPOWL(operator=Operator.XOR, children=[yield_optimize, xor12])
+
+root = StrictPartialOrder(nodes=[loop, xor13])
+root.order.add_edge(loop, xor13)
+
+print(root)

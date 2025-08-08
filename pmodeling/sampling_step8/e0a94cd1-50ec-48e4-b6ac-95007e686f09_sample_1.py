@@ -1,0 +1,61 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define the activities
+data_ingestion = Transition(label='Data Ingestion')
+quantum_setup = Transition(label='Quantum Setup')
+route_optimize = Transition(label='Route Optimize')
+demand_forecast = Transition(label='Demand Forecast')
+scenario_simulate = Transition(label='Scenario Simulate')
+risk_assess = Transition(label='Risk Assess')
+anomaly_detect = Transition(label='Anomaly Detect')
+supplier_sync = Transition(label='Supplier Sync')
+quantum_communicate = Transition(label='Quantum Communicate')
+inventory_adjust = Transition(label='Inventory Adjust')
+procurement_plan = Transition(label='Procurement Plan')
+performance_track = Transition(label='Performance Track')
+feedback_loop = Transition(label='Feedback Loop')
+decision_automate = Transition(label='Decision Automate')
+cost_analyze = Transition(label='Cost Analyze')
+network_adapt = Transition(label='Network Adapt')
+
+# Define the partial order structure
+root = StrictPartialOrder()
+
+# Add nodes to the root
+root.add_node(data_ingestion)
+root.add_node(quantum_setup)
+root.add_node(route_optimize)
+root.add_node(demand_forecast)
+root.add_node(scenario_simulate)
+root.add_node(risk_assess)
+root.add_node(anomaly_detect)
+root.add_node(supplier_sync)
+root.add_node(quantum_communicate)
+root.add_node(inventory_adjust)
+root.add_node(procurement_plan)
+root.add_node(performance_track)
+root.add_node(feedback_loop)
+root.add_node(decision_automate)
+root.add_node(cost_analyze)
+root.add_node(network_adapt)
+
+# Define the dependencies
+root.add_edge(data_ingestion, quantum_setup)
+root.add_edge(quantum_setup, route_optimize)
+root.add_edge(quantum_setup, demand_forecast)
+root.add_edge(route_optimize, scenario_simulate)
+root.add_edge(demand_forecast, scenario_simulate)
+root.add_edge(scenario_simulate, risk_assess)
+root.add_edge(scenario_simulate, anomaly_detect)
+root.add_edge(anomaly_detect, supplier_sync)
+root.add_edge(supplier_sync, quantum_communicate)
+root.add_edge(quantum_communicate, inventory_adjust)
+root.add_edge(inventory_adjust, procurement_plan)
+root.add_edge(procurement_plan, performance_track)
+root.add_edge(performance_track, feedback_loop)
+root.add_edge(feedback_loop, decision_automate)
+root.add_edge(decision_automate, cost_analyze)
+root.add_edge(cost_analyze, network_adapt)
+
+# Print the root
+print(root)

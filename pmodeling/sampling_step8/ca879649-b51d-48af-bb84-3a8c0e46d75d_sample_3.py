@@ -1,0 +1,38 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define the transitions (activities)
+milk_sourcing = Transition(label='Milk Sourcing')
+quality_testing = Transition(label='Quality Testing')
+batch_selection = Transition(label='Batch Selection')
+curd_preparation = Transition(label='Curd Preparation')
+pressing_cheese = Transition(label='Pressing Cheese')
+aging_control = Transition(label='Aging Control')
+flavor_profiling = Transition(label='Flavor Profiling')
+packaging_prep = Transition(label='Packaging Prep')
+climate_packing = Transition(label='Climate Packing')
+export_licensing = Transition(label='Export Licensing')
+customs_filing = Transition(label='Customs Filing')
+freight_booking = Transition(label='Freight Booking')
+cold_storage = Transition(label='Cold Storage')
+transport_tracking = Transition(label='Transport Tracking')
+retail_delivery = Transition(label='Retail Delivery')
+feedback_collection = Transition(label='Feedback Collection')
+
+# Define the control flow
+xor_1 = OperatorPOWL(operator=Operator.XOR, children=[batch_selection, quality_testing])
+xor_2 = OperatorPOWL(operator=Operator.XOR, children=[curd_preparation, aging_control])
+xor_3 = OperatorPOWL(operator=Operator.XOR, children=[flavor_profiling, packaging_prep])
+xor_4 = OperatorPOWL(operator=Operator.XOR, children=[climate_packing, customs_filing])
+xor_5 = OperatorPOWL(operator=Operator.XOR, children=[freight_booking, cold_storage])
+xor_6 = OperatorPOWL(operator=Operator.XOR, children=[transport_tracking, retail_delivery])
+xor_7 = OperatorPOWL(operator=Operator.XOR, children=[feedback_collection, export_licensing])
+
+root = StrictPartialOrder(nodes=[milk_sourcing, xor_1, xor_2, xor_3, xor_4, xor_5, xor_6, xor_7])
+root.order.add_edge(milk_sourcing, xor_1)
+root.order.add_edge(xor_1, xor_2)
+root.order.add_edge(xor_2, xor_3)
+root.order.add_edge(xor_3, xor_4)
+root.order.add_edge(xor_4, xor_5)
+root.order.add_edge(xor_5, xor_6)
+root.order.add_edge(xor_6, xor_7)

@@ -1,0 +1,42 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+initial_inspect = Transition(label='Initial Inspect')
+material_test = Transition(label='Material Test')
+imaging_scan = Transition(label='Imaging Scan')
+historical_check = Transition(label='Historical Check')
+expert_consult = Transition(label='Expert Consult')
+provenance_trace = Transition(label='Provenance Trace')
+forgery_detect = Transition(label='Forgery Detect')
+restoration_map = Transition(label='Restoration Map')
+market_analyze = Transition(label='Market Analyze')
+auction_review = Transition(label='Auction Review')
+value_assess = Transition(label='Value Assess')
+report_draft = Transition(label='Report Draft')
+board_review = Transition(label='Board Review')
+certification = Transition(label='Certification')
+release_artifact = Transition(label='Release Artifact')
+chain_custody = Transition(label='Chain Custody')
+
+skip = SilentTransition()
+
+initial_inspect_choice = OperatorPOWL(operator=Operator.XOR, children=[material_test, imaging_scan])
+historical_check_choice = OperatorPOWL(operator=Operator.XOR, children=[provenance_trace, forgery_detect])
+restoration_map_choice = OperatorPOWL(operator=Operator.XOR, children=[restoration_map, market_analyze])
+auction_review_choice = OperatorPOWL(operator=Operator.XOR, children=[auction_review, value_assess])
+report_draft_choice = OperatorPOWL(operator=Operator.XOR, children=[report_draft, board_review])
+certification_choice = OperatorPOWL(operator=Operator.XOR, children=[certification, release_artifact])
+chain_custody_choice = OperatorPOWL(operator=Operator.XOR, children=[chain_custody, skip])
+
+root = StrictPartialOrder(nodes=[initial_inspect, initial_inspect_choice, historical_check_choice, restoration_map_choice, auction_review_choice, report_draft_choice, certification_choice, chain_custody_choice])
+root.order.add_edge(initial_inspect, initial_inspect_choice)
+root.order.add_edge(initial_inspect, historical_check_choice)
+root.order.add_edge(historical_check_choice, restoration_map_choice)
+root.order.add_edge(historical_check_choice, auction_review_choice)
+root.order.add_edge(restoration_map_choice, report_draft_choice)
+root.order.add_edge(restoration_map_choice, certification_choice)
+root.order.add_edge(auction_review_choice, report_draft_choice)
+root.order.add_edge(auction_review_choice, certification_choice)
+root.order.add_edge(report_draft_choice, certification_choice)
+root.order.add_edge(certification_choice, chain_custody_choice)

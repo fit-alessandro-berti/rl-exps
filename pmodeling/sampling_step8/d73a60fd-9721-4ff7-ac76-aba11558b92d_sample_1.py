@@ -1,0 +1,43 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL model
+Site_Survey = Transition(label='Site Survey')
+Structural_Audit = Transition(label='Structural Audit')
+System_Design = Transition(label='System Design')
+Permit_Filing = Transition(label='Permit Filing')
+Foundation_Prep = Transition(label='Foundation Prep')
+Frame_Build = Transition(label='Frame Build')
+Irrigation_Setup = Transition(label='Irrigation Setup')
+Lighting_Install = Transition(label='Lighting Install')
+Climate_Control = Transition(label='Climate Control')
+Nutrient_Mix = Transition(label='Nutrient Mix')
+Crop_Planting = Transition(label='Crop Planting')
+Pest_Scouting = Transition(label='Pest Scouting')
+Data_Monitoring = Transition(label='Data Monitoring')
+Waste_Sorting = Transition(label='Waste Sorting')
+Energy_Audit = Transition(label='Energy Audit')
+Community_Meet = Transition(label='Community Meet')
+Yield_Analysis = Transition(label='Yield Analysis')
+
+skip = SilentTransition()
+site_analysis = OperatorPOWL(operator=Operator.XOR, children=[Site_Survey, Structural_Audit])
+structural_audit = OperatorPOWL(operator=Operator.XOR, children=[System_Design, Permit_Filing])
+system_design = OperatorPOWL(operator=Operator.XOR, children=[Foundation_Prep, Frame_Build])
+foundation_prep = OperatorPOWL(operator=Operator.XOR, children=[Irrigation_Setup, Lighting_Install])
+irrigation_setup = OperatorPOWL(operator=Operator.XOR, children=[Climate_Control, Nutrient_Mix])
+climate_control = OperatorPOWL(operator=Operator.XOR, children=[Crop_Planting, Pest_Scouting])
+crop_planting = OperatorPOWL(operator=Operator.XOR, children=[Data_Monitoring, Waste_Sorting])
+data_monitoring = OperatorPOWL(operator=Operator.XOR, children=[Energy_Audit, Community_Meet])
+energy_audit = OperatorPOWL(operator=Operator.XOR, children=[Yield_Analysis, skip])
+
+root = StrictPartialOrder(nodes=[site_analysis, structural_audit, system_design, foundation_prep, irrigation_setup, climate_control, crop_planting, data_monitoring, energy_audit])
+root.order.add_edge(site_analysis, structural_audit)
+root.order.add_edge(structural_audit, system_design)
+root.order.add_edge(system_design, foundation_prep)
+root.order.add_edge(foundation_prep, irrigation_setup)
+root.order.add_edge(irrigation_setup, climate_control)
+root.order.add_edge(climate_control, crop_planting)
+root.order.add_edge(crop_planting, data_monitoring)
+root.order.add_edge(data_monitoring, energy_audit)

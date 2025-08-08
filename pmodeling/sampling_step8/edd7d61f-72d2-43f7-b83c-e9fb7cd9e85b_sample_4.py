@@ -1,0 +1,51 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+initial_review = Transition(label='Initial Review')
+provenance_check = Transition(label='Provenance Check')
+material_scan = Transition(label='Material Scan')
+chemical_test = Transition(label='Chemical Test')
+imaging_capture = Transition(label='Imaging Capture')
+expert_consult = Transition(label='Expert Consult')
+historical_match = Transition(label='Historical Match')
+forgery_detect = Transition(label='Forgery Detect')
+documentation_verify = Transition(label='Documentation Verify')
+cross_border_check = Transition(label='Cross-Border Check')
+condition_assess = Transition(label='Condition Assess')
+value_estimate = Transition(label='Value Estimate')
+report_draft = Transition(label='Report Draft')
+report_review = Transition(label='Report Review')
+client_approval = Transition(label='Client Approval')
+certification_issue = Transition(label='Certification Issue')
+archive_record = Transition(label='Archive Record')
+
+# Define the workflow
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[initial_review, provenance_check])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[material_scan, chemical_test])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[imaging_capture, expert_consult])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[historical_match, forgery_detect])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[documentation_verify, cross_border_check])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[condition_assess, value_estimate])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[report_draft, report_review])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[client_approval, certification_issue])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[archive_record])
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[xor1, xor2, xor3, xor4, xor5, xor6, xor7, xor8, xor9])
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor1, xor3)
+root.order.add_edge(xor2, xor4)
+root.order.add_edge(xor2, xor5)
+root.order.add_edge(xor3, xor6)
+root.order.add_edge(xor3, xor7)
+root.order.add_edge(xor4, xor8)
+root.order.add_edge(xor4, xor9)
+root.order.add_edge(xor5, xor8)
+root.order.add_edge(xor5, xor9)
+root.order.add_edge(xor6, xor8)
+root.order.add_edge(xor6, xor9)
+root.order.add_edge(xor7, xor8)
+root.order.add_edge(xor7, xor9)
+root.order.add_edge(xor8, xor9)

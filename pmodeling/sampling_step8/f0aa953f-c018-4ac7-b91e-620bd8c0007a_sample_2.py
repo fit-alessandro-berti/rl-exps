@@ -1,0 +1,42 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+design_layout = Transition(label='Design Layout')
+system_assembly = Transition(label='System Assembly')
+climate_setup = Transition(label='Climate Setup')
+light_calibration = Transition(label='Light Calibration')
+seed_selection = Transition(label='Seed Selection')
+seedling_prep = Transition(label='Seedling Prep')
+nutrient_mix = Transition(label='Nutrient Mix')
+irrigation_setup = Transition(label='Irrigation Setup')
+sensor_install = Transition(label='Sensor Install')
+data_integration = Transition(label='Data Integration')
+waste_routing = Transition(label='Waste Routing')
+energy_audit = Transition(label='Energy Audit')
+regulation_check = Transition(label='Regulation Check')
+operational_test = Transition(label='Operational Test')
+community_outreach = Transition(label='Community Outreach')
+
+skip = SilentTransition()
+
+loop = OperatorPOWL(operator=Operator.LOOP, children=[climate_setup, light_calibration])
+xor = OperatorPOWL(operator=Operator.XOR, children=[seed_selection, seedling_prep])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[nutrient_mix, irrigation_setup])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[sensor_install, data_integration])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[waste_routing, energy_audit])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[regulation_check, operational_test])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[community_outreach, skip])
+
+root = StrictPartialOrder(nodes=[site_survey, design_layout, system_assembly, loop, xor, xor2, xor3, xor4, xor5, xor6])
+root.order.add_edge(site_survey, design_layout)
+root.order.add_edge(design_layout, system_assembly)
+root.order.add_edge(system_assembly, loop)
+root.order.add_edge(loop, xor)
+root.order.add_edge(xor, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, community_outreach)

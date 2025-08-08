@@ -1,0 +1,151 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+data_collection = Transition(label='Data Collection')
+provenance_check = Transition(label='Provenance Check')
+material_scan = Transition(label='Material Scan')
+historical_review = Transition(label='Historical Review')
+expert_panel = Transition(label='Expert Panel')
+blockchain_verify = Transition(label='Blockchain Verify')
+oral_history = Transition(label='Oral History')
+condition_report = Transition(label='Condition Report')
+legal_review = Transition(label='Legal Review')
+certification = Transition(label='Certification')
+archival_update = Transition(label='Archival Update')
+insurance_setup = Transition(label='Insurance Setup')
+exhibition_prep = Transition(label='Exhibition Prep')
+iot_monitoring = Transition(label='IoT Monitoring')
+re_validation = Transition(label='Re-validation')
+
+# Define the POWL model
+root = StrictPartialOrder(nodes=[
+    data_collection, provenance_check, material_scan, historical_review,
+    expert_panel, blockchain_verify, oral_history, condition_report,
+    legal_review, certification, archival_update, insurance_setup,
+    exhibition_prep, iot_monitoring, re_validation
+])
+
+# Define the dependencies
+root.order.add_edge(data_collection, provenance_check)
+root.order.add_edge(data_collection, material_scan)
+root.order.add_edge(data_collection, historical_review)
+root.order.add_edge(data_collection, expert_panel)
+root.order.add_edge(data_collection, blockchain_verify)
+root.order.add_edge(data_collection, oral_history)
+root.order.add_edge(data_collection, condition_report)
+root.order.add_edge(data_collection, legal_review)
+root.order.add_edge(data_collection, certification)
+root.order.add_edge(data_collection, archival_update)
+root.order.add_edge(data_collection, insurance_setup)
+root.order.add_edge(data_collection, exhibition_prep)
+root.order.add_edge(data_collection, iot_monitoring)
+root.order.add_edge(data_collection, re_validation)
+
+root.order.add_edge(provenance_check, material_scan)
+root.order.add_edge(provenance_check, historical_review)
+root.order.add_edge(provenance_check, expert_panel)
+root.order.add_edge(provenance_check, blockchain_verify)
+root.order.add_edge(provenance_check, oral_history)
+root.order.add_edge(provenance_check, condition_report)
+root.order.add_edge(provenance_check, legal_review)
+root.order.add_edge(provenance_check, certification)
+root.order.add_edge(provenance_check, archival_update)
+root.order.add_edge(provenance_check, insurance_setup)
+root.order.add_edge(provenance_check, exhibition_prep)
+root.order.add_edge(provenance_check, iot_monitoring)
+root.order.add_edge(provenance_check, re_validation)
+
+root.order.add_edge(material_scan, historical_review)
+root.order.add_edge(material_scan, expert_panel)
+root.order.add_edge(material_scan, blockchain_verify)
+root.order.add_edge(material_scan, oral_history)
+root.order.add_edge(material_scan, condition_report)
+root.order.add_edge(material_scan, legal_review)
+root.order.add_edge(material_scan, certification)
+root.order.add_edge(material_scan, archival_update)
+root.order.add_edge(material_scan, insurance_setup)
+root.order.add_edge(material_scan, exhibition_prep)
+root.order.add_edge(material_scan, iot_monitoring)
+root.order.add_edge(material_scan, re_validation)
+
+root.order.add_edge(historical_review, expert_panel)
+root.order.add_edge(historical_review, blockchain_verify)
+root.order.add_edge(historical_review, oral_history)
+root.order.add_edge(historical_review, condition_report)
+root.order.add_edge(historical_review, legal_review)
+root.order.add_edge(historical_review, certification)
+root.order.add_edge(historical_review, archival_update)
+root.order.add_edge(historical_review, insurance_setup)
+root.order.add_edge(historical_review, exhibition_prep)
+root.order.add_edge(historical_review, iot_monitoring)
+root.order.add_edge(historical_review, re_validation)
+
+root.order.add_edge(expert_panel, blockchain_verify)
+root.order.add_edge(expert_panel, oral_history)
+root.order.add_edge(expert_panel, condition_report)
+root.order.add_edge(expert_panel, legal_review)
+root.order.add_edge(expert_panel, certification)
+root.order.add_edge(expert_panel, archival_update)
+root.order.add_edge(expert_panel, insurance_setup)
+root.order.add_edge(expert_panel, exhibition_prep)
+root.order.add_edge(expert_panel, iot_monitoring)
+root.order.add_edge(expert_panel, re_validation)
+
+root.order.add_edge(blockchain_verify, oral_history)
+root.order.add_edge(blockchain_verify, condition_report)
+root.order.add_edge(blockchain_verify, legal_review)
+root.order.add_edge(blockchain_verify, certification)
+root.order.add_edge(blockchain_verify, archival_update)
+root.order.add_edge(blockchain_verify, insurance_setup)
+root.order.add_edge(blockchain_verify, exhibition_prep)
+root.order.add_edge(blockchain_verify, iot_monitoring)
+root.order.add_edge(blockchain_verify, re_validation)
+
+root.order.add_edge(oral_history, condition_report)
+root.order.add_edge(oral_history, legal_review)
+root.order.add_edge(oral_history, certification)
+root.order.add_edge(oral_history, archival_update)
+root.order.add_edge(oral_history, insurance_setup)
+root.order.add_edge(oral_history, exhibition_prep)
+root.order.add_edge(oral_history, iot_monitoring)
+root.order.add_edge(oral_history, re_validation)
+
+root.order.add_edge(condition_report, legal_review)
+root.order.add_edge(condition_report, certification)
+root.order.add_edge(condition_report, archival_update)
+root.order.add_edge(condition_report, insurance_setup)
+root.order.add_edge(condition_report, exhibition_prep)
+root.order.add_edge(condition_report, iot_monitoring)
+root.order.add_edge(condition_report, re_validation)
+
+root.order.add_edge(legal_review, certification)
+root.order.add_edge(legal_review, archival_update)
+root.order.add_edge(legal_review, insurance_setup)
+root.order.add_edge(legal_review, exhibition_prep)
+root.order.add_edge(legal_review, iot_monitoring)
+root.order.add_edge(legal_review, re_validation)
+
+root.order.add_edge(certification, archival_update)
+root.order.add_edge(certification, insurance_setup)
+root.order.add_edge(certification, exhibition_prep)
+root.order.add_edge(certification, iot_monitoring)
+root.order.add_edge(certification, re_validation)
+
+root.order.add_edge(archival_update, insurance_setup)
+root.order.add_edge(archival_update, exhibition_prep)
+root.order.add_edge(archival_update, iot_monitoring)
+root.order.add_edge(archival_update, re_validation)
+
+root.order.add_edge(insurance_setup, exhibition_prep)
+root.order.add_edge(insurance_setup, iot_monitoring)
+root.order.add_edge(insurance_setup, re_validation)
+
+root.order.add_edge(exhibition_prep, iot_monitoring)
+root.order.add_edge(exhibition_prep, re_validation)
+
+root.order.add_edge(iot_monitoring, re_validation)
+
+# Print the root model
+print(root)

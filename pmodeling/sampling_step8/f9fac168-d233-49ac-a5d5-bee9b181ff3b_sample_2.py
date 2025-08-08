@@ -1,0 +1,68 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the transitions (activities) with their labels
+site_survey = Transition(label='Site Survey')
+fleet_design = Transition(label='Fleet Design')
+permit_request = Transition(label='Permit Request')
+regulation_review = Transition(label='Regulation Review')
+stakeholder_meet = Transition(label='Stakeholder Meet')
+route_mapping = Transition(label='Route Mapping')
+traffic_sync = Transition(label='Traffic Sync')
+drone_assembly = Transition(label='Drone Assembly')
+software_setup = Transition(label='Software Setup')
+test_flight = Transition(label='Test Flight')
+data_integration = Transition(label='Data Integration')
+compliance_audit = Transition(label='Compliance Audit')
+emergency_plan = Transition(label='Emergency Plan')
+launch_prep = Transition(label='Launch Prep')
+feedback_loop = Transition(label='Feedback Loop')
+performance_tune = Transition(label='Performance Tune')
+scale_strategy = Transition(label='Scale Strategy')
+
+# Define the silent transitions (no-op)
+skip = SilentTransition()
+
+# Define the partial order nodes
+site_survey_and_fleet_design = OperatorPOWL(operator=Operator.XOR, children=[site_survey, fleet_design])
+permit_request_and_regulation_review = OperatorPOWL(operator=Operator.XOR, children=[permit_request, regulation_review])
+stakeholder_meet_and_route_mapping = OperatorPOWL(operator=Operator.XOR, children=[stakeholder_meet, route_mapping])
+traffic_sync_and_drone_assembly = OperatorPOWL(operator=Operator.XOR, children=[traffic_sync, drone_assembly])
+software_setup_and_test_flight = OperatorPOWL(operator=Operator.XOR, children=[software_setup, test_flight])
+data_integration_and_compliance_audit = OperatorPOWL(operator=Operator.XOR, children=[data_integration, compliance_audit])
+emergency_plan_and_launch_prep = OperatorPOWL(operator=Operator.XOR, children=[emergency_plan, launch_prep])
+feedback_loop_and_performance_tune = OperatorPOWL(operator=Operator.XOR, children=[feedback_loop, performance_tune])
+scale_strategy_and_launch_prep = OperatorPOWL(operator=Operator.XOR, children=[scale_strategy, launch_prep])
+
+# Define the loop nodes
+route_mapping_loop = OperatorPOWL(operator=Operator.LOOP, children=[route_mapping])
+software_setup_loop = OperatorPOWL(operator=Operator.LOOP, children=[software_setup])
+test_flight_loop = OperatorPOWL(operator=Operator.LOOP, children=[test_flight])
+data_integration_loop = OperatorPOWL(operator=Operator.LOOP, children=[data_integration])
+compliance_audit_loop = OperatorPOWL(operator=Operator.LOOP, children=[compliance_audit])
+emergency_plan_loop = OperatorPOWL(operator=Operator.LOOP, children=[emergency_plan])
+launch_prep_loop = OperatorPOWL(operator=Operator.LOOP, children=[launch_prep])
+feedback_loop_loop = OperatorPOWL(operator=Operator.LOOP, children=[feedback_loop])
+performance_tune_loop = OperatorPOWL(operator=Operator.LOOP, children=[performance_tune])
+scale_strategy_loop = OperatorPOWL(operator=Operator.LOOP, children=[scale_strategy])
+
+# Define the root of the partial order
+root = StrictPartialOrder(nodes=[site_survey_and_fleet_design, permit_request_and_regulation_review, stakeholder_meet_and_route_mapping, traffic_sync_and_drone_assembly, software_setup_and_test_flight, data_integration_and_compliance_audit, emergency_plan_and_launch_prep, feedback_loop_and_performance_tune, scale_strategy_and_launch_prep, route_mapping_loop, software_setup_loop, test_flight_loop, data_integration_loop, compliance_audit_loop, emergency_plan_loop, launch_prep_loop, feedback_loop_loop, performance_tune_loop, scale_strategy_loop])
+root.order.add_edge(site_survey_and_fleet_design, permit_request_and_regulation_review)
+root.order.add_edge(permit_request_and_regulation_review, stakeholder_meet_and_route_mapping)
+root.order.add_edge(stakeholder_meet_and_route_mapping, traffic_sync_and_drone_assembly)
+root.order.add_edge(traffic_sync_and_drone_assembly, software_setup_and_test_flight)
+root.order.add_edge(software_setup_and_test_flight, data_integration_and_compliance_audit)
+root.order.add_edge(data_integration_and_compliance_audit, emergency_plan_and_launch_prep)
+root.order.add_edge(emergency_plan_and_launch_prep, feedback_loop_and_performance_tune)
+root.order.add_edge(feedback_loop_and_performance_tune, scale_strategy_and_launch_prep)
+root.order.add_edge(route_mapping_loop, software_setup_loop)
+root.order.add_edge(software_setup_loop, test_flight_loop)
+root.order.add_edge(test_flight_loop, data_integration_loop)
+root.order.add_edge(data_integration_loop, compliance_audit_loop)
+root.order.add_edge(compliance_audit_loop, emergency_plan_loop)
+root.order.add_edge(emergency_plan_loop, launch_prep_loop)
+root.order.add_edge(launch_prep_loop, feedback_loop_loop)
+root.order.add_edge(feedback_loop_loop, performance_tune_loop)
+root.order.add_edge(performance_tune_loop, scale_strategy_loop)

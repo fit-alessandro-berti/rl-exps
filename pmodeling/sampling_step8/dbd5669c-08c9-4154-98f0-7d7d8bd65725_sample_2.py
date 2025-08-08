@@ -1,0 +1,65 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+design_layout = Transition(label='Design Layout')
+material_sourcing = Transition(label='Material Sourcing')
+unit_assembly = Transition(label='Unit Assembly')
+system_wiring = Transition(label='System Wiring')
+sensor_install = Transition(label='Sensor Install')
+water_testing = Transition(label='Water Testing')
+nutrient_mix = Transition(label='Nutrient Mix')
+seed_selection = Transition(label='Seed Selection')
+planting_setup = Transition(label='Planting Setup')
+climate_control = Transition(label='Climate Control')
+pest_management = Transition(label='Pest Management')
+data_calibration = Transition(label='Data Calibration')
+yield_analysis = Transition(label='Yield Analysis')
+community_meet = Transition(label='Community Meet')
+compliance_check = Transition(label='Compliance Check')
+expansion_plan = Transition(label='Expansion Plan')
+
+skip = SilentTransition()
+
+# Process steps
+site_survey_node = StrictPartialOrder(nodes=[site_survey])
+design_layout_node = StrictPartialOrder(nodes=[design_layout])
+material_sourcing_node = StrictPartialOrder(nodes=[material_sourcing])
+unit_assembly_node = StrictPartialOrder(nodes=[unit_assembly])
+system_wiring_node = StrictPartialOrder(nodes=[system_wiring])
+sensor_install_node = StrictPartialOrder(nodes=[sensor_install])
+water_testing_node = StrictPartialOrder(nodes=[water_testing])
+nutrient_mix_node = StrictPartialOrder(nodes=[nutrient_mix])
+seed_selection_node = StrictPartialOrder(nodes=[seed_selection])
+planting_setup_node = StrictPartialOrder(nodes=[planting_setup])
+climate_control_node = StrictPartialOrder(nodes=[climate_control])
+pest_management_node = StrictPartialOrder(nodes=[pest_management])
+data_calibration_node = StrictPartialOrder(nodes=[data_calibration])
+yield_analysis_node = StrictPartialOrder(nodes=[yield_analysis])
+community_meet_node = StrictPartialOrder(nodes=[community_meet])
+compliance_check_node = StrictPartialOrder(nodes=[compliance_check])
+expansion_plan_node = StrictPartialOrder(nodes=[expansion_plan])
+
+# Define the order of execution
+root = StrictPartialOrder(nodes=[site_survey_node, design_layout_node, material_sourcing_node, unit_assembly_node, system_wiring_node, sensor_install_node, water_testing_node, nutrient_mix_node, seed_selection_node, planting_setup_node, climate_control_node, pest_management_node, data_calibration_node, yield_analysis_node, community_meet_node, compliance_check_node, expansion_plan_node])
+
+# Add dependencies
+root.order.add_edge(site_survey_node, design_layout_node)
+root.order.add_edge(design_layout_node, material_sourcing_node)
+root.order.add_edge(material_sourcing_node, unit_assembly_node)
+root.order.add_edge(unit_assembly_node, system_wiring_node)
+root.order.add_edge(system_wiring_node, sensor_install_node)
+root.order.add_edge(sensor_install_node, water_testing_node)
+root.order.add_edge(water_testing_node, nutrient_mix_node)
+root.order.add_edge(nutrient_mix_node, seed_selection_node)
+root.order.add_edge(seed_selection_node, planting_setup_node)
+root.order.add_edge(planting_setup_node, climate_control_node)
+root.order.add_edge(climate_control_node, pest_management_node)
+root.order.add_edge(pest_management_node, data_calibration_node)
+root.order.add_edge(data_calibration_node, yield_analysis_node)
+root.order.add_edge(yield_analysis_node, community_meet_node)
+root.order.add_edge(community_meet_node, compliance_check_node)
+root.order.add_edge(compliance_check_node, expansion_plan_node)
+
+print(root)
