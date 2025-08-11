@@ -36,6 +36,12 @@ for file in os.listdir(samples_dir):
     f_score = (2*fitness*precision)/(fitness+precision) if (fitness+precision > 0) else 0.0
 
     final_list.append({"file": file, "label": label, "f_score": f_score, "fitness": fitness, "precision": precision})
+    #break
 
 final_list = pd.DataFrame(final_list)
 final_list.to_csv("promoai_test.csv", index=False)
+
+df2 = final_list.groupby("label")["f_score"].agg(["min", "max", "mean"])
+df2.columns = ['min', 'max', 'mean']
+df2.to_csv("promoai_test_agg.csv", index=True)  # Keep the label as index
+
