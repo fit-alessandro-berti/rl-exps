@@ -3,7 +3,6 @@ import json
 import random
 import torch
 import argparse
-import sys
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from typing import List
 import pm4py
@@ -11,9 +10,8 @@ from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition,
 from pm4py.objects.process_tree.obj import Operator
 
 # ---------------------------------------------------------------------------#
-# 1. Configuration                                                          #
+# 1. Configuration                                                            #
 # ---------------------------------------------------------------------------#
-
 SEED = 42
 random.seed(SEED)
 torch.manual_seed(SEED)
@@ -29,15 +27,17 @@ TOP_P = 0.9
 
 
 # ---------------------------------------------------------------------------#
-# 2. Prompt Function                                                        #
+# 2. Prompt Function                                                          #
 # ---------------------------------------------------------------------------#
 
 def get_powl_prompt(description: str, activities: List[str]) -> str:
-    """ Formats the prompt with the process description and activities. """
+    """
+    Formats the prompt with the process description and activities.
+    """
     activities_str = ", ".join([f"'{act}'" for act in activities])
     return f"""Generate a POWL model for the following process, saving the final result in the variable 'root'.
-A partially ordered workflow language (POWL) is a partially ordered graph representation of a process, extended with control-flow operators for modeling choice and loop structures.
-There are four types of POWL models:
+
+A partially ordered workflow language (POWL) is a partially ordered graph representation of a process, extended with control-flow operators for modeling choice and loop structures. There are four types of POWL models:
 - an activity (identified by its label, e.g., 'M' identifies the activity M). Silent activities with empty labels (tau labels) are also supported.
 - a choice of other POWL models (exclusive choice: X(A, B)).
 - a loop node (* (A, B)): execute A, then choose to exit or execute B then A again, repeated until exit.
@@ -61,18 +61,23 @@ root.order.add_edge(loop, xor)
 NOW, generate the POWL model for the process below.
 DESCRIPTION: {description}
 ACTIVITIES (use these exactly, same names): [{activities_str}]
-Respond with valid Python code only, defining 'root'."""
+
+Respond with valid Python code only, defining 'root'.
+"""
 
 
 # ---------------------------------------------------------------------------#
-# 3. Model Loading                                                          #
+# 3. Model Loading                                                            #
 # ---------------------------------------------------------------------------#
 
 def load_model(model_path: str):
-    """ Load the model and tokenizer from the specified path. """
+    """
+    Load the model and tokenizer from the specified path.
+    """
     print(f"Loading model from {model_path}...")
     tokenizer = AutoTokenizer.from_pretrained(model_path, padding_side="left", use_fast=False)
     tokenizer.pad_token = tokenizer.eos_token
+
     model = AutoModelForCausalLM.from_pretrained(
         model_path,
         torch_dtype=torch.bfloat16,
@@ -80,17 +85,21 @@ def load_model(model_path: str):
     )
     model.eval()  # Set to evaluation mode
     print("Model loaded successfully.")
+    
     return model, tokenizer
 
 
 # ---------------------------------------------------------------------------#
-# 4. Sampling Function                                                      #
+# 4. Sampling Function                                                        #
 # ---------------------------------------------------------------------------#
 
 def generate_samples(prompt: str, num_samples: int, model, tokenizer) -> List[str]:
-    """ Generate multiple samples from the model for a given prompt. """
+    """
+    Generate multiple samples from the model for a given prompt.
+    """
     inputs = tokenizer(prompt, return_tensors="pt", truncation=True, max_length=4096)
     inputs = {k: v.to(model.device) for k, v in inputs.items()}
+
     samples = []
     with torch.no_grad():
         for i in range(num_samples):
@@ -103,32 +112,39 @@ def generate_samples(prompt: str, num_samples: int, model, tokenizer) -> List[st
                 pad_token_id=tokenizer.pad_token_id,
                 eos_token_id=tokenizer.eos_token_id
             )
+
             # Decode the generated text
             generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+
             # Extract only the generated part (after the prompt)
             if prompt in generated_text:
                 generated_code = generated_text[len(prompt):].strip()
             else:
                 generated_code = generated_text.strip()
+
             samples.append(generated_code)
-            print(f" Sample {i + 1}/{num_samples} generated")
+            print(f"  Sample {i + 1}/{num_samples} generated")
+
     return samples
 
 
 def extract_code_from_response(response: str) -> str:
-    """ Extract Python code from the model's response. """
+    """
+    Extract Python code from the model's response.
+    """
     # Try to extract code between ```python and ```
     if "```python" in response:
-        parts = response.split("```python
+        parts = response.split("```python")
         if len(parts) > 1:
             code_part = parts[1].split("```")[0]
-        return code_part.strip()
+            return code_part.strip()
+
     # If no code blocks, assume the entire response is code
     return response.strip()
 
 
 # ---------------------------------------------------------------------------#
-# 5. Argument Parser                                                        #
+# 5. Argument Parser                                                          #
 # ---------------------------------------------------------------------------#
 
 def parse_arguments():
@@ -139,83 +155,76 @@ def parse_arguments():
         description="Generate POWL model samples using a trained language model",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-
+    
     parser.add_argument(
         '--model-path',
         type=str,
         required=True,
         help='Path to the trained model directory'
     )
-
+    
     parser.add_argument(
         '--output-dir',
         type=str,
         required=True,
         help='Directory to save the generated samples'
     )
-
+    
     parser.add_argument(
         '--test-data-dir',
         type=str,
         default=TEST_DATA_DIR,
         help='Directory containing test descriptions'
     )
-
+    
     parser.add_argument(
         '--num-samples',
         type=int,
         default=NUM_SAMPLES_PER_DESCRIPTION,
         help='Number of samples to generate per description'
     )
-
+    
     parser.add_argument(
         '--max-new-tokens',
         type=int,
         default=MAX_NEW_TOKENS,
         help='Maximum number of new tokens to generate'
     )
-
+    
     parser.add_argument(
         '--temperature',
         type=float,
         default=TEMPERATURE,
         help='Sampling temperature'
     )
-
+    
     parser.add_argument(
         '--top-p',
         type=float,
         default=TOP_P,
         help='Top-p sampling parameter'
     )
-
-    parser.add_argument(
-        '--num-total-files',
-        type=int,
-        default=sys.maxsize,
-        help='Total number of new files to generate in this execution'
-    )
-
+    
     return parser.parse_args()
 
 
 # ---------------------------------------------------------------------------#
-# 6. Main Sampling Loop                                                     #
+# 6. Main Sampling Loop                                                       #
 # ---------------------------------------------------------------------------#
 
 def main():
     # Parse arguments
     args = parse_arguments()
-
+    
     # Update global variables with argument values
     global MAX_NEW_TOKENS, TEMPERATURE, TOP_P
     MAX_NEW_TOKENS = args.max_new_tokens
     TEMPERATURE = args.temperature
     TOP_P = args.top_p
-
+    
     # Load model
     model, tokenizer = load_model(args.model_path)
-
+    
     # Create output directory
     os.makedirs(args.output_dir, exist_ok=True)
 
@@ -233,10 +242,6 @@ def main():
 
     # Process each description
     for idx, json_file in enumerate(json_files, 1):
-        remaining = args.num_total_files - total_files
-        if remaining <= 0:
-            break
-
         base_name = os.path.splitext(json_file)[0]
         json_path = os.path.join(desc_folder, json_file)
 
@@ -261,10 +266,8 @@ def main():
         # Generate prompt
         prompt = get_powl_prompt(desc_data["description"], desc_data["activities"])
 
-        # Generate only the number of *missing* samples, up to remaining
-        num_samples_to_generate = min(args.num_samples - sum(existing_outputs), remaining)
-        if num_samples_to_generate <= 0:
-            continue
+        # Generate only the number of *missing* samples
+        num_samples_to_generate = args.num_samples - sum(existing_outputs)
         samples = generate_samples(prompt, num_samples_to_generate, model, tokenizer)
 
         # Save missing samples
