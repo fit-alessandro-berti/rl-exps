@@ -1,0 +1,71 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions for each activity
+material_sourcing = Transition(label='Material Sourcing')
+forager_dispatch = Transition(label='Forager Dispatch')
+authenticity_check = Transition(label='Authenticity Check')
+batch_scheduling = Transition(label='Batch Scheduling')
+artisan_allocation = Transition(label='Artisan Allocation')
+craft_assembly = Transition(label='Craft Assembly')
+quality_inspection = Transition(label='Quality Inspection')
+blockchain_update = Transition(label='Blockchain Update')
+demand_forecast = Transition(label='Demand Forecast')
+price_adjustment = Transition(label='Price Adjustment')
+compliance_review = Transition(label='Compliance Review')
+logistics_planning = Transition(label='Logistics Planning')
+distributor_sync = Transition(label='Distributor Sync')
+customer_feedback = Transition(label='Customer Feedback')
+product_refinement = Transition(label='Product Refinement')
+reputation_audit = Transition(label='Reputation Audit')
+seasonal_review = Transition(label='Seasonal Review')
+
+# Define silent transitions for non-executed steps
+skip_material_sourcing = SilentTransition(label='Material Sourcing')
+skip_forager_dispatch = SilentTransition(label='Forager Dispatch')
+skip_authenticity_check = SilentTransition(label='Authenticity Check')
+skip_batch_scheduling = SilentTransition(label='Batch Scheduling')
+skip_artisan_allocation = SilentTransition(label='Artisan Allocation')
+skip_quality_inspection = SilentTransition(label='Quality Inspection')
+skip_blockchain_update = SilentTransition(label='Blockchain Update')
+skip_demand_forecast = SilentTransition(label='Demand Forecast')
+skip_price_adjustment = SilentTransition(label='Price Adjustment')
+skip_compliance_review = SilentTransition(label='Compliance Review')
+skip_logistics_planning = SilentTransition(label='Logistics Planning')
+skip_distributor_sync = SilentTransition(label='Distributor Sync')
+skip_customer_feedback = SilentTransition(label='Customer Feedback')
+skip_product_refinement = SilentTransition(label='Product Refinement')
+skip_reputation_audit = SilentTransition(label='Reputation Audit')
+skip_seasonal_review = SilentTransition(label='Seasonal Review')
+
+# Define loops and exclusive choices
+material_sourcing_loop = OperatorPOWL(operator=Operator.LOOP, children=[material_sourcing, skip_material_sourcing])
+forager_dispatch_loop = OperatorPOWL(operator=Operator.LOOP, children=[forager_dispatch, skip_forager_dispatch])
+authenticity_check_loop = OperatorPOWL(operator=Operator.LOOP, children=[authenticity_check, skip_authenticity_check])
+batch_scheduling_loop = OperatorPOWL(operator=Operator.LOOP, children=[batch_scheduling, skip_batch_scheduling])
+artisan_allocation_loop = OperatorPOWL(operator=Operator.LOOP, children=[artisan_allocation, skip_artisan_allocation])
+quality_inspection_loop = OperatorPOWL(operator=Operator.LOOP, children=[quality_inspection, skip_quality_inspection])
+blockchain_update_loop = OperatorPOWL(operator=Operator.LOOP, children=[blockchain_update, skip_blockchain_update])
+demand_forecast_loop = OperatorPOWL(operator=Operator.LOOP, children=[demand_forecast, skip_demand_forecast])
+price_adjustment_loop = OperatorPOWL(operator=Operator.LOOP, children=[price_adjustment, skip_price_adjustment])
+compliance_review_loop = OperatorPOWL(operator=Operator.LOOP, children=[compliance_review, skip_compliance_review])
+logistics_planning_loop = OperatorPOWL(operator=Operator.LOOP, children=[logistics_planning, skip_logistics_planning])
+distributor_sync_loop = OperatorPOWL(operator=Operator.LOOP, children=[distributor_sync, skip_distributor_sync])
+customer_feedback_loop = OperatorPOWL(operator=Operator.LOOP, children=[customer_feedback, skip_customer_feedback])
+product_refinement_loop = OperatorPOWL(operator=Operator.LOOP, children=[product_refinement, skip_product_refinement])
+reputation_audit_loop = OperatorPOWL(operator=Operator.LOOP, children=[reputation_audit, skip_reputation_audit])
+seasonal_review_loop = OperatorPOWL(operator=Operator.LOOP, children=[seasonal_review, skip_seasonal_review])
+
+# Define exclusive choices
+exclusive_choice_1 = OperatorPOWL(operator=Operator.XOR, children=[material_sourcing_loop, forager_dispatch_loop])
+exclusive_choice_2 = OperatorPOWL(operator=Operator.XOR, children=[authenticity_check_loop, batch_scheduling_loop])
+exclusive_choice_3 = OperatorPOWL(operator=Operator.XOR, children=[artisan_allocation_loop, quality_inspection_loop])
+exclusive_choice_4 = OperatorPOWL(operator=Operator.XOR, children=[blockchain_update_loop, demand_forecast_loop])
+exclusive_choice_5 = OperatorPOWL(operator=Operator.XOR, children=[price_adjustment_loop, compliance_review_loop])
+exclusive_choice_6 = OperatorPOWL(operator=Operator.XOR, children=[logistics_planning_loop, distributor_sync_loop])
+exclusive_choice_7 = OperatorPOWL(operator=Operator.XOR, children=[customer_feedback_loop, product_refinement_loop])
+exclusive_choice_8 = OperatorPOWL(operator=Operator.XOR, children=[reputation_audit_loop, seasonal_review_loop])
+
+# Define the root of the POWL model
+root = StrictPartialOrder(nodes=[exclusive_choice_1, exclusive_choice_2, exclusive_choice_3, exclusive_choice_4, exclusive_choice_5, exclusive_choice_6, exclusive_choice_7, exclusive_choice_8])

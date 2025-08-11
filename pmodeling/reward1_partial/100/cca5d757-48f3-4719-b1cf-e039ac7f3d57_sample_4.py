@@ -1,0 +1,37 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+SiteAssess = Transition(label='Site Assess')
+LoadTesting = Transition(label='Load Testing')
+ClimateStudy = Transition(label='Climate Study')
+MediumPrep = Transition(label='Medium Prep')
+BedInstall = Transition(label='Bed Install')
+IrrigationSetup = Transition(label='Irrigation Setup')
+CropSelect = Transition(label='Crop Select')
+PestControl = Transition(label='Pest Control')
+CommunityMeet = Transition(label='Community Meet')
+MonitorDeploy = Transition(label='Monitor Deploy')
+WasteCycle = Transition(label='Waste Cycle')
+YieldForecast = Transition(label='Yield Forecast')
+MarketLink = Transition(label='Market Link')
+WorkshopPlan = Transition(label='Workshop Plan')
+TechIntegrate = Transition(label='Tech Integrate')
+
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[SiteAssess, LoadTesting])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[ClimateStudy, MediumPrep])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[BedInstall, IrrigationSetup])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[CropSelect, PestControl])
+loop5 = OperatorPOWL(operator=Operator.LOOP, children=[CommunityMeet, MonitorDeploy])
+loop6 = OperatorPOWL(operator=Operator.LOOP, children=[WasteCycle, YieldForecast])
+loop7 = OperatorPOWL(operator=Operator.LOOP, children=[MarketLink, WorkshopPlan])
+loop8 = OperatorPOWL(operator=Operator.LOOP, children=[TechIntegrate, Loop1, Loop2, Loop3, Loop4, Loop5, Loop6, Loop7])
+
+root = StrictPartialOrder(nodes=[loop1, loop2, loop3, loop4, loop5, loop6, loop7, loop8])
+root.order.add_edge(loop1, loop2)
+root.order.add_edge(loop2, loop3)
+root.order.add_edge(loop3, loop4)
+root.order.add_edge(loop4, loop5)
+root.order.add_edge(loop5, loop6)
+root.order.add_edge(loop6, loop7)
+root.order.add_edge(loop7, loop8)
