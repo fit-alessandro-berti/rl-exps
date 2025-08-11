@@ -1,0 +1,18 @@
+{
+  "title": "08.txt",
+  "description": "This process begins when an employee or customer reports an incident, such as a technical issue or workplace safety concern. The report is logged into a tracking system and assigned to the appropriate team for investigation. The team gathers necessary information, identifies the cause of the incident, and proposes corrective actions. The solution is implemented, whether it\u00e2\u20ac\u2122s a fix, training, or policy change. After the incident is resolved, a follow-up occurs to ensure that the issue won\u00e2\u20ac\u2122t recur. The process ends when the incident report is closed, and all stakeholders are notified.",
+  "activities": [
+    "Assign report to appropriate team",
+    "Change policy",
+    "Close incident report",
+    "Conduct follow-up",
+    "Conduct training",
+    "Gather necessary information",
+    "Identify cause of incident",
+    "Implement fix",
+    "Log report into tracking system",
+    "Notify all stakeholders",
+    "Propose corrective actions",
+    "Report incident"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "title": "18.txt",
+  "description": "A university enrollment system involves the following steps:\nProspective students submit an application online.\nThe admissions office reviews the application and supporting documents.\nIf documents are missing, the applicant is notified to provide the missing items.\nUpon receiving all documents, the application is evaluated by the admissions committee.\nConcurrently, the finance department processes any application fees or waivers.\nIf the application is accepted, an acceptance letter is sent. Otherwise, a rejection letter is sent and the process ends.\nAfter being accepted, the student must then confirm enrollment by a specified deadline; otherwise the application will be canceled.\nIf the student confirms, they receive orientation materials and the IT department sets up student accounts for email, online portals, and library access.\nIf the student is international, the international student office assists with visa processing.\nThe student obtains a student ID card and starts creating their study plan, which includes:\nMeeting with an academic advisor.\nSelecting courses.\nResolving any schedule conflicts.\nThe student begins attending classes.\nThroughout each semester, the student may add or drop courses within the add/drop period.\nAt the end of the semester, grades are posted, and the student can review them online.\nIf the student has any grievances, they can file an appeal, which includes:\nSubmitting an appeal form.\nMeeting with the appeals committee.\nAwaiting a decision.\nThe process repeats each semester until the student graduates or withdraws.",
+  "activities": [
+    "Add/drop courses",
+    "Assist with visa processing",
+    "Await decision",
+    "Begin attending classes",
+    "Cancel application",
+    "Confirm enrollment",
+    "Evaluate application by admissions committee",
+    "Graduate",
+    "Meet with academic advisor",
+    "Meet with appeals committee",
+    "Notify applicant of missing documents",
+    "Obtain student ID card",
+    "Post grades",
+    "Process fees or waivers",
+    "Provide missing documents",
+    "Resolve schedule conflicts",
+    "Review application and documents",
+    "Review grades online",
+    "Select courses",
+    "Send acceptance letter",
+    "Send orientation materials",
+    "Send rejection letter",
+    "Set up IT accounts",
+    "Submit appeal form",
+    "Submit application online",
+    "Withdraw"
+  ]
+}

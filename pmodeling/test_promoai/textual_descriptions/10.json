@@ -1,0 +1,15 @@
+{
+  "title": "10.txt",
+  "description": "The process starts when an employee or department submits a request for an IT solution, such as new software or hardware. IT assesses the request, checking for compatibility with existing systems and evaluating cost and resource needs. If approved, IT procures the necessary tools or licenses, installs the solution, and tests it in a controlled environment. After successful testing, the new solution is rolled out to the requesting department. Training may be provided, and IT support remains available for troubleshooting.",
+  "activities": [
+    "Assess compatibility",
+    "Evaluate cost and resource needs",
+    "Install the solution",
+    "Procure necessary tools or licenses",
+    "Provide support for troubleshooting",
+    "Provide training",
+    "Roll out solution to requesting department",
+    "Submit IT solution request",
+    "Test solution"
+  ]
+}

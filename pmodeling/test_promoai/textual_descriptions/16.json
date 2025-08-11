@@ -1,0 +1,30 @@
+{
+  "title": "16.txt",
+  "description": "In a multinational company's annual audit process, the audit coordinator initiates the audit process by sending a notification to the regional office.\nThe regional office prepares financial statements and gathers necessary documents.\nConcurrently, the compliance team checks for any regulatory updates that might affect the audit.\nAfterward, the regional office submits the documents to the central audit team.\nThe central audit team reviews the submission. If discrepancies are found, they request clarifications from the regional office.\nThe regional office provides the necessary clarifications.\nOnce all documents are reviewed without issues, the audit team conducts a risk assessment.\nThe risk assessment includes evaluating financial risks, operational risks, and compliance risks, which can be done in any order but must all be completed.\nIf high risk is identified, then a detailed investigation is launched.\nThe investigation includes data analysis, interviews, and, in certain cases, site visits.\nAfter all risks are addressed, the audit team compiles the audit report.\nThe report is reviewed by the audit director.\nThe audit director may approve the report or send it back for revisions.\nIf revisions are required, the audit team updates the report accordingly and resubmits it to be reviewed again by the audit director.\nOnce approved, the final report is distributed to the executive board and archived.\nThe entire audit process is then closed.",
+  "activities": [
+    "Approve report",
+    "Archive report",
+    "Check regulatory updates",
+    "Close audit process",
+    "Compile audit report",
+    "Complete risk assessment/mitigation",
+    "Conduct data analysis",
+    "Conduct interviews",
+    "Distribute final report",
+    "Evaluate compliance risks",
+    "Evaluate financial risks",
+    "Evaluate operational risks",
+    "Gather necessary documents",
+    "Launch detailed investigation",
+    "Perform site visits",
+    "Prepare financial statements",
+    "Receive clarifications",
+    "Request clarifications of discrepancies",
+    "Review report by audit director",
+    "Review submission",
+    "Send notification",
+    "Send report for revision",
+    "Submit documents",
+    "Update and resubmit report"
+  ]
+}

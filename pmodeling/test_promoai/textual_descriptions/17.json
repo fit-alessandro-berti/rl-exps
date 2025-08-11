@@ -1,0 +1,31 @@
+{
+  "title": "17.txt",
+  "description": "An e-commerce company has a comprehensive order fulfillment process:\nWhen a customer places an order, the system records the order details.\nPayment processing begins. If the payment fails, the customer is notified, and the process ends.\nUpon successful payment, the inventory system checks stock availability.\nIf items are out of stock, a back-order is initiated, and the customer is informed about the delay. The process continues once the back-order is received and all required items are available in stock.\nIn-stock items are picked from the warehouse.\nQuality control checks are performed on the picked items.\nPackaging is done, including gift wrapping if the customer requested it.\nMeanwhile, the shipping department prepares shipping documents and labels.\nIf the order is international, customs documentation is prepared.\nOnce packaging and shipping documents are ready, the order is dispatched.\nThe system sends a shipping confirmation to the customer.\nAfter dispatch, the system updates the inventory levels.\nA follow-up email for feedback is sent directly after confirming the successful delivery.\nIf the customer reports any issues upon delivery, a returns process is initiated, which includes:\nSending a return shipping label.\nReceiving returned items.\nInspecting returned items.\nProcessing a refund or replacement.",
+  "activities": [
+    "Check stock availability",
+    "Confirm delivery",
+    "Customer reports issue",
+    "Dispatch order",
+    "Gift wrap items",
+    "Inform customer about delay",
+    "Initiate back-order",
+    "Inspect returned items",
+    "Notify about failed payment",
+    "Package items",
+    "Perform quality control checks",
+    "Pick items from warehouse",
+    "Place order",
+    "Prepare documentation for international orders",
+    "Prepare shipping documents and labels",
+    "Process payment",
+    "Process refund",
+    "Process replacement",
+    "Receive back-order",
+    "Receive returned items",
+    "Record order details",
+    "Send follow-up email",
+    "Send return shipping label",
+    "Send shipping confirmation to customer",
+    "Update inventory levels"
+  ]
+}

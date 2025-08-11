@@ -1,0 +1,16 @@
+{
+  "title": "04.txt",
+  "description": "The process starts with defining the objectives of a marketing campaign, including the target audience and goals such as generating leads or increasing brand awareness. The marketing team creates the content, designs the visuals, and selects channels for promotion, whether digital ads, emails, or social media posts. The campaign is launched, and its performance is tracked in real-time through various metrics like click-through rates and conversions. Leads generated from the campaign are collected in the CRM system, where sales teams can follow up. The process concludes when the campaign period ends, and performance is analyzed for future optimization.",
+  "activities": [
+    "Analyze performance for future optimization",
+    "Campaign period ends",
+    "Collect leads in CRM system",
+    "Create content",
+    "Define campaign objectives",
+    "Design visuals",
+    "Launch campaign",
+    "Sales teams follows up on leads",
+    "Select promotion channels",
+    "Track performance in real-time"
+  ]
+}
