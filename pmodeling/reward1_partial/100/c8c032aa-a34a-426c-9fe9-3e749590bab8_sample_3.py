@@ -1,0 +1,78 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the transitions (activities) with exact names
+LightSourcing = Transition(label='Light Sourcing')
+NutrientOrder = Transition(label='Nutrient Order')
+ClimateSetup = Transition(label='Climate Setup')
+GrowthPlanning = Transition(label='Growth Planning')
+SeedPlanting = Transition(label='Seed Planting')
+IrrigationCheck = Transition(label='Irrigation Check')
+PestMonitoring = Transition(label='Pest Monitoring')
+EnergyTracking = Transition(label='Energy Tracking')
+QualityTesting = Transition(label='Quality Testing')
+DataAnalysis = Transition(label='Data Analysis')
+EquipmentRepair = Transition(label='Equipment Repair')
+PackagingPrep = Transition(label='Packaging Prep')
+InventoryUpdate = Transition(label='Inventory Update')
+DeliveryScheduling = Transition(label='Delivery Scheduling')
+CustomerFeedback = Transition(label='Customer Feedback')
+MarketForecast = Transition(label='Market Forecast')
+
+# Define the silent transitions (tau labels)
+skip = SilentTransition()
+
+# Define the process tree structure
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[DataAnalysis, skip])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[PestMonitoring, skip])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[QualityTesting, skip])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[CustomerFeedback, skip])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[MarketForecast, skip])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[EquipmentRepair, skip])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[InventoryUpdate, skip])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[DeliveryScheduling, skip])
+
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[LightSourcing, NutrientOrder, ClimateSetup, GrowthPlanning, SeedPlanting, IrrigationCheck, xor1])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[EnergyTracking, xor2])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[xor3])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[xor4])
+loop5 = OperatorPOWL(operator=Operator.LOOP, children=[xor5])
+loop6 = OperatorPOWL(operator=Operator.LOOP, children=[xor6])
+loop7 = OperatorPOWL(operator=Operator.LOOP, children=[xor7])
+loop8 = OperatorPOWL(operator=Operator.LOOP, children=[xor8])
+
+root = StrictPartialOrder(nodes=[loop1, loop2, loop3, loop4, loop5, loop6, loop7, loop8])
+
+# Define the partial order
+root.order.add_edge(loop1, loop2)
+root.order.add_edge(loop1, loop3)
+root.order.add_edge(loop1, loop4)
+root.order.add_edge(loop1, loop5)
+root.order.add_edge(loop1, loop6)
+root.order.add_edge(loop1, loop7)
+root.order.add_edge(loop1, loop8)
+root.order.add_edge(loop2, loop3)
+root.order.add_edge(loop2, loop4)
+root.order.add_edge(loop2, loop5)
+root.order.add_edge(loop2, loop6)
+root.order.add_edge(loop2, loop7)
+root.order.add_edge(loop2, loop8)
+root.order.add_edge(loop3, loop4)
+root.order.add_edge(loop3, loop5)
+root.order.add_edge(loop3, loop6)
+root.order.add_edge(loop3, loop7)
+root.order.add_edge(loop3, loop8)
+root.order.add_edge(loop4, loop5)
+root.order.add_edge(loop4, loop6)
+root.order.add_edge(loop4, loop7)
+root.order.add_edge(loop4, loop8)
+root.order.add_edge(loop5, loop6)
+root.order.add_edge(loop5, loop7)
+root.order.add_edge(loop5, loop8)
+root.order.add_edge(loop6, loop7)
+root.order.add_edge(loop6, loop8)
+root.order.add_edge(loop7, loop8)
+
+# Print the result
+print(root)

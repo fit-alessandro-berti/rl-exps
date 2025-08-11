@@ -1,0 +1,37 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+site_analysis = Transition(label='Site Analysis')
+infrastructure_setup = Transition(label='Infrastructure Setup')
+seed_selection = Transition(label='Seed Selection')
+nutrient_mix = Transition(label='Nutrient Mix')
+planting_cycle = Transition(label='Planting Cycle')
+climate_adjust = Transition(label='Climate Adjust')
+growth_monitor = Transition(label='Growth Monitor')
+pest_control = Transition(label='Pest Control')
+harvesting_mode = Transition(label='Harvesting Mode')
+quality_check = Transition(label='Quality Check')
+packaging_phase = Transition(label='Packaging Phase')
+cold_storage = Transition(label='Cold Storage')
+order_dispatch = Transition(label='Order Dispatch')
+waste_recycling = Transition(label='Waste Recycling')
+system_maintain = Transition(label='System Maintain')
+
+skip = SilentTransition()
+
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[planting_cycle, pest_control, growth_monitor])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[harvesting_mode, quality_check, packaging_phase])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[cold_storage, order_dispatch, waste_recycling])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[system_maintain])
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[nutrient_mix, skip])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[infrastructure_setup, skip])
+
+root = StrictPartialOrder(nodes=[site_analysis, xor1, xor2, loop1, loop2, loop3, loop4])
+root.order.add_edge(site_analysis, xor1)
+root.order.add_edge(site_analysis, xor2)
+root.order.add_edge(xor1, loop1)
+root.order.add_edge(xor2, loop2)
+root.order.add_edge(loop1, loop3)
+root.order.add_edge(loop2, loop3)
+root.order.add_edge(loop3, loop4)
+root.order.add_edge(loop4, site_analysis)

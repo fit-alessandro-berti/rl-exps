@@ -1,0 +1,41 @@
+root = StrictPartialOrder(
+    nodes=[
+        Transition(label='Material Sourcing'),
+        Transition(label='Supplier Audit'),
+        Transition(label='Credential Verify'),
+        Transition(label='Design Concept'),
+        Transition(label='Prototype Build'),
+        Transition(label='Quality Review'),
+        Transition(label='Artisan Assign'),
+        Transition(label='Batch Scheduling'),
+        Transition(label='Custom Approvals'),
+        Transition(label='Inventory Adjust'),
+        Transition(label='Production Sync'),
+        Transition(label='Shipping Plan'),
+        Transition(label='Compliance Check'),
+        Transition(label='Feedback Loop'),
+        Transition(label='Market Target'),
+        Transition(label='Order Fulfill'),
+        Transition(label='Sustainability'),
+        Transition(label='Customer Engage')
+    ],
+    order={
+        'Material Sourcing': 'Supplier Audit',
+        'Supplier Audit': 'Credential Verify',
+        'Credential Verify': 'Design Concept',
+        'Design Concept': 'Prototype Build',
+        'Prototype Build': 'Quality Review',
+        'Quality Review': 'Artisan Assign',
+        'Artisan Assign': 'Batch Scheduling',
+        'Batch Scheduling': 'Custom Approvals',
+        'Custom Approvals': 'Inventory Adjust',
+        'Inventory Adjust': 'Production Sync',
+        'Production Sync': 'Shipping Plan',
+        'Shipping Plan': 'Compliance Check',
+        'Compliance Check': 'Feedback Loop',
+        'Feedback Loop': 'Market Target',
+        'Market Target': 'Order Fulfill',
+        'Order Fulfill': 'Sustainability',
+        'Sustainability': 'Customer Engage'
+    }
+)
