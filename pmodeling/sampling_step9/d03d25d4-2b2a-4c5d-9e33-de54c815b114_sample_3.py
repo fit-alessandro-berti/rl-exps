@@ -1,0 +1,23 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+Farm_Registration = Transition(label='Farm Registration')
+Lot_Tagging = Transition(label='Lot Tagging')
+Soil_Testing = Transition(label='Soil Testing')
+Harvest_Logging = Transition(label='Harvest Logging')
+Coffee_Sorting = Transition(label='Coffee Sorting')
+Sensory_Profiling = Transition(label='Sensory Profiling')
+Quality_Scoring = Transition(label='Quality Scoring')
+Blockchain_Entry = Transition(label='Blockchain Entry')
+Environmental_Audit = Transition(label='Environmental Audit')
+Farmer_Feedback = Transition(label='Farmer Feedback')
+Dynamic_Pricing = Transition(label='Dynamic Pricing')
+Roast_Scheduling = Transition(label='Roast Scheduling')
+Batch_Testing = Transition(label='Batch Testing')
+Certification_Review = Transition(label='Certification Review')
+Distribution_Preparation = Transition(label='Distribution Prep')
+Consumer_Feedback = Transition(label='Consumer Feedback')
+skip = SilentTransition()
+lot_tagging = OperatorPOWL(operator=Operator.LOOP, children=[Soil_Testing, Harvest_Logging, Coffee_Sorting, Sensory_Profiling, Quality_Scoring, Blockchain_Entry, Environmental_Audit, Farmer_Feedback, Dynamic_Pricing, Roast_Scheduling, Batch_Testing, Certification_Review, Distribution_Preparation, Consumer_Feedback])
+root = StrictPartialOrder(nodes=[lot_tagging])
+root.order.add_edge(lot_tagging, lot_tagging)

@@ -1,0 +1,56 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions for each activity
+artifact_intake = Transition(label='Artifact Intake')
+provenance_check = Transition(label='Provenance Check')
+archive_search = Transition(label='Archive Search')
+expert_consult = Transition(label='Expert Consult')
+material_scan = Transition(label='Material Scan')
+three_d_imaging = Transition(label='3D Imaging')
+stylistic_match = Transition(label='Stylistic Match')
+database_query = Transition(label='Database Query')
+panel_review = Transition(label='Panel Review')
+certify_report = Transition(label='Certify Report')
+condition_assess = Transition(label='Condition Assess')
+storage_plan = Transition(label='Storage Plan')
+catalog_entry = Transition(label='Catalog Entry')
+display_prep = Transition(label='Display Prep')
+loan_arrange = Transition(label='Loan Arrange')
+monitor_setup = Transition(label='Monitor Setup')
+skip = SilentTransition()
+
+# Define the POWL model
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[provenance_check, archive_search, expert_consult])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[material_scan, three_d_imaging, stylistic_match])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[database_query, panel_review])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[certify_report, condition_assess])
+loop5 = OperatorPOWL(operator=Operator.LOOP, children=[storage_plan, catalog_entry, display_prep, loan_arrange])
+loop6 = OperatorPOWL(operator=Operator.LOOP, children=[monitor_setup])
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[loop1, skip])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[loop2, skip])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[loop3, skip])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[loop4, skip])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[loop5, skip])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[loop6, skip])
+
+root = StrictPartialOrder(nodes=[xor1, xor2, xor3, xor4, xor5, xor6])
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor1, xor3)
+root.order.add_edge(xor1, xor4)
+root.order.add_edge(xor1, xor5)
+root.order.add_edge(xor1, xor6)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor2, xor4)
+root.order.add_edge(xor2, xor5)
+root.order.add_edge(xor2, xor6)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor3, xor5)
+root.order.add_edge(xor3, xor6)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor4, xor6)
+root.order.add_edge(xor5, xor6)
+
+print(root)

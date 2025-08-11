@@ -1,0 +1,81 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+site_survey = Transition(label='Site Survey')
+design_modules = Transition(label='Design Modules')
+source_materials = Transition(label='Source Materials')
+install_framework = Transition(label='Install Framework')
+setup_irrigation = Transition(label='Setup Irrigation')
+integrate_sensors = Transition(label='Integrate Sensors')
+configure_ai = Transition(label='Configure AI')
+select_crops = Transition(label='Select Crops')
+calibrate_climate = Transition(label='Calibrate Climate')
+plant_seeds = Transition(label='Plant Seeds')
+monitor_growth = Transition(label='Monitor Growth')
+manage_pests = Transition(label='Manage Pests')
+recycle_waste = Transition(label='Recycle Waste')
+engage_community = Transition(label='Engage Community')
+ensure_compliance = Transition(label='Ensure Compliance')
+distribute_produce = Transition(label='Distribute Produce')
+
+# Define silent transitions
+skip = SilentTransition()
+
+# Define loop and exclusive choice nodes
+site_survey_loop = OperatorPOWL(operator=Operator.LOOP, children=[site_survey])
+design_modules_loop = OperatorPOWL(operator=Operator.LOOP, children=[design_modules])
+source_materials_loop = OperatorPOWL(operator=Operator.LOOP, children=[source_materials])
+install_framework_loop = OperatorPOWL(operator=Operator.LOOP, children=[install_framework])
+setup_irrigation_loop = OperatorPOWL(operator=Operator.LOOP, children=[setup_irrigation])
+integrate_sensors_loop = OperatorPOWL(operator=Operator.LOOP, children=[integrate_sensors])
+configure_ai_loop = OperatorPOWL(operator=Operator.LOOP, children=[configure_ai])
+select_crops_loop = OperatorPOWL(operator=Operator.LOOP, children=[select_crops])
+calibrate_climate_loop = OperatorPOWL(operator=Operator.LOOP, children=[calibrate_climate])
+plant_seeds_loop = OperatorPOWL(operator=Operator.LOOP, children=[plant_seeds])
+monitor_growth_loop = OperatorPOWL(operator=Operator.LOOP, children=[monitor_growth])
+manage_pests_loop = OperatorPOWL(operator=Operator.LOOP, children=[manage_pests])
+recycle_waste_loop = OperatorPOWL(operator=Operator.LOOP, children=[recycle_waste])
+engage_community_loop = OperatorPOWL(operator=Operator.LOOP, children=[engage_community])
+ensure_compliance_loop = OperatorPOWL(operator=Operator.LOOP, children=[ensure_compliance])
+distribute_produce_loop = OperatorPOWL(operator=Operator.LOOP, children=[distribute_produce])
+
+# Define exclusive choice nodes
+exclusive_choice_1 = OperatorPOWL(operator=Operator.XOR, children=[site_survey_loop, skip])
+exclusive_choice_2 = OperatorPOWL(operator=Operator.XOR, children=[design_modules_loop, skip])
+exclusive_choice_3 = OperatorPOWL(operator=Operator.XOR, children=[source_materials_loop, skip])
+exclusive_choice_4 = OperatorPOWL(operator=Operator.XOR, children=[install_framework_loop, skip])
+exclusive_choice_5 = OperatorPOWL(operator=Operator.XOR, children=[setup_irrigation_loop, skip])
+exclusive_choice_6 = OperatorPOWL(operator=Operator.XOR, children=[integrate_sensors_loop, skip])
+exclusive_choice_7 = OperatorPOWL(operator=Operator.XOR, children=[configure_ai_loop, skip])
+exclusive_choice_8 = OperatorPOWL(operator=Operator.XOR, children=[select_crops_loop, skip])
+exclusive_choice_9 = OperatorPOWL(operator=Operator.XOR, children=[calibrate_climate_loop, skip])
+exclusive_choice_10 = OperatorPOWL(operator=Operator.XOR, children=[plant_seeds_loop, skip])
+exclusive_choice_11 = OperatorPOWL(operator=Operator.XOR, children=[monitor_growth_loop, skip])
+exclusive_choice_12 = OperatorPOWL(operator=Operator.XOR, children=[manage_pests_loop, skip])
+exclusive_choice_13 = OperatorPOWL(operator=Operator.XOR, children=[recycle_waste_loop, skip])
+exclusive_choice_14 = OperatorPOWL(operator=Operator.XOR, children=[engage_community_loop, skip])
+exclusive_choice_15 = OperatorPOWL(operator=Operator.XOR, children=[ensure_compliance_loop, skip])
+exclusive_choice_16 = OperatorPOWL(operator=Operator.XOR, children=[distribute_produce_loop, skip])
+
+# Define the root node
+root = StrictPartialOrder(nodes=[exclusive_choice_1, exclusive_choice_2, exclusive_choice_3, exclusive_choice_4, exclusive_choice_5, exclusive_choice_6, exclusive_choice_7, exclusive_choice_8, exclusive_choice_9, exclusive_choice_10, exclusive_choice_11, exclusive_choice_12, exclusive_choice_13, exclusive_choice_14, exclusive_choice_15, exclusive_choice_16])
+root.order.add_edge(exclusive_choice_1, exclusive_choice_2)
+root.order.add_edge(exclusive_choice_2, exclusive_choice_3)
+root.order.add_edge(exclusive_choice_3, exclusive_choice_4)
+root.order.add_edge(exclusive_choice_4, exclusive_choice_5)
+root.order.add_edge(exclusive_choice_5, exclusive_choice_6)
+root.order.add_edge(exclusive_choice_6, exclusive_choice_7)
+root.order.add_edge(exclusive_choice_7, exclusive_choice_8)
+root.order.add_edge(exclusive_choice_8, exclusive_choice_9)
+root.order.add_edge(exclusive_choice_9, exclusive_choice_10)
+root.order.add_edge(exclusive_choice_10, exclusive_choice_11)
+root.order.add_edge(exclusive_choice_11, exclusive_choice_12)
+root.order.add_edge(exclusive_choice_12, exclusive_choice_13)
+root.order.add_edge(exclusive_choice_13, exclusive_choice_14)
+root.order.add_edge(exclusive_choice_14, exclusive_choice_15)
+root.order.add_edge(exclusive_choice_15, exclusive_choice_16)
+
+# Print the root node
+print(root)

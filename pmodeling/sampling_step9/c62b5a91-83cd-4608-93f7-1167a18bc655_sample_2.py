@@ -1,0 +1,46 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+artifact_intake = Transition(label='Artifact Intake')
+condition_check = Transition(label='Condition Check')
+provenance_research = Transition(label='Provenance Research')
+scientific_testing = Transition(label='Scientific Testing')
+radiocarbon_dating = Transition(label='Radiocarbon Dating')
+spectroscopy_scan = Transition(label='Spectroscopy Scan')
+legal_clearance = Transition(label='Legal Clearance')
+heritage_compliance = Transition(label='Heritage Compliance')
+digital_archiving = Transition(label='Digital Archiving')
+expert_review = Transition(label='Expert Review')
+committee_vote = Transition(label='Committee Vote')
+acquisition_approval = Transition(label='Acquisition Approval')
+conservation_plan = Transition(label='Conservation Plan')
+storage_setup = Transition(label='Storage Setup')
+stakeholder_update = Transition(label='Stakeholder Update')
+
+skip = SilentTransition()
+
+provenance_research_choice = OperatorPOWL(operator=Operator.XOR, children=[provenance_research, skip])
+legal_clearance_choice = OperatorPOWL(operator=Operator.XOR, children=[legal_clearance, skip])
+heritage_compliance_choice = OperatorPOWL(operator=Operator.XOR, children=[heritage_compliance, skip])
+expert_review_choice = OperatorPOWL(operator=Operator.XOR, children=[expert_review, skip])
+
+scientific_testing_loop = OperatorPOWL(operator=Operator.LOOP, children=[scientific_testing, skip])
+radiocarbon_dating_loop = OperatorPOWL(operator=Operator.LOOP, children=[radiocarbon_dating, skip])
+spectroscopy_scan_loop = OperatorPOWL(operator=Operator.LOOP, children=[spectroscopy_scan, skip])
+
+root = StrictPartialOrder(nodes=[artifact_intake, condition_check, provenance_research_choice, scientific_testing_loop, radiocarbon_dating_loop, spectroscopy_scan_loop, legal_clearance_choice, heritage_compliance_choice, digital_archiving, expert_review_choice, committee_vote, acquisition_approval, conservation_plan, storage_setup, stakeholder_update])
+root.order.add_edge(artifact_intake, condition_check)
+root.order.add_edge(condition_check, provenance_research_choice)
+root.order.add_edge(provenance_research_choice, scientific_testing_loop)
+root.order.add_edge(scientific_testing_loop, radiocarbon_dating_loop)
+root.order.add_edge(radiocarbon_dating_loop, spectroscopy_scan_loop)
+root.order.add_edge(spectroscopy_scan_loop, legal_clearance_choice)
+root.order.add_edge(legal_clearance_choice, heritage_compliance_choice)
+root.order.add_edge(heritage_compliance_choice, digital_archiving)
+root.order.add_edge(digital_archiving, expert_review_choice)
+root.order.add_edge(expert_review_choice, committee_vote)
+root.order.add_edge(committee_vote, acquisition_approval)
+root.order.add_edge(acquisition_approval, conservation_plan)
+root.order.add_edge(conservation_plan, storage_setup)
+root.order.add_edge(storage_setup, stakeholder_update)

@@ -1,0 +1,53 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL model
+provenance_check = Transition(label='Provenance Check')
+spectroscopy_test = Transition(label='Spectroscopy Test')
+carbon_dating = Transition(label='Carbon Dating')
+style_analysis = Transition(label='Style Analysis')
+image_scanning = Transition(label='Image Scanning')
+restoration_scan = Transition(label='Restoration Scan')
+appraiser_review = Transition(label='Appraiser Review')
+database_match = Transition(label='Database Match')
+blockchain_entry = Transition(label='Blockchain Entry')
+certificate_issue = Transition(label='Certificate Issue')
+forgery_detect = Transition(label='Forgery Detect')
+report_compilation = Transition(label='Report Compilation')
+client_briefing = Transition(label='Client Briefing')
+secure_storage = Transition(label='Secure Storage')
+final_approval = Transition(label='Final Approval')
+skip = SilentTransition()
+
+# Define the process structure
+provenance_check_to_spectroscopy = OperatorPOWL(operator=Operator.XOR, children=[spectroscopy_test, skip])
+spectroscopy_to_carbon_dating = OperatorPOWL(operator=Operator.XOR, children=[carbon_dating, skip])
+carbon_dating_to_style_analysis = OperatorPOWL(operator=Operator.XOR, children=[style_analysis, skip])
+style_analysis_to_image_scanning = OperatorPOWL(operator=Operator.XOR, children=[image_scanning, skip])
+image_scanning_to_restoration_scan = OperatorPOWL(operator=Operator.XOR, children=[restoration_scan, skip])
+restoration_scan_to_appraiser_review = OperatorPOWL(operator=Operator.XOR, children=[appraiser_review, skip])
+appraiser_review_to_database_match = OperatorPOWL(operator=Operator.XOR, children=[database_match, skip])
+database_match_to_blockchain_entry = OperatorPOWL(operator=Operator.XOR, children=[blockchain_entry, skip])
+blockchain_entry_to_certificate_issue = OperatorPOWL(operator=Operator.XOR, children=[certificate_issue, skip])
+certificate_issue_to_forgery_detect = OperatorPOWL(operator=Operator.XOR, children=[forgery_detect, skip])
+forgery_detect_to_report_compilation = OperatorPOWL(operator=Operator.XOR, children=[report_compilation, skip])
+report_compilation_to_client_briefing = OperatorPOWL(operator=Operator.XOR, children=[client_briefing, skip])
+client_briefing_to_secure_storage = OperatorPOWL(operator=Operator.XOR, children=[secure_storage, skip])
+secure_storage_to_final_approval = OperatorPOWL(operator=Operator.XOR, children=[final_approval, skip])
+
+# Connect the nodes
+root = StrictPartialOrder(nodes=[provenance_check_to_spectroscopy, spectroscopy_to_carbon_dating, carbon_dating_to_style_analysis, style_analysis_to_image_scanning, image_scanning_to_restoration_scan, restoration_scan_to_appraiser_review, appraiser_review_to_database_match, database_match_to_blockchain_entry, blockchain_entry_to_certificate_issue, certificate_issue_to_forgery_detect, forgery_detect_to_report_compilation, report_compilation_to_client_briefing, client_briefing_to_secure_storage, secure_storage_to_final_approval])
+root.order.add_edge(provenance_check_to_spectroscopy, spectroscopy_to_carbon_dating)
+root.order.add_edge(spectroscopy_to_carbon_dating, carbon_dating_to_style_analysis)
+root.order.add_edge(carbon_dating_to_style_analysis, style_analysis_to_image_scanning)
+root.order.add_edge(style_analysis_to_image_scanning, image_scanning_to_restoration_scan)
+root.order.add_edge(image_scanning_to_restoration_scan, restoration_scan_to_appraiser_review)
+root.order.add_edge(restoration_scan_to_appraiser_review, appraiser_review_to_database_match)
+root.order.add_edge(appraiser_review_to_database_match, database_match_to_blockchain_entry)
+root.order.add_edge(database_match_to_blockchain_entry, blockchain_entry_to_certificate_issue)
+root.order.add_edge(blockchain_entry_to_certificate_issue, certificate_issue_to_forgery_detect)
+root.order.add_edge(certificate_issue_to_forgery_detect, forgery_detect_to_report_compilation)
+root.order.add_edge(forgery_detect_to_report_compilation, report_compilation_to_client_briefing)
+root.order.add_edge(report_compilation_to_client_briefing, client_briefing_to_secure_storage)
+root.order.add_edge(client_briefing_to_secure_storage, secure_storage_to_final_approval)

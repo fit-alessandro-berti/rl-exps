@@ -1,0 +1,23 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+ArtifactScan = Transition(label='Artifact Scan')
+OwnershipVerify = Transition(label='Ownership Verify')
+RiskAssess = Transition(label='Risk Assess')
+LegalReview = Transition(label='Legal Review')
+StakeholderNotify = Transition(label='Stakeholder Notify')
+RecoveryPlan = Transition(label='Recovery Plan')
+ThirdPartyContact = Transition(label='Third-Party Contact')
+NegotiationSetup = Transition(label='Negotiation Setup')
+SecureTransport = Transition(label='Secure Transport')
+ConditionInspect = Transition(label='Condition Inspect')
+RestorationBegin = Transition(label='Restoration Begin')
+DocumentationLog = Transition(label='Documentation Log')
+HeritageArchive = Transition(label='Heritage Archive')
+FinalAudit = Transition(label='Final Audit')
+ProcessClose = Transition(label='Process Close')
+skip = SilentTransition()
+loop = OperatorPOWL(operator=Operator.LOOP, children=[ArtifactScan, OwnershipVerify, RiskAssess, LegalReview, StakeholderNotify, RecoveryPlan, ThirdPartyContact, NegotiationSetup, SecureTransport, ConditionInspect, RestorationBegin, DocumentationLog, HeritageArchive, FinalAudit, ProcessClose])
+xor = OperatorPOWL(operator=Operator.XOR, children=[loop, skip])
+root = StrictPartialOrder(nodes=[xor])
+root.order.add_edge(xor, loop)

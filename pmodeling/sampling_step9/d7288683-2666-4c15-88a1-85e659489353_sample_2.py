@@ -1,0 +1,36 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+# Define the transitions
+sourcing = Transition(label='Component Sourcing')
+assembly = Transition(label='Frame Assembly')
+motor = Transition(label='Motor Installation')
+sensor = Transition(label='Sensor Mounting')
+wiring = Transition(label='Wiring Setup')
+firmware = Transition(label='Firmware Upload')
+ai_module = Transition(label='AI Module')
+calibration = Transition(label='Calibration Phase')
+testing = Transition(label='Stress Testing')
+simulation = Transition(label='Flight Simulation')
+adjustment = Transition(label='Pattern Adjustment')
+inspect = Transition(label='Quality Inspect')
+compliance = Transition(label='Compliance Check')
+packaging = Transition(label='Packaging Final')
+delivery = Transition(label='Delivery Setup')
+# Define the silent transitions
+skip = SilentTransition()
+# Define the partial order model
+loop_calibration = OperatorPOWL(operator=Operator.LOOP, children=[calibration, testing])
+loop_simulation = OperatorPOWL(operator=Operator.LOOP, children=[simulation, adjustment])
+loop_inspect = OperatorPOWL(operator=Operator.LOOP, children=[inspect, compliance])
+loop_delivery = OperatorPOWL(operator=Operator.LOOP, children=[delivery, packaging])
+xor_simulation = OperatorPOWL(operator=Operator.XOR, children=[simulation, skip])
+xor_inspect = OperatorPOWL(operator=Operator.XOR, children=[inspect, skip])
+xor_delivery = OperatorPOWL(operator=Operator.XOR, children=[delivery, skip])
+xor_calibration = OperatorPOWL(operator=Operator.XOR, children=[calibration, skip])
+xor = OperatorPOWL(operator=Operator.XOR, children=[xor_simulation, xor_inspect, xor_delivery, xor_calibration])
+root = StrictPartialOrder(nodes=[loop_calibration, loop_simulation, loop_inspect, loop_delivery, xor])
+root.order.add_edge(loop_calibration, xor)
+root.order.add_edge(loop_simulation, xor)
+root.order.add_edge(loop_inspect, xor)
+root.order.add_edge(loop_delivery, xor)

@@ -1,0 +1,56 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+provenance_check = Transition(label='Provenance Check')
+sample_collection = Transition(label='Sample Collection')
+spectroscopy_test = Transition(label='Spectroscopy Test')
+carbon_dating = Transition(label='Carbon Dating')
+expert_review = Transition(label='Expert Review')
+legal_clearance = Transition(label='Legal Clearance')
+cultural_assessment = Transition(label='Cultural Assessment')
+digital_scan = Transition(label='Digital Scan')
+report_draft = Transition(label='Report Draft')
+stakeholder_meet = Transition(label='Stakeholder Meet')
+acquisition_vote = Transition(label='Acquisition Vote')
+restoration_plan = Transition(label='Restoration Plan')
+condition_report = Transition(label='Condition Report')
+archival_entry = Transition(label='Archival Entry')
+final_approval = Transition(label='Final Approval')
+
+skip = SilentTransition()
+
+# Process tree representation
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[provenance_check, sample_collection])
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[skip, expert_review])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[legal_clearance, cultural_assessment])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[digital_scan, report_draft])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[stakeholder_meet, acquisition_vote])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[restoration_plan, condition_report])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[archival_entry, final_approval])
+
+# Partial order representation
+root = StrictPartialOrder(nodes=[loop1, xor1, xor2, xor3, xor4, xor5, xor6])
+root.order.add_edge(loop1, xor1)
+root.order.add_edge(loop1, xor2)
+root.order.add_edge(loop1, xor3)
+root.order.add_edge(loop1, xor4)
+root.order.add_edge(loop1, xor5)
+root.order.add_edge(loop1, xor6)
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor1, xor3)
+root.order.add_edge(xor1, xor4)
+root.order.add_edge(xor1, xor5)
+root.order.add_edge(xor1, xor6)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor2, xor4)
+root.order.add_edge(xor2, xor5)
+root.order.add_edge(xor2, xor6)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor3, xor5)
+root.order.add_edge(xor3, xor6)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor4, xor6)
+root.order.add_edge(xor5, xor6)
+
+print(root)

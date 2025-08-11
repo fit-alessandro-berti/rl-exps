@@ -1,0 +1,77 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions for each activity
+MilkCollection = Transition(label='Milk Collection')
+QualityTesting = Transition(label='Quality Testing')
+MilkBlending = Transition(label='Milk Blending')
+StarterCulture = Transition(label='Starter Culture')
+FermentationCheck = Transition(label='Fermentation Check')
+CurdCutting = Transition(label='Curd Cutting')
+WheySeparation = Transition(label='Whey Separation')
+MoldingPress = Transition(label='Molding Press')
+SaltingStage = Transition(label='Salting Stage')
+AgingControl = Transition(label='Aging Control')
+PackagingDesign = Transition(label='Packaging Design')
+ColdShipping = Transition(label='Cold Shipping')
+ComplianceAudit = Transition(label='Compliance Audit')
+BlockchainLog = Transition(label='Blockchain Log')
+MarketPricing = Transition(label='Market Pricing')
+OrderFulfillment = Transition(label='Order Fulfillment')
+FeedbackReview = Transition(label='Feedback Review')
+
+# Define silent transitions for no operations
+skip = SilentTransition()
+
+# Define loops and XORs
+loop_milk_collection = OperatorPOWL(operator=Operator.LOOP, children=[MilkCollection])
+loop_quality_testing = OperatorPOWL(operator=Operator.LOOP, children=[QualityTesting])
+loop_milk_blending = OperatorPOWL(operator=Operator.LOOP, children=[MilkBlending])
+loop_fermentation_check = OperatorPOWL(operator=Operator.LOOP, children=[FermentationCheck])
+loop_curd_cutting = OperatorPOWL(operator=Operator.LOOP, children=[CurdCutting])
+loop_whey_separation = OperatorPOWL(operator=Operator.LOOP, children=[WheySeparation])
+loop_molding_press = OperatorPOWL(operator=Operator.LOOP, children=[MoldingPress])
+loop_salting_stage = OperatorPOWL(operator=Operator.LOOP, children=[SaltingStage])
+loop_aging_control = OperatorPOWL(operator=Operator.LOOP, children=[AgingControl])
+loop_packaging_design = OperatorPOWL(operator=Operator.LOOP, children=[PackagingDesign])
+loop_compliance_audit = OperatorPOWL(operator=Operator.LOOP, children=[ComplianceAudit])
+loop_blockchain_log = OperatorPOWL(operator=Operator.LOOP, children=[BlockchainLog])
+loop_market_pricing = OperatorPOWL(operator=Operator.LOOP, children=[MarketPricing])
+loop_order_fulfillment = OperatorPOWL(operator=Operator.LOOP, children=[OrderFulfillment])
+loop_feedback_review = OperatorPOWL(operator=Operator.LOOP, children=[FeedbackReview])
+
+xor_milk_collection = OperatorPOWL(operator=Operator.XOR, children=[loop_milk_collection, skip])
+xor_quality_testing = OperatorPOWL(operator=Operator.XOR, children=[loop_quality_testing, skip])
+xor_milk_blending = OperatorPOWL(operator=Operator.XOR, children=[loop_milk_blending, skip])
+xor_fermentation_check = OperatorPOWL(operator=Operator.XOR, children=[loop_fermentation_check, skip])
+xor_curd_cutting = OperatorPOWL(operator=Operator.XOR, children=[loop_curd_cutting, skip])
+xor_whey_separation = OperatorPOWL(operator=Operator.XOR, children=[loop_whey_separation, skip])
+xor_molding_press = OperatorPOWL(operator=Operator.XOR, children=[loop_molding_press, skip])
+xor_salting_stage = OperatorPOWL(operator=Operator.XOR, children=[loop_salting_stage, skip])
+xor_aging_control = OperatorPOWL(operator=Operator.XOR, children=[loop_aging_control, skip])
+xor_packaging_design = OperatorPOWL(operator=Operator.XOR, children=[loop_packaging_design, skip])
+xor_compliance_audit = OperatorPOWL(operator=Operator.XOR, children=[loop_compliance_audit, skip])
+xor_blockchain_log = OperatorPOWL(operator=Operator.XOR, children=[loop_blockchain_log, skip])
+xor_market_pricing = OperatorPOWL(operator=Operator.XOR, children=[loop_market_pricing, skip])
+xor_order_fulfillment = OperatorPOWL(operator=Operator.XOR, children=[loop_order_fulfillment, skip])
+xor_feedback_review = OperatorPOWL(operator=Operator.XOR, children=[loop_feedback_review, skip])
+
+# Define the root of the POWL model
+root = StrictPartialOrder(nodes=[xor_milk_collection, xor_quality_testing, xor_milk_blending, xor_fermentation_check, xor_curd_cutting, xor_whey_separation, xor_molding_press, xor_salting_stage, xor_aging_control, xor_packaging_design, xor_compliance_audit, xor_blockchain_log, xor_market_pricing, xor_order_fulfillment, xor_feedback_review])
+
+# Define the order between nodes
+root.order.add_edge(xor_milk_collection, xor_quality_testing)
+root.order.add_edge(xor_quality_testing, xor_milk_blending)
+root.order.add_edge(xor_milk_blending, xor_fermentation_check)
+root.order.add_edge(xor_fermentation_check, xor_curd_cutting)
+root.order.add_edge(xor_curd_cutting, xor_whey_separation)
+root.order.add_edge(xor_whey_separation, xor_molding_press)
+root.order.add_edge(xor_molding_press, xor_salting_stage)
+root.order.add_edge(xor_salting_stage, xor_aging_control)
+root.order.add_edge(xor_aging_control, xor_packaging_design)
+root.order.add_edge(xor_packaging_design, xor_compliance_audit)
+root.order.add_edge(xor_compliance_audit, xor_blockchain_log)
+root.order.add_edge(xor_blockchain_log, xor_market_pricing)
+root.order.add_edge(xor_market_pricing, xor_order_fulfillment)
+root.order.add_edge(xor_order_fulfillment, xor_feedback_review)

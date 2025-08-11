@@ -1,0 +1,23 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+SpecReview = Transition(label='Spec Review')
+ComponentPick = Transition(label='Component Pick')
+FrameBuild = Transition(label='Frame Build')
+MotorMount = Transition(label='Motor Mount')
+SensorFit = Transition(label='Sensor Fit')
+WiringSetup = Transition(label='Wiring Setup')
+SoftwareLoad = Transition(label='Software Load')
+CalibrationTest = Transition(label='Calibration Test')
+StressCheck = Transition(label='Stress Check')
+FirmwareFlash = Transition(label='Firmware Flash')
+FeedbackLoop = Transition(label='Feedback Loop')
+PackagePrep = Transition(label='Package Prep')
+DocCompile = Transition(label='Doc Compile')
+ShipArrange = Transition(label='Ship Arrange')
+RemoteSetup = Transition(label='Remote Setup')
+skip = SilentTransition()
+loop = OperatorPOWL(operator=Operator.LOOP, children=[SpecReview, ComponentPick, FrameBuild, MotorMount, SensorFit, WiringSetup, SoftwareLoad, CalibrationTest, StressCheck, FirmwareFlash, FeedbackLoop, PackagePrep, DocCompile, ShipArrange, RemoteSetup])
+xor = OperatorPOWL(operator=Operator.XOR, children=[skip])
+root = StrictPartialOrder(nodes=[loop, xor])
+root.order.add_edge(loop, xor)

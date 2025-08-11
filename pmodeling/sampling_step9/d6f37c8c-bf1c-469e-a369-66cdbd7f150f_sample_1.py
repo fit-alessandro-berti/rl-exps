@@ -1,0 +1,27 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+Client_Brief = Transition(label='Client Brief')
+Design_Draft = Transition(label='Design Draft')
+Component_Order = Transition(label='Component Order')
+Firmware_Build = Transition(label='Firmware Build')
+PCB_Assembly = Transition(label='PCB Assembly')
+Sensor_Install = Transition(label='Sensor Install')
+Motor_Mount = Transition(label='Motor Mount')
+Battery_Test = Transition(label='Battery Test')
+AI_Module = Transition(label='AI Module')
+System_Integrate = Transition(label='System Integrate')
+Flight_Simulate = Transition(label='Flight Simulate')
+Stress_Test = Transition(label='Stress Test')
+Compliance_Check = Transition(label='Compliance Check')
+Quality_Audit = Transition(label='Quality Audit')
+Package_Drone = Transition(label='Package Drone')
+Delivery_Plan = Transition(label='Delivery Plan')
+skip = SilentTransition()
+loop = OperatorPOWL(operator=Operator.LOOP, children=[Component_Order, Firmware_Build, PCB_Assembly, Sensor_Install, Motor_Mount, Battery_Test, AI_Module, System_Integrate, Flight_Simulate])
+xor = OperatorPOWL(operator=Operator.XOR, children=[Compliance_Check, Quality_Audit])
+root = StrictPartialOrder(nodes=[loop, xor])
+root.order.add_edge(loop, Compliance_Check)
+root.order.add_edge(loop, Quality_Audit)
+root.order.add_edge(loop, xor)

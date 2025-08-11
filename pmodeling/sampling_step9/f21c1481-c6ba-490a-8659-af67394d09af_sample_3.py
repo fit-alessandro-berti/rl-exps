@@ -1,0 +1,40 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+collection_survey = Transition(label='Collection Survey')
+provenance_check = Transition(label='Provenance Check')
+legal_review = Transition(label='Legal Review')
+scientific_test = Transition(label='Scientific Test')
+material_analysis = Transition(label='Material Analysis')
+ownership_audit = Transition(label='Ownership Audit')
+ethical_screening = Transition(label='Ethical Screening')
+condition_report = Transition(label='Condition Report')
+expert_consultation = Transition(label='Expert Consultation')
+transport_planning = Transition(label='Transport Planning')
+secure_packing = Transition(label='Secure Packing')
+customs_clearance = Transition(label='Customs Clearance')
+insurance_setup = Transition(label='Insurance Setup')
+exhibit_preparation = Transition(label='Exhibit Preparation')
+final_approval = Transition(label='Final Approval')
+skip = SilentTransition()
+
+loop_collection = OperatorPOWL(operator=Operator.LOOP, children=[collection_survey, provenance_check])
+xor_legal_test = OperatorPOWL(operator=Operator.XOR, children=[legal_review, skip])
+xor_scientific_material = OperatorPOWL(operator=Operator.XOR, children=[scientific_test, material_analysis])
+xor_ownership_ethics = OperatorPOWL(operator=Operator.XOR, children=[ownership_audit, ethical_screening])
+xor_condition_expert = OperatorPOWL(operator=Operator.XOR, children=[condition_report, expert_consultation])
+xor_transport_customs = OperatorPOWL(operator=Operator.XOR, children=[transport_planning, customs_clearance])
+xor_insurance_exhibit = OperatorPOWL(operator=Operator.XOR, children=[insurance_setup, exhibit_preparation])
+xor_final_approval = OperatorPOWL(operator=Operator.XOR, children=[final_approval, skip])
+
+root = StrictPartialOrder(nodes=[loop_collection, xor_legal_test, xor_scientific_material, xor_ownership_ethics, xor_condition_expert, xor_transport_customs, xor_insurance_exhibit, xor_final_approval])
+root.order.add_edge(loop_collection, xor_legal_test)
+root.order.add_edge(loop_collection, xor_scientific_material)
+root.order.add_edge(loop_collection, xor_ownership_ethics)
+root.order.add_edge(loop_collection, xor_condition_expert)
+root.order.add_edge(loop_collection, xor_transport_customs)
+root.order.add_edge(loop_collection, xor_insurance_exhibit)
+root.order.add_edge(loop_collection, xor_final_approval)
+
+print(root)

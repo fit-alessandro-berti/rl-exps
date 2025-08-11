@@ -1,0 +1,46 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+seed_select = Transition(label='Seed Select')
+germinate_seeds = Transition(label='Germinate Seeds')
+transplant_seedlings = Transition(label='Transplant Seedlings')
+mix_nutrients = Transition(label='Mix Nutrients')
+adjust_pH = Transition(label='Adjust pH')
+monitor_climate = Transition(label='Monitor Climate')
+control_humidity = Transition(label='Control Humidity')
+co2_regulation = Transition(label='CO2 Regulation')
+detect_pests = Transition(label='Detect Pests')
+deploy_biocontrols = Transition(label='Deploy Biocontrols')
+schedule_harvest = Transition(label='Schedule Harvest')
+automate_picking = Transition(label='Automate Picking')
+package_produce = Transition(label='Package Produce')
+compost_waste = Transition(label='Compost Waste')
+recycle_water = Transition(label='Recycle Water')
+data_logging = Transition(label='Data Logging')
+system_maintenance = Transition(label='System Maintenance')
+
+skip = SilentTransition()
+
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[seed_select, germinate_seeds])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[transplant_seedlings, mix_nutrients])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[adjust_pH, monitor_climate])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[control_humidity, co2_regulation])
+loop5 = OperatorPOWL(operator=Operator.LOOP, children=[detect_pests, deploy_biocontrols])
+loop6 = OperatorPOWL(operator=Operator.LOOP, children=[schedule_harvest, automate_picking])
+loop7 = OperatorPOWL(operator=Operator.LOOP, children=[package_produce, compost_waste])
+loop8 = OperatorPOWL(operator=Operator.LOOP, children=[recycle_water, data_logging])
+loop9 = OperatorPOWL(operator=Operator.LOOP, children=[system_maintenance, skip])
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[loop1, loop2])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[loop3, loop4])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[loop5, loop6])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[loop7, loop8])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[loop9, skip])
+
+root = StrictPartialOrder(nodes=[xor1, xor2, xor3, xor4, xor5])
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor1, xor3)
+root.order.add_edge(xor2, xor4)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor5, xor4)

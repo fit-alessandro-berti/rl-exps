@@ -1,0 +1,42 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+env_analysis = Transition(label='Env Analysis')
+modular_build = Transition(label='Modular Build')
+hydroponic_setup = Transition(label='Hydroponic Setup')
+seed_select = Transition(label='Seed Select')
+nutrient_prep = Transition(label='Nutrient Prep')
+climate_calibrate = Transition(label='Climate Calibrate')
+sensor_install = Transition(label='Sensor Install')
+ai_integration = Transition(label='AI Integration')
+crop_monitor = Transition(label='Crop Monitor')
+growth_adjust = Transition(label='Growth Adjust')
+harvest_sort = Transition(label='Harvest Sort')
+packaging = Transition(label='Packaging')
+distribution_plan = Transition(label='Distribution Plan')
+sustain_audit = Transition(label='Sustain Audit')
+energy_optimize = Transition(label='Energy Optimize')
+
+skip = SilentTransition()
+loop = OperatorPOWL(operator=Operator.LOOP, children=[site_survey, env_analysis])
+xor = OperatorPOWL(operator=Operator.XOR, children=[modular_build, skip])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[hydroponic_setup, xor])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[seed_select, xor2])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[nutrient_prep, xor3])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[climate_calibrate, xor4])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[sensor_install, xor5])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[ai_integration, xor6])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[crop_monitor, xor7])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[growth_adjust, xor8])
+xor10 = OperatorPOWL(operator=Operator.XOR, children=[harvest_sort, xor9])
+xor11 = OperatorPOWL(operator=Operator.XOR, children=[packaging, xor10])
+xor12 = OperatorPOWL(operator=Operator.XOR, children=[distribution_plan, xor11])
+xor13 = OperatorPOWL(operator=Operator.XOR, children=[sustain_audit, xor12])
+xor14 = OperatorPOWL(operator=Operator.XOR, children=[energy_optimize, xor13])
+
+root = StrictPartialOrder(nodes=[loop, xor14])
+root.order.add_edge(loop, xor14)
+
+print(root)

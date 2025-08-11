@@ -1,0 +1,60 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions
+site_survey = Transition(label='Site Survey')
+structure_prep = Transition(label='Structure Prep')
+system_install = Transition(label='System Install')
+env_control = Transition(label='Env Control')
+nutrient_mix = Transition(label='Nutrient Mix')
+crop_select = Transition(label='Crop Select')
+ai_setup = Transition(label='AI Setup')
+worker_train = Transition(label='Worker Train')
+pest_control = Transition(label='Pest Control')
+irrigation_plan = Transition(label='Irrigation Plan')
+data_monitor = Transition(label='Data Monitor')
+yield_forecast = Transition(label='Yield Forecast')
+energy_audit = Transition(label='Energy Audit')
+market_setup = Transition(label='Market Setup')
+logistics_plan = Transition(label='Logistics Plan')
+waste_manage = Transition(label='Waste Manage')
+skip = SilentTransition()
+
+# Define exclusive choice
+exclusive_choice = OperatorPOWL(operator=Operator.XOR, children=[worker_train, skip])
+
+# Define loops
+loop_1 = OperatorPOWL(operator=Operator.LOOP, children=[pest_control, system_install])
+loop_2 = OperatorPOWL(operator=Operator.LOOP, children=[env_control, system_install])
+loop_3 = OperatorPOWL(operator=Operator.LOOP, children=[irrigation_plan, system_install])
+loop_4 = OperatorPOWL(operator=Operator.LOOP, children=[data_monitor, system_install])
+loop_5 = OperatorPOWL(operator=Operator.LOOP, children=[yield_forecast, system_install])
+loop_6 = OperatorPOWL(operator=Operator.LOOP, children=[energy_audit, system_install])
+loop_7 = OperatorPOWL(operator=Operator.LOOP, children=[market_setup, system_install])
+loop_8 = OperatorPOWL(operator=Operator.LOOP, children=[logistics_plan, system_install])
+loop_9 = OperatorPOWL(operator=Operator.LOOP, children=[waste_manage, system_install])
+
+# Define the root node with all sub-nodes
+root = StrictPartialOrder(nodes=[site_survey, structure_prep, system_install, exclusive_choice, loop_1, loop_2, loop_3, loop_4, loop_5, loop_6, loop_7, loop_8, loop_9, ai_setup])
+root.order.add_edge(site_survey, structure_prep)
+root.order.add_edge(structure_prep, system_install)
+root.order.add_edge(system_install, exclusive_choice)
+root.order.add_edge(exclusive_choice, loop_1)
+root.order.add_edge(exclusive_choice, loop_2)
+root.order.add_edge(exclusive_choice, loop_3)
+root.order.add_edge(exclusive_choice, loop_4)
+root.order.add_edge(exclusive_choice, loop_5)
+root.order.add_edge(exclusive_choice, loop_6)
+root.order.add_edge(exclusive_choice, loop_7)
+root.order.add_edge(exclusive_choice, loop_8)
+root.order.add_edge(exclusive_choice, loop_9)
+root.order.add_edge(loop_1, system_install)
+root.order.add_edge(loop_2, system_install)
+root.order.add_edge(loop_3, system_install)
+root.order.add_edge(loop_4, system_install)
+root.order.add_edge(loop_5, system_install)
+root.order.add_edge(loop_6, system_install)
+root.order.add_edge(loop_7, system_install)
+root.order.add_edge(loop_8, system_install)
+root.order.add_edge(loop_9, system_install)

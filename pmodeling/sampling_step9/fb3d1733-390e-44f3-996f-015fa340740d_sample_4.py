@@ -1,0 +1,36 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+Initial_Assess = Transition(label='Initial Assess')
+Disassemble_Parts = Transition(label='Disassemble Parts')
+Ultrasonic_Clean = Transition(label='Ultrasonic Clean')
+Inspect_Components = Transition(label='Inspect Components')
+Fabricate_Gears = Transition(label='Fabricate Gears')
+Dial_Restoration = Transition(label='Dial Restoration')
+Repaint_Markers = Transition(label='Repaint Markers')
+Reassemble_Movement = Transition(label='Reassemble Movement')
+Lubricate_Bearings = Transition(label='Lubricate Bearings')
+Calibrate_Timing = Transition(label='Calibrate Timing')
+Polish_Case = Transition(label='Polish Case')
+Re_case_Watch = Transition(label='Re-case Watch')
+Quality_Testing = Transition(label='Quality Testing')
+Document_Process = Transition(label='Document Process')
+Package_Product = Transition(label='Package Product')
+
+skip = SilentTransition()
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[Inspect_Components, Fabricate_Gears])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[Lubricate_Bearings, Calibrate_Timing])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[Polish_Case, Re_case_Watch])
+xor = OperatorPOWL(operator=Operator.XOR, children=[Disassemble_Parts, Ultrasonic_Clean])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[Dial_Restoration, Repaint_Markers])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[Reassemble_Movement, Quality_Testing])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[Document_Process, Package_Product])
+
+root = StrictPartialOrder(nodes=[xor, xor2, xor3, xor4, loop1, loop2, loop3])
+root.order.add_edge(xor, loop1)
+root.order.add_edge(xor, loop2)
+root.order.add_edge(xor, loop3)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor2, xor4)
+root.order.add_edge(xor3, xor4)

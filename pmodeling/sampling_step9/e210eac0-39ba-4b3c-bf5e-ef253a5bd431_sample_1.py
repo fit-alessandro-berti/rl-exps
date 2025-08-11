@@ -1,0 +1,41 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+regulation_check = Transition(label='Regulation Check')
+modular_design = Transition(label='Modular Design')
+material_sourcing = Transition(label='Material Sourcing')
+energy_integration = Transition(label='Energy Integration')
+climate_setup = Transition(label='Climate Setup')
+nutrient_mix = Transition(label='Nutrient Mix')
+system_assembly = Transition(label='System Assembly')
+automation_config = Transition(label='Automation Config')
+crop_seeding = Transition(label='Crop Seeding')
+growth_monitoring = Transition(label='Growth Monitoring')
+waste_handling = Transition(label='Waste Handling')
+community_meet = Transition(label='Community Meet')
+data_analysis = Transition(label='Data Analysis')
+feedback_loop = Transition(label='Feedback Loop')
+yield_forecast = Transition(label='Yield Forecast')
+
+skip = SilentTransition()
+
+site_survey_loop = OperatorPOWL(operator=Operator.LOOP, children=[site_survey, regulation_check])
+modular_design_loop = OperatorPOWL(operator=Operator.LOOP, children=[modular_design, material_sourcing])
+energy_integration_loop = OperatorPOWL(operator=Operator.LOOP, children=[energy_integration, climate_setup])
+nutrient_mix_loop = OperatorPOWL(operator=Operator.LOOP, children=[nutrient_mix, automation_config])
+system_assembly_loop = OperatorPOWL(operator=Operator.LOOP, children=[system_assembly, crop_seeding])
+growth_monitoring_loop = OperatorPOWL(operator=Operator.LOOP, children=[growth_monitoring, waste_handling])
+community_meet_loop = OperatorPOWL(operator=Operator.LOOP, children=[community_meet, data_analysis])
+feedback_loop_loop = OperatorPOWL(operator=Operator.LOOP, children=[feedback_loop, yield_forecast])
+
+root = StrictPartialOrder(nodes=[site_survey_loop, modular_design_loop, energy_integration_loop, nutrient_mix_loop, system_assembly_loop, growth_monitoring_loop, community_meet_loop, feedback_loop_loop])
+root.order.add_edge(site_survey_loop, modular_design_loop)
+root.order.add_edge(modular_design_loop, energy_integration_loop)
+root.order.add_edge(energy_integration_loop, nutrient_mix_loop)
+root.order.add_edge(nutrient_mix_loop, system_assembly_loop)
+root.order.add_edge(system_assembly_loop, growth_monitoring_loop)
+root.order.add_edge(growth_monitoring_loop, community_meet_loop)
+root.order.add_edge(community_meet_loop, feedback_loop_loop)
+root.order.add_edge(feedback_loop_loop, site_survey_loop)

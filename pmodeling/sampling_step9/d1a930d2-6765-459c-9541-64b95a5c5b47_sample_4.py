@@ -1,0 +1,23 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+artifact_intake = Transition(label='Artifact Intake')
+condition_check = Transition(label='Condition Check')
+material_test = Transition(label='Material Test')
+style_compare = Transition(label='Style Compare')
+carbon_dating = Transition(label='Carbon Dating')
+document_review = Transition(label='Document Review')
+provenance_check = Transition(label='Provenance Check')
+digital_imaging = Transition(label='Digital Imaging')
+forgeriescan = Transition(label='Forgery Scan')
+expert_consult = Transition(label='Expert Consult')
+historical_research = Transition(label='Historical Research')
+panel_review = Transition(label='Panel Review')
+report_draft = Transition(label='Report Draft')
+final_approval = Transition(label='Final Approval')
+catalog_entry = Transition(label='Catalog Entry')
+skip = SilentTransition()
+loop = OperatorPOWL(operator=Operator.LOOP, children=[artifact_intake, condition_check, material_test, style_compare, carbon_dating, provenance_check, digital_imaging, forgeriescan, expert_consult, historical_research])
+xor = OperatorPOWL(operator=Operator.XOR, children=[panel_review, skip])
+root = StrictPartialOrder(nodes=[loop, xor])
+root.order.add_edge(loop, xor)

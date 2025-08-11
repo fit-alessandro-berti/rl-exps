@@ -1,0 +1,77 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions
+artifact_intake = Transition(label='Artifact Intake')
+catalog_entry = Transition(label='Catalog Entry')
+visual_inspect = Transition(label='Visual Inspect')
+material_test = Transition(label='Material Test')
+spectroscopy = Transition(label='Spectroscopy')
+historical_check = Transition(label='Historical Check')
+provenance_trace = Transition(label='Provenance Trace')
+style_compare = Transition(label='Style Compare')
+three_d_scanning = Transition(label='3D Scanning')
+condition_assess = Transition(label='Condition Assess')
+preservation_plan = Transition(label='Preservation Plan')
+legal_review = Transition(label='Legal Review')
+report_draft = Transition(label='Report Draft')
+report_finalize = Transition(label='Report Finalize')
+archive_data = Transition(label='Archive Data')
+sale_prep = Transition(label='Sale Prep')
+
+# Define silent transitions
+skip_catalog = SilentTransition()
+skip_visual_inspect = SilentTransition()
+skip_material_test = SilentTransition()
+skip_spectroscopy = SilentTransition()
+skip_historical_check = SilentTransition()
+skip_provenance_trace = SilentTransition()
+skip_style_compare = SilentTransition()
+skip_three_d_scanning = SilentTransition()
+skip_condition_assess = SilentTransition()
+skip_preservation_plan = SilentTransition()
+skip_legal_review = SilentTransition()
+skip_report_draft = SilentTransition()
+skip_report_finalize = SilentTransition()
+skip_archive_data = SilentTransition()
+skip_sale_prep = SilentTransition()
+
+# Define loops
+catalog_loop = OperatorPOWL(operator=Operator.LOOP, children=[artifact_intake, catalog_entry, skip_visual_inspect])
+visual_inspect_loop = OperatorPOWL(operator=Operator.LOOP, children=[catalog_entry, visual_inspect, skip_material_test])
+material_test_loop = OperatorPOWL(operator=Operator.LOOP, children=[visual_inspect, material_test, skip_spectroscopy])
+spectroscopy_loop = OperatorPOWL(operator=Operator.LOOP, children=[material_test, spectroscopy, skip_historical_check])
+historical_check_loop = OperatorPOWL(operator=Operator.LOOP, children=[spectroscopy, historical_check, skip_provenance_trace])
+provenance_trace_loop = OperatorPOWL(operator=Operator.LOOP, children=[historical_check, provenance_trace, skip_style_compare])
+style_compare_loop = OperatorPOWL(operator=Operator.LOOP, children=[provenance_trace, style_compare, skip_three_d_scanning])
+three_d_scanning_loop = OperatorPOWL(operator=Operator.LOOP, children=[style_compare, three_d_scanning, skip_condition_assess])
+condition_assess_loop = OperatorPOWL(operator=Operator.LOOP, children=[three_d_scanning, condition_assess, skip_preservation_plan])
+preservation_plan_loop = OperatorPOWL(operator=Operator.LOOP, children=[condition_assess, preservation_plan, skip_legal_review])
+legal_review_loop = OperatorPOWL(operator=Operator.LOOP, children=[preservation_plan, legal_review, skip_report_draft])
+report_draft_loop = OperatorPOWL(operator=Operator.LOOP, children=[legal_review, report_draft, skip_report_finalize])
+report_finalize_loop = OperatorPOWL(operator=Operator.LOOP, children=[report_draft, report_finalize, skip_archive_data])
+archive_data_loop = OperatorPOWL(operator=Operator.LOOP, children=[report_finalize, archive_data, skip_sale_prep])
+sale_prep_loop = OperatorPOWL(operator=Operator.LOOP, children=[archive_data, sale_prep, skip_catalog])
+
+# Define XOR
+xor = OperatorPOWL(operator=Operator.XOR, children=[catalog_loop, visual_inspect_loop, material_test_loop, spectroscopy_loop, historical_check_loop, provenance_trace_loop, style_compare_loop, three_d_scanning_loop, condition_assess_loop, preservation_plan_loop, legal_review_loop, report_draft_loop, report_finalize_loop, archive_data_loop, sale_prep_loop])
+
+# Define POWL model
+root = StrictPartialOrder(nodes=[xor])
+root.order.add_edge(catalog_loop, visual_inspect_loop)
+root.order.add_edge(visual_inspect_loop, material_test_loop)
+root.order.add_edge(material_test_loop, spectroscopy_loop)
+root.order.add_edge(spectroscopy_loop, historical_check_loop)
+root.order.add_edge(historical_check_loop, provenance_trace_loop)
+root.order.add_edge(provenance_trace_loop, style_compare_loop)
+root.order.add_edge(style_compare_loop, three_d_scanning_loop)
+root.order.add_edge(three_d_scanning_loop, condition_assess_loop)
+root.order.add_edge(condition_assess_loop, preservation_plan_loop)
+root.order.add_edge(preservation_plan_loop, legal_review_loop)
+root.order.add_edge(legal_review_loop, report_draft_loop)
+root.order.add_edge(report_draft_loop, report_finalize_loop)
+root.order.add_edge(report_finalize_loop, archive_data_loop)
+root.order.add_edge(archive_data_loop, sale_prep_loop)
+
+print(root)

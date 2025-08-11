@@ -1,0 +1,43 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+Assess_Artifact = Transition(label='Assess Artifact')
+Verify_Provenance = Transition(label='Verify Provenance')
+Analyze_Condition = Transition(label='Analyze Condition')
+Plan_Conservation = Transition(label='Plan Conservation')
+Clean_Surface = Transition(label='Clean Surface')
+Stabilize_Structure = Transition(label='Stabilize Structure')
+Source_Materials = Transition(label='Source Materials')
+Fabricate_Parts = Transition(label='Fabricate Parts')
+Perform_Repairs = Transition(label='Perform Repairs')
+Apply_Patina = Transition(label='Apply Patina')
+Match_Colors = Transition(label='Match Colors')
+Document_Process = Transition(label='Document Process')
+Review_Quality = Transition(label='Review Quality')
+Obtain_Approval = Transition(label='Obtain Approval')
+Package_Securely = Transition(label='Package Securely')
+Arrange_Transport = Transition(label='Arrange Transport')
+
+skip = SilentTransition()
+loop = OperatorPOWL(operator=Operator.LOOP, children=[Assess_Artifact, Verify_Provenance])
+xor = OperatorPOWL(operator=Operator.XOR, children=[Analyze_Condition, skip])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[Plan_Conservation, Clean_Surface])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[Stabilize_Structure, skip])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[Source_Materials, Fabricate_Parts])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[Perform_Repairs, skip])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[Apply_Patina, Match_Colors])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[Document_Process, skip])
+loop5 = OperatorPOWL(operator=Operator.LOOP, children=[Review_Quality, Obtain_Approval])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[Package_Securely, skip])
+loop6 = OperatorPOWL(operator=Operator.LOOP, children=[Arrange_Transport, skip])
+
+root = StrictPartialOrder(nodes=[loop, xor, loop2, xor2, loop3, xor3, loop4, xor4, loop5, xor5, loop6])
+root.order.add_edge(loop, xor)
+root.order.add_edge(loop2, xor2)
+root.order.add_edge(loop3, xor3)
+root.order.add_edge(loop4, xor4)
+root.order.add_edge(loop5, xor5)
+root.order.add_edge(loop6, xor6)
+
+print(root)

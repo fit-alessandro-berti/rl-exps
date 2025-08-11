@@ -1,0 +1,27 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+Milk_Sourcing = Transition(label='Milk Sourcing')
+Quality_Testing = Transition(label='Quality Testing')
+Milk_Pasteurize = Transition(label='Milk Pasteurize')
+Culture_Inoculate = Transition(label='Culture Inoculate')
+Coagulation = Transition(label='Coagulation')
+Curd_Cutting = Transition(label='Curd Cutting')
+Whey_Drain = Transition(label='Whey Drain')
+Pressing = Transition(label='Pressing')
+Salting = Transition(label='Salting')
+Aging_Control = Transition(label='Aging Control')
+Sensory_Audit = Transition(label='Sensory Audit')
+Packaging_Design = Transition(label='Packaging Design')
+Label_Approval = Transition(label='Label Approval')
+Order_Customization = Transition(label='Order Customization')
+Logistics_Plan = Transition(label='Logistics Plan')
+Market_Delivery = Transition(label='Market Delivery')
+Customer_Feedback = Transition(label='Customer Feedback')
+Regulatory_Check = Transition(label='Regulatory Check')
+skip = SilentTransition()
+loop = OperatorPOWL(operator=Operator.LOOP, children=[Milk_Sourcing, Quality_Testing, Milk_Pasteurize, Culture_Inoculate, Coagulation, Curd_Cutting, Whey_Drain, Pressing, Salting, Aging_Control, Sensory_Audit, Packaging_Design, Label_Approval, Order_Customization, Logistics_Plan, Market_Delivery, Customer_Feedback, Regulatory_Check])
+xor = OperatorPOWL(operator=Operator.XOR, children=[skip])
+root = StrictPartialOrder(nodes=[loop, xor])
+root.order.add_edge(loop, xor)

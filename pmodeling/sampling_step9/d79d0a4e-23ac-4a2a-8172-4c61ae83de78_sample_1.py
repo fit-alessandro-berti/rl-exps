@@ -1,0 +1,40 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+SpecReview = Transition(label='Spec Review')
+ComponentPick = Transition(label='Component Pick')
+FrameBuild = Transition(label='Frame Build')
+MotorMount = Transition(label='Motor Mount')
+SensorFit = Transition(label='Sensor Fit')
+WiringSetup = Transition(label='Wiring Setup')
+SoftwareLoad = Transition(label='Software Load')
+CalibrationTest = Transition(label='Calibration Test')
+StressCheck = Transition(label='Stress Check')
+FirmwareFlash = Transition(label='Firmware Flash')
+FeedbackLoop = Transition(label='Feedback Loop')
+PackagePrep = Transition(label='Package Prep')
+DocCompile = Transition(label='Doc Compile')
+ShipArrange = Transition(label='Ship Arrange')
+RemoteSetup = Transition(label='Remote Setup')
+
+skip = SilentTransition()
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[SpecReview, ComponentPick])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[FrameBuild, MotorMount])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[SensorFit, WiringSetup])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[SoftwareLoad, CalibrationTest])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[StressCheck, FirmwareFlash])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[FeedbackLoop, PackagePrep])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[DocCompile, ShipArrange])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[RemoteSetup, skip])
+
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[xor1, xor2])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[xor3, xor4])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[xor5, xor6])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[xor7, xor8])
+
+root = StrictPartialOrder(nodes=[loop1, loop2, loop3, loop4])
+root.order.add_edge(loop1, loop2)
+root.order.add_edge(loop1, loop3)
+root.order.add_edge(loop2, loop4)
+root.order.add_edge(loop3, loop4)

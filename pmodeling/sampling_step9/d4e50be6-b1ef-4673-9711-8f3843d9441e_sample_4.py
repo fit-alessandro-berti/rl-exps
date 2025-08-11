@@ -1,0 +1,58 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL nodes
+patent_scouting = Transition(label='Patent Scouting')
+technical_review = Transition(label='Technical Review')
+legal_audit = Transition(label='Legal Audit')
+market_analysis = Transition(label='Market Analysis')
+valuation_modeling = Transition(label='Valuation Modeling')
+risk_assessment = Transition(label='Risk Assessment')
+license_targeting = Transition(label='License Targeting')
+buyer_outreach = Transition(label='Buyer Outreach')
+negotiation_phase = Transition(label='Negotiation Phase')
+contract_drafting = Transition(label='Contract Drafting')
+approval_process = Transition(label='Approval Process')
+portfolio_tracking = Transition(label='Portfolio Tracking')
+revenue_monitoring = Transition(label='Revenue Monitoring')
+compliance_check = Transition(label='Compliance Check')
+innovation_scan = Transition(label='Innovation Scan')
+renewal_management = Transition(label='Renewal Management')
+skip = SilentTransition()
+
+# Define the POWL operators
+xor = OperatorPOWL(operator=Operator.XOR, children=[legal_audit, skip])
+loop = OperatorPOWL(operator=Operator.LOOP, children=[technical_review, market_analysis])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[valuation_modeling, skip])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[risk_assessment, skip])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[license_targeting, skip])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[buyer_outreach, skip])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[negotiation_phase, skip])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[contract_drafting, skip])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[approval_process, skip])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[portfolio_tracking, skip])
+xor10 = OperatorPOWL(operator=Operator.XOR, children=[revenue_monitoring, skip])
+xor11 = OperatorPOWL(operator=Operator.XOR, children=[compliance_check, skip])
+xor12 = OperatorPOWL(operator=Operator.XOR, children=[innovation_scan, skip])
+xor13 = OperatorPOWL(operator=Operator.XOR, children=[renewal_management, skip])
+
+# Define the POWL root
+root = StrictPartialOrder(nodes=[patent_scouting, loop, xor, xor2, xor3, xor4, xor5, xor6, xor7, xor8, xor9, xor10, xor11, xor12, xor13])
+root.order.add_edge(patent_scouting, loop)
+root.order.add_edge(loop, xor)
+root.order.add_edge(xor, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor8)
+root.order.add_edge(xor8, xor9)
+root.order.add_edge(xor9, xor10)
+root.order.add_edge(xor10, xor11)
+root.order.add_edge(xor11, xor12)
+root.order.add_edge(xor12, xor13)
+root.order.add_edge(xor13, patent_scouting)
+
+print(root)

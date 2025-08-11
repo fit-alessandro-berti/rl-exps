@@ -1,0 +1,23 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+MaterialSourcing = Transition(label='Material Sourcing')
+SupplierVetting = Transition(label='Supplier Vetting')
+DesignReview = Transition(label='Design Review')
+PrototypeBuild = Transition(label='Prototype Build')
+QualityAudit = Transition(label='Quality Audit')
+BatchScheduling = Transition(label='Batch Scheduling')
+Handcrafting = Transition(label='Handcrafting')
+PackagingDesign = Transition(label='Packaging Design')
+CustomLabeling = Transition(label='Custom Labeling')
+SustainabilityCheck = Transition(label='Sustainability Check')
+InventorySync = Transition(label='Inventory Sync')
+MarketAnalysis = Transition(label='Market Analysis')
+OrderAggregation = Transition(label='Order Aggregation')
+DistributionPlan = Transition(label='Distribution Plan')
+CustomerFeedback = Transition(label='Customer Feedback')
+skip = SilentTransition()
+material_sourcing_loop = OperatorPOWL(operator=Operator.LOOP, children=[MaterialSourcing, SupplierVetting, DesignReview, PrototypeBuild, QualityAudit, BatchScheduling, Handcrafting, PackagingDesign, CustomLabeling, SustainabilityCheck, InventorySync])
+market_analysis_loop = OperatorPOWL(operator=Operator.LOOP, children=[MarketAnalysis, OrderAggregation, DistributionPlan, CustomerFeedback])
+root = StrictPartialOrder(nodes=[material_sourcing_loop, market_analysis_loop])
+root.order.add_edge(material_sourcing_loop, market_analysis_loop)

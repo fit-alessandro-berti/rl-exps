@@ -1,0 +1,68 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define activities
+milk_sourcing = Transition(label='Milk Sourcing')
+farm_audit = Transition(label='Farm Audit')
+milk_testing = Transition(label='Milk Testing')
+batch_forming = Transition(label='Batch Forming')
+curd_cutting = Transition(label='Curd Cutting')
+molding_cheese = Transition(label='Molding Cheese')
+salting_process = Transition(label='Salting Process')
+aging_control = Transition(label='Aging Control')
+quality_check = Transition(label='Quality Check')
+packaging_design = Transition(label='Packaging Design')
+label_printing = Transition(label='Label Printing')
+inventory_update = Transition(label='Inventory Update')
+order_receiving = Transition(label='Order Receiving')
+retail_coordination = Transition(label='Retail Coordination')
+shipping_prep = Transition(label='Shipping Prep')
+customer_feedback = Transition(label='Customer Feedback')
+demand_forecast = Transition(label='Demand Forecast')
+limited_release = Transition(label='Limited Release')
+
+# Define silent activities
+skip = SilentTransition()
+
+# Define process flow
+loop_milk_sourcing = OperatorPOWL(operator=Operator.LOOP, children=[milk_sourcing])
+xor_farm_audit = OperatorPOWL(operator=Operator.XOR, children=[farm_audit, skip])
+xor_milk_testing = OperatorPOWL(operator=Operator.XOR, children=[milk_testing, skip])
+xor_batch_forming = OperatorPOWL(operator=Operator.XOR, children=[batch_forming, skip])
+xor_curd_cutting = OperatorPOWL(operator=Operator.XOR, children=[curd_cutting, skip])
+xor_molding_cheese = OperatorPOWL(operator=Operator.XOR, children=[molding_cheese, skip])
+xor_salting_process = OperatorPOWL(operator=Operator.XOR, children=[salting_process, skip])
+xor_aging_control = OperatorPOWL(operator=Operator.XOR, children=[aging_control, skip])
+xor_quality_check = OperatorPOWL(operator=Operator.XOR, children=[quality_check, skip])
+xor_packaging_design = OperatorPOWL(operator=Operator.XOR, children=[packaging_design, skip])
+xor_label_printing = OperatorPOWL(operator=Operator.XOR, children=[label_printing, skip])
+xor_inventory_update = OperatorPOWL(operator=Operator.XOR, children=[inventory_update, skip])
+xor_order_receiving = OperatorPOWL(operator=Operator.XOR, children=[order_receiving, skip])
+xor_retail_coordination = OperatorPOWL(operator=Operator.XOR, children=[retail_coordination, skip])
+xor_shipping_prep = OperatorPOWL(operator=Operator.XOR, children=[shipping_prep, skip])
+xor_customer_feedback = OperatorPOWL(operator=Operator.XOR, children=[customer_feedback, skip])
+xor_demand_forecast = OperatorPOWL(operator=Operator.XOR, children=[demand_forecast, skip])
+xor_limited_release = OperatorPOWL(operator=Operator.XOR, children=[limited_release, skip])
+
+# Define the root node
+root = StrictPartialOrder(nodes=[loop_milk_sourcing, xor_farm_audit, xor_milk_testing, xor_batch_forming, xor_curd_cutting, xor_molding_cheese, xor_salting_process, xor_aging_control, xor_quality_check, xor_packaging_design, xor_label_printing, xor_inventory_update, xor_order_receiving, xor_retail_coordination, xor_shipping_prep, xor_customer_feedback, xor_demand_forecast, xor_limited_release])
+root.order.add_edge(loop_milk_sourcing, xor_farm_audit)
+root.order.add_edge(loop_milk_sourcing, xor_milk_testing)
+root.order.add_edge(loop_milk_sourcing, xor_batch_forming)
+root.order.add_edge(loop_milk_sourcing, xor_curd_cutting)
+root.order.add_edge(loop_milk_sourcing, xor_molding_cheese)
+root.order.add_edge(loop_milk_sourcing, xor_salting_process)
+root.order.add_edge(loop_milk_sourcing, xor_aging_control)
+root.order.add_edge(loop_milk_sourcing, xor_quality_check)
+root.order.add_edge(loop_milk_sourcing, xor_packaging_design)
+root.order.add_edge(loop_milk_sourcing, xor_label_printing)
+root.order.add_edge(loop_milk_sourcing, xor_inventory_update)
+root.order.add_edge(loop_milk_sourcing, xor_order_receiving)
+root.order.add_edge(loop_milk_sourcing, xor_retail_coordination)
+root.order.add_edge(loop_milk_sourcing, xor_shipping_prep)
+root.order.add_edge(loop_milk_sourcing, xor_customer_feedback)
+root.order.add_edge(loop_milk_sourcing, xor_demand_forecast)
+root.order.add_edge(loop_milk_sourcing, xor_limited_release)
+
+print(root)

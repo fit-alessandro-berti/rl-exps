@@ -1,0 +1,43 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+SiteSurvey = Transition(label='Site Survey')
+SystemDesign = Transition(label='System Design')
+ModuleBuild = Transition(label='Module Build')
+NutrientMix = Transition(label='Nutrient Mix')
+SeedSelection = Transition(label='Seed Selection')
+PlantingPlan = Transition(label='Planting Plan')
+IrrigationSetup = Transition(label='Irrigation Setup')
+ClimateControl = Transition(label='Climate Control')
+LightingAdjust = Transition(label='Lighting Adjust')
+PestMonitor = Transition(label='Pest Monitor')
+WasteCycle = Transition(label='Waste Cycle')
+DataCapture = Transition(label='Data Capture')
+YieldForecast = Transition(label='Yield Forecast')
+RegulationCheck = Transition(label='Regulation Check')
+CommunityMeet = Transition(label='Community Meet')
+HarvestPrep = Transition(label='Harvest Prep')
+MarketLink = Transition(label='Market Link')
+
+skip = SilentTransition()
+loop = OperatorPOWL(operator=Operator.LOOP, children=[SiteSurvey, SystemDesign])
+xor = OperatorPOWL(operator=Operator.XOR, children=[ModuleBuild, skip])
+root = StrictPartialOrder(nodes=[loop, xor])
+root.order.add_edge(loop, xor)
+
+# Nested choices and loops for more complex process flow
+nested_xor = OperatorPOWL(operator=Operator.XOR, children=[NutrientMix, SeedSelection])
+nested_loop = OperatorPOWL(operator=Operator.LOOP, children=[PlantingPlan, IrrigationSetup])
+nested_xor2 = OperatorPOWL(operator=Operator.XOR, children=[ClimateControl, LightingAdjust])
+nested_loop2 = OperatorPOWL(operator=Operator.LOOP, children=[PestMonitor, WasteCycle])
+nested_xor3 = OperatorPOWL(operator=Operator.XOR, children=[DataCapture, YieldForecast])
+nested_loop3 = OperatorPOWL(operator=Operator.LOOP, children=[RegulationCheck, CommunityMeet])
+nested_xor4 = OperatorPOWL(operator=Operator.XOR, children=[HarvestPrep, MarketLink])
+nested_loop4 = OperatorPOWL(operator=Operator.LOOP, children=[nested_xor, nested_loop])
+nested_loop5 = OperatorPOWL(operator=Operator.LOOP, children=[nested_xor2, nested_loop2])
+nested_loop6 = OperatorPOWL(operator=Operator.LOOP, children=[nested_xor3, nested_loop3])
+nested_loop7 = OperatorPOWL(operator=Operator.LOOP, children=[nested_xor4, nested_loop4])
+root.order.add_edge(nested_loop4, nested_loop5)
+root.order.add_edge(nested_loop5, nested_loop6)
+root.order.add_edge(nested_loop6, nested_loop7)

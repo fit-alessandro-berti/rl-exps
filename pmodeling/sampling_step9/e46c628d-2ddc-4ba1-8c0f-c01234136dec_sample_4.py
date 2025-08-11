@@ -1,0 +1,29 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+ThreatAssess = Transition(label='Threat Assess')
+AlertDispatch = Transition(label='Alert Dispatch')
+ResourceCheck = Transition(label='Resource Check')
+TeamMobilize = Transition(label='Team Mobilize')
+CommandSetup = Transition(label='Command Setup')
+IntelGather = Transition(label='Intel Gather')
+RiskEvaluate = Transition(label='Risk Evaluate')
+PrioritySet = Transition(label='Priority Set')
+FieldDeploy = Transition(label='Field Deploy')
+CommSync = Transition(label='Comm Sync')
+PublicUpdate = Transition(label='Public Update')
+SupplyManage = Transition(label='Supply Manage')
+SafetyMonitor = Transition(label='Safety Monitor')
+IncidentLog = Transition(label='Incident Log')
+RecoveryPlan = Transition(label='Recovery Plan')
+DebriefTeam = Transition(label='Debrief Team')
+DataArchive = Transition(label='Data Archive')
+
+skip = SilentTransition()
+
+loop = OperatorPOWL(operator=Operator.LOOP, children=[ThreatAssess, AlertDispatch, ResourceCheck, TeamMobilize, CommandSetup, IntelGather, RiskEvaluate, PrioritySet, FieldDeploy, CommSync, PublicUpdate, SupplyManage, SafetyMonitor, IncidentLog, RecoveryPlan, DebriefTeam, DataArchive])
+xor = OperatorPOWL(operator=Operator.XOR, children=[skip, loop])
+
+root = StrictPartialOrder(nodes=[xor])
+root.order.add_edge(loop, xor)

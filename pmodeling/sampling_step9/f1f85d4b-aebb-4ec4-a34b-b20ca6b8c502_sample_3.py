@@ -1,0 +1,40 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+InitialReview = Transition(label='Initial Review')
+ProvenanceCheck = Transition(label='Provenance Check')
+MaterialTesting = Transition(label='Material Testing')
+ExpertSurvey = Transition(label='Expert Survey')
+DigitalScan = Transition(label='Digital Scan')
+ConditionReport = Transition(label='Condition Report')
+LegalReview = Transition(label='Legal Review')
+RiskAnalysis = Transition(label='Risk Analysis')
+SellerNegotiation = Transition(label='Seller Negotiation')
+Documentation = Transition(label='Documentation')
+ArchivalEntry = Transition(label='Archival Entry')
+CommitteeReview = Transition(label='Committee Review')
+FinalApproval = Transition(label='Final Approval')
+AcquisitionSetup = Transition(label='Acquisition Setup')
+ExhibitPlanning = Transition(label='Exhibit Planning')
+skip = SilentTransition()
+
+provenance = OperatorPOWL(operator=Operator.XOR, children=[ProvenanceCheck, skip])
+material = OperatorPOWL(operator=Operator.XOR, children=[MaterialTesting, skip])
+expert = OperatorPOWL(operator=Operator.XOR, children=[ExpertSurvey, skip])
+digital = OperatorPOWL(operator=Operator.XOR, children=[DigitalScan, skip])
+condition = OperatorPOWL(operator=Operator.XOR, children=[ConditionReport, skip])
+legal = OperatorPOWL(operator=Operator.XOR, children=[LegalReview, skip])
+risk = OperatorPOWL(operator=Operator.XOR, children=[RiskAnalysis, skip])
+seller = OperatorPOWL(operator=Operator.XOR, children=[SellerNegotiation, skip])
+doc = OperatorPOWL(operator=Operator.XOR, children=[Documentation, skip])
+archival = OperatorPOWL(operator=Operator.XOR, children=[ArchivalEntry, skip])
+committee = OperatorPOWL(operator=Operator.XOR, children=[CommitteeReview, skip])
+approval = OperatorPOWL(operator=Operator.XOR, children=[FinalApproval, skip])
+setup = OperatorPOWL(operator=Operator.XOR, children=[AcquisitionSetup, skip])
+exhibit = OperatorPOWL(operator=Operator.XOR, children=[ExhibitPlanning, skip])
+
+loop = OperatorPOWL(operator=Operator.LOOP, children=[provenance, material, expert, digital, condition, legal, risk, seller, doc, archival, committee, approval, setup, exhibit])
+
+root = StrictPartialOrder(nodes=[loop])
+root.order.add_edge(loop, FinalApproval)

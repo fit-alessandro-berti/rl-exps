@@ -1,0 +1,35 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+Document_Review = Transition(label='Document Review')
+Material_Testing = Transition(label='Material Testing')
+Radiocarbon_Date = Transition(label='Radiocarbon Date')
+Stylistic_Eval = Transition(label='Stylistic Eval')
+Database_Check = Transition(label='Database Check')
+Ownership_Audit = Transition(label='Ownership Audit')
+Export_Verify = Transition(label='Export Verify')
+Expert_Arbitration = Transition(label='Expert Arbitration')
+Conservation_Plan = Transition(label='Conservation Plan')
+Risk_Assessment = Transition(label='Risk Assessment')
+Approval_Review = Transition(label='Approval Review')
+Insurance_Setup = Transition(label='Insurance Setup')
+Secure_Transport = Transition(label='Secure Transport')
+Acquisitions_Meet = Transition(label='Acquisitions Meet')
+Final_Documentation = Transition(label='Final Documentation')
+skip = SilentTransition()
+
+loop = OperatorPOWL(operator=Operator.LOOP, children=[Document_Review, Material_Testing])
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[Radiocarbon_Date, Database_Check, Ownership_Audit, Export_Verify])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[Stylistic_Eval, Expert_Arbitration])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[Conservation_Plan, Risk_Assessment, Approval_Review])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[Insurance_Setup, Secure_Transport, Acquisitions_Meet])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[Final_Documentation, skip])
+
+root = StrictPartialOrder(nodes=[loop, xor1, xor2, loop2, xor3, xor4])
+root.order.add_edge(loop, xor1)
+root.order.add_edge(loop, xor2)
+root.order.add_edge(xor1, loop2)
+root.order.add_edge(xor2, loop2)
+root.order.add_edge(loop2, xor3)
+root.order.add_edge(xor3, xor4)

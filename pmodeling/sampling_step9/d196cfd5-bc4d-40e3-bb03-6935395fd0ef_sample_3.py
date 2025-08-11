@@ -1,0 +1,48 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+concept_ideation = Transition(label='Concept Ideation')
+sponsor_alignment = Transition(label='Sponsor Alignment')
+participant_sign_up = Transition(label='Participant SignUp')
+team_formation = Transition(label='Team Formation')
+workshop_setup = Transition(label='Workshop Setup')
+workshop_delivery = Transition(label='Workshop Delivery')
+progress_monitor = Transition(label='Progress Monitor')
+live_support = Transition(label='Live Support')
+feedback_loop = Transition(label='Feedback Loop')
+submission_check = Transition(label='Submission Check')
+plagiarism_scan = Transition(label='Plagiarism Scan')
+jury_evaluation = Transition(label='Jury Evaluation')
+result_compilation = Transition(label='Result Compilation')
+winner_announcement = Transition(label='Winner Announcement')
+post_analytics = Transition(label='Post Analytics')
+
+skip = SilentTransition()
+
+concept_ideation_sponsor_alignment = OperatorPOWL(operator=Operator.XOR, children=[concept_ideation, sponsor_alignment])
+participant_sign_up_team_formation = OperatorPOWL(operator=Operator.XOR, children=[participant_sign_up, team_formation])
+workshop_setup_delivery = OperatorPOWL(operator=Operator.XOR, children=[workshop_setup, workshop_delivery])
+progress_monitor_live_support = OperatorPOWL(operator=Operator.XOR, children=[progress_monitor, live_support])
+feedback_loop_submission_check = OperatorPOWL(operator=Operator.XOR, children=[feedback_loop, submission_check])
+plagiarism_scan_jury_evaluation = OperatorPOWL(operator=Operator.XOR, children=[plagiarism_scan, jury_evaluation])
+result_compilation_winner_announcement = OperatorPOWL(operator=Operator.XOR, children=[result_compilation, winner_announcement])
+post_analytics_plagiarism_scan = OperatorPOWL(operator=Operator.XOR, children=[post_analytics, plagiarism_scan])
+
+loop_concept_ideation_sponsor_alignment = OperatorPOWL(operator=Operator.LOOP, children=[concept_ideation_sponsor_alignment])
+loop_participant_sign_up_team_formation = OperatorPOWL(operator=Operator.LOOP, children=[participant_sign_up_team_formation])
+loop_workshop_setup_delivery = OperatorPOWL(operator=Operator.LOOP, children=[workshop_setup_delivery])
+loop_progress_monitor_live_support = OperatorPOWL(operator=Operator.LOOP, children=[progress_monitor_live_support])
+loop_feedback_loop_submission_check = OperatorPOWL(operator=Operator.LOOP, children=[feedback_loop_submission_check])
+loop_plagiarism_scan_jury_evaluation = OperatorPOWL(operator=Operator.LOOP, children=[plagiarism_scan_jury_evaluation])
+loop_result_compilation_winner_announcement = OperatorPOWL(operator=Operator.LOOP, children=[result_compilation_winner_announcement])
+loop_post_analytics_plagiarism_scan = OperatorPOWL(operator=Operator.LOOP, children=[post_analytics_plagiarism_scan])
+
+root = StrictPartialOrder(nodes=[loop_concept_ideation_sponsor_alignment, loop_participant_sign_up_team_formation, loop_workshop_setup_delivery, loop_progress_monitor_live_support, loop_feedback_loop_submission_check, loop_plagiarism_scan_jury_evaluation, loop_result_compilation_winner_announcement, loop_post_analytics_plagiarism_scan])
+root.order.add_edge(loop_concept_ideation_sponsor_alignment, loop_participant_sign_up_team_formation)
+root.order.add_edge(loop_participant_sign_up_team_formation, loop_workshop_setup_delivery)
+root.order.add_edge(loop_workshop_setup_delivery, loop_progress_monitor_live_support)
+root.order.add_edge(loop_progress_monitor_live_support, loop_feedback_loop_submission_check)
+root.order.add_edge(loop_feedback_loop_submission_check, loop_plagiarism_scan_jury_evaluation)
+root.order.add_edge(loop_plagiarism_scan_jury_evaluation, loop_result_compilation_winner_announcement)
+root.order.add_edge(loop_result_compilation_winner_announcement, loop_post_analytics_plagiarism_scan)

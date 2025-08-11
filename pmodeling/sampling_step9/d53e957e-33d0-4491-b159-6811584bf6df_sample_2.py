@@ -1,0 +1,23 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+Data_Capture = Transition(label='Data Capture')
+Trend_Scan = Transition(label='Trend Scan')
+Idea_Workshop = Transition(label='Idea Workshop')
+Concept_Draft = Transition(label='Concept Draft')
+Expert_Review = Transition(label='Expert Review')
+Prototype_Build = Transition(label='Prototype Build')
+Regulation_Check = Transition(label='Regulation Check')
+IP_Alignment = Transition(label='IP Alignment')
+Supply_Sync = Transition(label='Supply Sync')
+Market_Mapping = Transition(label='Market Mapping')
+Pilot_Launch = Transition(label='Pilot Launch')
+Feedback_Loop = Transition(label='Feedback Loop')
+Design_Iterate = Transition(label='Design Iterate')
+Impact_Measure = Transition(label='Impact Measure')
+Strategy_Adapt = Transition(label='Strategy Adapt')
+skip = SilentTransition()
+loop = OperatorPOWL(operator=Operator.LOOP, children=[Data_Capture, Trend_Scan, Idea_Workshop, Concept_Draft, Expert_Review, Prototype_Build, Regulation_Check, IP_Alignment, Supply_Sync, Market_Mapping, Pilot_Launch, Feedback_Loop, Design_Iterate, Impact_Measure, Strategy_Adapt])
+xor = OperatorPOWL(operator=Operator.XOR, children=[skip])
+root = StrictPartialOrder(nodes=[loop, xor])
+root.order.add_edge(loop, xor)

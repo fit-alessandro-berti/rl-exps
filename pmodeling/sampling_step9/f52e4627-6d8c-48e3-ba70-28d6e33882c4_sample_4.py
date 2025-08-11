@@ -1,0 +1,26 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+FarmVisit = Transition(label='Farm Visit')
+QualityCupping = Transition(label='Quality Cupping')
+SustainabilityAudit = Transition(label='Sustainability Audit')
+ContractDraft = Transition(label='Contract Draft')
+PriceNegotiate = Transition(label='Price Negotiate')
+SampleTesting = Transition(label='Sample Testing')
+ShipmentPlan = Transition(label='Shipment Plan')
+CustomsClear = Transition(label='Customs Clear')
+InventoryUpdate = Transition(label='Inventory Update')
+SupplierReview = Transition(label='Supplier Review')
+RiskAssess = Transition(label='Risk Assess')
+ForecastAdjust = Transition(label='Forecast Adjust')
+PaymentProcess = Transition(label='Payment Process')
+RelationshipCall = Transition(label='Relationship Call')
+TraceabilityLog = Transition(label='Traceability Log')
+MarketResearch = Transition(label='Market Research')
+ComplianceCheck = Transition(label='Compliance Check')
+skip = SilentTransition()
+loop = OperatorPOWL(operator=Operator.LOOP, children=[FarmVisit, QualityCupping, SustainabilityAudit, ContractDraft, PriceNegotiate, SampleTesting, ShipmentPlan, CustomsClear, InventoryUpdate, SupplierReview, RiskAssess, ForecastAdjust, PaymentProcess, RelationshipCall, TraceabilityLog, MarketResearch, ComplianceCheck])
+xor = OperatorPOWL(operator=Operator.XOR, children=[skip])
+root = StrictPartialOrder(nodes=[loop, xor])
+root.order.add_edge(loop, xor)

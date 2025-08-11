@@ -1,0 +1,35 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+Site_Survey = Transition(label='Site Survey')
+Design_Layout = Transition(label='Design Layout')
+Procure_Modules = Transition(label='Procure Modules')
+Install_Framework = Transition(label='Install Framework')
+Setup_Sensors = Transition(label='Setup Sensors')
+Calibrate_Nutrients = Transition(label='Calibrate Nutrients')
+Configure_IoT = Transition(label='Configure IoT')
+Plant_Seeding = Transition(label='Plant Seeding')
+Monitor_Growth = Transition(label='Monitor Growth')
+Manage_Lighting = Transition(label='Manage Lighting')
+Pest_Control = Transition(label='Pest Control')
+Recycle_Waste = Transition(label='Recycle Waste')
+Analyze_Data = Transition(label='Analyze Data')
+Adjust_Environment = Transition(label='Adjust Environment')
+Harvest_Crops = Transition(label='Harvest Crops')
+Distribute_Produce = Transition(label='Distribute Produce')
+
+skip = SilentTransition()
+
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[Site_Survey, Design_Layout, Procure_Modules, Install_Framework, Setup_Sensors, Calibrate_Nutrients, Configure_IoT])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[Plant_Seeding, Monitor_Growth, Manage_Lighting, Pest_Control, Recycle_Waste, Analyze_Data, Adjust_Environment])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[Harvest_Crops, Distribute_Produce])
+
+xor = OperatorPOWL(operator=Operator.XOR, children=[loop1, loop2, loop3])
+
+root = StrictPartialOrder(nodes=[xor])
+root.order.add_edge(loop1, xor)
+root.order.add_edge(loop2, xor)
+root.order.add_edge(loop3, xor)
+
+print(root)

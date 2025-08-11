@@ -1,0 +1,52 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL model
+SiteSelect = Transition(label='Site Select')
+EnvAssess = Transition(label='Env Assess')
+DesignModules = Transition(label='Design Modules')
+HydroponicsSetup = Transition(label='Hydroponics Setup')
+SoftwareDev = Transition(label='Software Dev')
+SeedChoose = Transition(label='Seed Choose')
+LEDInstall = Transition(label='LED Install')
+TrainStaff = Transition(label='Train Staff')
+ComplianceCheck = Transition(label='Compliance Check')
+EngageCommunity = Transition(label='Engage Community')
+PlantCrops = Transition(label='Plant Crops')
+MonitorGrowth = Transition(label='Monitor Growth')
+OptimizeYields = Transition(label='Optimize Yields')
+WasteManage = Transition(label='Waste Manage')
+EnergyAudit = Transition(label='Energy Audit')
+WaterRecycle = Transition(label='Water Recycle')
+
+skip = SilentTransition()
+loop = OperatorPOWL(operator=Operator.LOOP, children=[SiteSelect, EnvAssess, DesignModules, HydroponicsSetup])
+xor = OperatorPOWL(operator=Operator.XOR, children=[SoftwareDev, skip])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[SeedChoose, skip])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[LEDInstall, skip])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[TrainStaff, skip])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[ComplianceCheck, skip])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[EngageCommunity, skip])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[PlantCrops, skip])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[MonitorGrowth, skip])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[OptimizeYields, skip])
+xor10 = OperatorPOWL(operator=Operator.XOR, children=[WasteManage, skip])
+xor11 = OperatorPOWL(operator=Operator.XOR, children=[EnergyAudit, skip])
+xor12 = OperatorPOWL(operator=Operator.XOR, children=[WaterRecycle, skip])
+
+root = StrictPartialOrder(nodes=[loop, xor, xor2, xor3, xor4, xor5, xor6, xor7, xor8, xor9, xor10, xor11, xor12])
+root.order.add_edge(loop, xor)
+root.order.add_edge(loop, xor2)
+root.order.add_edge(loop, xor3)
+root.order.add_edge(loop, xor4)
+root.order.add_edge(loop, xor5)
+root.order.add_edge(loop, xor6)
+root.order.add_edge(loop, xor7)
+root.order.add_edge(loop, xor8)
+root.order.add_edge(loop, xor9)
+root.order.add_edge(loop, xor10)
+root.order.add_edge(loop, xor11)
+root.order.add_edge(loop, xor12)
+
+# Save the result in the variable 'root'

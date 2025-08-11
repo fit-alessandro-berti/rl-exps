@@ -1,0 +1,37 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+SiteSurvey = Transition(label='Site Survey')
+LightMapping = Transition(label='Light Mapping')
+WaterTesting = Transition(label='Water Testing')
+DesignModules = Transition(label='Design Modules')
+IoTSetup = Transition(label='IoT Setup')
+SensorCalibration = Transition(label='Sensor Calibration')
+NutrientMix = Transition(label='Nutrient Mix')
+ClimateControl = Transition(label='Climate Control')
+RegulatoryCheck = Transition(label='Regulatory Check')
+CommunityMeet = Transition(label='Community Meet')
+EnergyAudit = Transition(label='Energy Audit')
+StaffTraining = Transition(label='Staff Training')
+Installation = Transition(label='Installation')
+SystemTesting = Transition(label='System Testing')
+YieldAnalysis = Transition(label='Yield Analysis')
+ResourceAudit = Transition(label='Resource Audit')
+ImpactReview = Transition(label='Impact Review')
+
+skip = SilentTransition()
+loop = OperatorPOWL(operator=Operator.LOOP, children=[SiteSurvey, LightMapping, WaterTesting])
+xor = OperatorPOWL(operator=Operator.XOR, children=[DesignModules, skip])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[IoTSetup, SensorCalibration, NutrientMix])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[ClimateControl, RegulatoryCheck])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[CommunityMeet, EnergyAudit])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[StaffTraining, Installation])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[SystemTesting, YieldAnalysis])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[ResourceAudit, ImpactReview])
+
+root = StrictPartialOrder(nodes=[loop, xor, loop2, xor2, loop3, xor3, loop4, xor4])
+root.order.add_edge(loop, xor)
+root.order.add_edge(loop2, xor2)
+root.order.add_edge(loop3, xor3)
+root.order.add_edge(loop4, xor4)

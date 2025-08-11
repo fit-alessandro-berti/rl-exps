@@ -1,0 +1,38 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+TrendSensing = Transition(label='Trend Sensing')
+IdeaFusion = Transition(label='Idea Fusion')
+PrototypeBuild = Transition(label='Prototype Build')
+ExpertReview = Transition(label='Expert Review')
+FieldTesting = Transition(label='Field Testing')
+IPAnalysis = Transition(label='IP Analysis')
+ComplianceCheck = Transition(label='Compliance Check')
+PartnerSetup = Transition(label='Partner Setup')
+UserProfiling = Transition(label='User Profiling')
+LaunchPrep = Transition(label='Launch Prep')
+FeedbackLoop = Transition(label='Feedback Loop')
+ScalePlanning = Transition(label='Scale Planning')
+RiskAssess = Transition(label='Risk Assess')
+DemandScan = Transition(label='Demand Scan')
+AgileAdjust = Transition(label='Agile Adjust')
+
+skip = SilentTransition()
+loop = OperatorPOWL(operator=Operator.LOOP, children=[TrendSensing, IdeaFusion])
+xor = OperatorPOWL(operator=Operator.XOR, children=[PrototypeBuild, skip])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[ExpertReview, FieldTesting])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[IPAnalysis, ComplianceCheck])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[PartnerSetup, UserProfiling])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[LaunchPrep, FeedbackLoop])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[ScalePlanning, RiskAssess])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[DemandScan, AgileAdjust])
+
+root = StrictPartialOrder(nodes=[loop, xor, xor2, xor3, xor4, xor5, xor6, xor7])
+root.order.add_edge(loop, xor)
+root.order.add_edge(loop, xor2)
+root.order.add_edge(loop, xor3)
+root.order.add_edge(loop, xor4)
+root.order.add_edge(loop, xor5)
+root.order.add_edge(loop, xor6)
+root.order.add_edge(loop, xor7)

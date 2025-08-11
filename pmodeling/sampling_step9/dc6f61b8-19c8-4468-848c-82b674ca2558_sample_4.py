@@ -1,0 +1,41 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+SiteSurvey = Transition(label='Site Survey')
+EnergyPartner = Transition(label='Energy Partner')
+PermitFiling = Transition(label='Permit Filing')
+HydroUnit = Transition(label='Hydro Unit')
+AISetup = Transition(label='AI Setup')
+NutrientPlan = Transition(label='Nutrient Plan')
+SystemInstall = Transition(label='System Install')
+CropTesting = Transition(label='Crop Testing')
+DataAnalysis = Transition(label='Data Analysis')
+CommunityMeet = Transition(label='Community Meet')
+YieldAdjust = Transition(label='Yield Adjust')
+CarbonAudit = Transition(label='Carbon Audit')
+LogisticsPlan = Transition(label='Logistics Plan')
+QualityCheck = Transition(label='Quality Check')
+ScaleReview = Transition(label='Scale Review')
+
+skip = SilentTransition()
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[SiteSurvey, EnergyPartner, PermitFiling])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[HydroUnit, AISetup, NutrientPlan])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[SystemInstall, CropTesting, DataAnalysis])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[CommunityMeet, YieldAdjust])
+loop5 = OperatorPOWL(operator=Operator.LOOP, children=[CarbonAudit, LogisticsPlan, QualityCheck])
+loop6 = OperatorPOWL(operator=Operator.LOOP, children=[ScaleReview])
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[loop1, skip])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[loop2, skip])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[loop3, skip])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[loop4, skip])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[loop5, skip])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[loop6, skip])
+
+root = StrictPartialOrder(nodes=[xor1, xor2, xor3, xor4, xor5, xor6])
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)

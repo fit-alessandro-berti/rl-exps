@@ -1,0 +1,60 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL nodes
+colony_sourcing = Transition(label='Colony Sourcing')
+hive_design = Transition(label='Hive Design')
+site_survey = Transition(label='Site Survey')
+installation_prep = Transition(label='Installation Prep')
+hive_setup = Transition(label='Hive Setup')
+sensor_install = Transition(label='Sensor Install')
+health_monitor = Transition(label='Health Monitor')
+pest_control = Transition(label='Pest Control')
+honey_harvest = Transition(label='Honey Harvest')
+wax_processing = Transition(label='Wax Processing')
+product_packaging = Transition(label='Product Packaging')
+order_dispatch = Transition(label='Order Dispatch')
+workshop_setup = Transition(label='Workshop Setup')
+community_outreach = Transition(label='Community Outreach')
+regulation_check = Transition(label='Regulation Check')
+data_analysis = Transition(label='Data Analysis')
+maintenance_plan = Transition(label='Maintenance Plan')
+skip = SilentTransition()
+
+# Define the POWL operators
+loop_hive = OperatorPOWL(operator=Operator.LOOP, children=[hive_setup, health_monitor])
+loop_honey = OperatorPOWL(operator=Operator.LOOP, children=[honey_harvest, pest_control])
+loop_wax = OperatorPOWL(operator=Operator.LOOP, children=[wax_processing, sensor_install])
+loop_product = OperatorPOWL(operator=Operator.LOOP, children=[product_packaging, community_outreach])
+loop_order = OperatorPOWL(operator=Operator.LOOP, children=[order_dispatch, data_analysis])
+loop_workshop = OperatorPOWL(operator=Operator.LOOP, children=[workshop_setup, maintenance_plan])
+loop_regulation = OperatorPOWL(operator=Operator.LOOP, children=[regulation_check, data_analysis])
+
+# Define the POWL graph
+root = StrictPartialOrder(nodes=[
+    colony_sourcing, hive_design, site_survey, installation_prep, hive_setup, sensor_install, health_monitor, pest_control, honey_harvest, wax_processing, product_packaging, order_dispatch, workshop_setup, community_outreach, regulation_check, data_analysis, maintenance_plan, skip, loop_hive, loop_honey, loop_wax, loop_product, loop_order, loop_workshop, loop_regulation
+])
+root.order.add_edge(colony_sourcing, hive_design)
+root.order.add_edge(hive_design, site_survey)
+root.order.add_edge(site_survey, installation_prep)
+root.order.add_edge(installation_prep, hive_setup)
+root.order.add_edge(hive_setup, sensor_install)
+root.order.add_edge(sensor_install, health_monitor)
+root.order.add_edge(health_monitor, pest_control)
+root.order.add_edge(pest_control, honey_harvest)
+root.order.add_edge(honey_harvest, wax_processing)
+root.order.add_edge(wax_processing, product_packaging)
+root.order.add_edge(product_packaging, order_dispatch)
+root.order.add_edge(order_dispatch, workshop_setup)
+root.order.add_edge(workshop_setup, community_outreach)
+root.order.add_edge(community_outreach, regulation_check)
+root.order.add_edge(regulation_check, data_analysis)
+root.order.add_edge(data_analysis, maintenance_plan)
+root.order.add_edge(maintenance_plan, loop_hive)
+root.order.add_edge(loop_hive, loop_honey)
+root.order.add_edge(loop_honey, loop_wax)
+root.order.add_edge(loop_wax, loop_product)
+root.order.add_edge(loop_product, loop_order)
+root.order.add_edge(loop_order, loop_workshop)
+root.order.add_edge(loop_workshop, loop_regulation)

@@ -1,0 +1,43 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_analysis = Transition(label='Site Analysis')
+env_assessment = Transition(label='Env Assessment')
+system_design = Transition(label='System Design')
+equipment_order = Transition(label='Equipment Order')
+seed_selection = Transition(label='Seed Selection')
+install_modules = Transition(label='Install Modules')
+calibrate_systems = Transition(label='Calibrate Systems')
+staff_training = Transition(label='Staff Training')
+plant_seeding = Transition(label='Plant Seeding')
+iot_monitoring = Transition(label='IoT Monitoring')
+data_analytics = Transition(label='Data Analytics')
+nutrient_adjust = Transition(label='Nutrient Adjust')
+pest_control = Transition(label='Pest Control')
+maintenance_check = Transition(label='Maintenance Check')
+market_launch = Transition(label='Market Launch')
+logistics_setup = Transition(label='Logistics Setup')
+
+skip = SilentTransition()
+
+loop = OperatorPOWL(operator=Operator.LOOP, children=[system_design, env_assessment])
+xor = OperatorPOWL(operator=Operator.XOR, children=[site_analysis, skip])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[equipment_order, seed_selection])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[install_modules, calibrate_systems])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[staff_training, plant_seeding])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[iot_monitoring, data_analytics])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[nutrient_adjust, pest_control])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[maintenance_check, market_launch])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[logistics_setup, skip])
+
+root = StrictPartialOrder(nodes=[loop, xor, xor2, xor3, xor4, xor5, xor6, xor7, xor8])
+root.order.add_edge(loop, xor)
+root.order.add_edge(xor, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor8)
+root.order.add_edge(xor8, xor)

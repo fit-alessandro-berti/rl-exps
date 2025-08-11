@@ -1,0 +1,40 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+SiteSelect = Transition(label='Site Select')
+EnvAssess = Transition(label='Env Assess')
+DesignModules = Transition(label='Design Modules')
+HydroponicsSetup = Transition(label='Hydroponics Setup')
+SoftwareDev = Transition(label='Software Dev')
+SeedChoose = Transition(label='Seed Choose')
+LEDInstall = Transition(label='LED Install')
+TrainStaff = Transition(label='Train Staff')
+ComplianceCheck = Transition(label='Compliance Check')
+EngageCommunity = Transition(label='Engage Community')
+PlantCrops = Transition(label='Plant Crops')
+MonitorGrowth = Transition(label='Monitor Growth')
+OptimizeYields = Transition(label='Optimize Yields')
+WasteManage = Transition(label='Waste Manage')
+EnergyAudit = Transition(label='Energy Audit')
+WaterRecycle = Transition(label='Water Recycle')
+
+skip = SilentTransition()
+
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[SiteSelect, EnvAssess])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[DesignModules, HydroponicsSetup])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[SoftwareDev, SeedChoose])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[LEDInstall, TrainStaff])
+loop5 = OperatorPOWL(operator=Operator.LOOP, children=[ComplianceCheck, EngageCommunity])
+loop6 = OperatorPOWL(operator=Operator.LOOP, children=[PlantCrops, MonitorGrowth])
+loop7 = OperatorPOWL(operator=Operator.LOOP, children=[OptimizeYields, WasteManage])
+loop8 = OperatorPOWL(operator=Operator.LOOP, children=[EnergyAudit, WaterRecycle])
+
+root = StrictPartialOrder(nodes=[loop1, loop2, loop3, loop4, loop5, loop6, loop7, loop8])
+root.order.add_edge(loop1, loop2)
+root.order.add_edge(loop2, loop3)
+root.order.add_edge(loop3, loop4)
+root.order.add_edge(loop4, loop5)
+root.order.add_edge(loop5, loop6)
+root.order.add_edge(loop6, loop7)
+root.order.add_edge(loop7, loop8)

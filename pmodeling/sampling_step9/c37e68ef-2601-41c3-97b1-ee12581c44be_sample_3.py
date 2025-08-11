@@ -1,0 +1,34 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+Milk_Sourcing = Transition(label='Milk Sourcing')
+Quality_Testing = Transition(label='Quality Testing')
+Starter_Prep = Transition(label='Starter Prep')
+Curd_Cutting = Transition(label='Curd Cutting')
+Whey_Draining = Transition(label='Whey Draining')
+Molding_Press = Transition(label='Molding Press')
+Fermentation_Control = Transition(label='Fermentation Control')
+Aging_Setup = Transition(label='Aging Setup')
+Humidity_Check = Transition(label='Humidity Check')
+Packaging_Design = Transition(label='Packaging Design')
+Label_Approval = Transition(label='Label Approval')
+Inventory_Audit = Transition(label='Inventory Audit')
+Order_Scheduling = Transition(label='Order Scheduling')
+Market_Delivery = Transition(label='Market Delivery')
+Feedback_Review = Transition(label='Feedback Review')
+Compliance_Check = Transition(label='Compliance Check')
+Marketing_Sync = Transition(label='Marketing Sync')
+
+skip = SilentTransition()
+
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[Quality_Testing, Starter_Prep, Curd_Cutting, Whey_Draining, Molding_Press, Fermentation_Control, Aging_Setup, Humidity_Check])
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[Packaging_Design, Label_Approval])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[Inventory_Audit, Order_Scheduling, Market_Delivery, Feedback_Review])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[Compliance_Check, Marketing_Sync])
+
+root = StrictPartialOrder(nodes=[loop1, xor1, loop2, xor2])
+root.order.add_edge(loop1, xor1)
+root.order.add_edge(loop2, xor2)
+
+print(root)

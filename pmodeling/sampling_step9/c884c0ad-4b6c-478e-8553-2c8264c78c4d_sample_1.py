@@ -1,0 +1,61 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL model for the process
+seed_sourcing = Transition(label='Seed Sourcing')
+germination_check = Transition(label='Germination Check')
+nutrient_mix = Transition(label='Nutrient Mix')
+automated_planting = Transition(label='Automated Planting')
+climate_control = Transition(label='Climate Control')
+crop_scanning = Transition(label='Crop Scanning')
+pest_monitoring = Transition(label='Pest Monitoring')
+growth_analysis = Transition(label='Growth Analysis')
+robotic_harvest = Transition(label='Robotic Harvest')
+quality_sort = Transition(label='Quality Sort')
+eco_packaging = Transition(label='Eco Packaging')
+blockchain_track = Transition(label='Blockchain Track')
+route_planning = Transition(label='Route Planning')
+feedback_collect = Transition(label='Feedback Collect')
+waste_recycling = Transition(label='Waste Recycling')
+data_analytics = Transition(label='Data Analytics')
+demand_forecast = Transition(label='Demand Forecast')
+maintenance_alert = Transition(label='Maintenance Alert')
+
+skip = SilentTransition()
+
+# Define the POWL model
+loop_seed_sourcing = OperatorPOWL(operator=Operator.LOOP, children=[seed_sourcing, pest_monitoring])
+loop_pest_monitoring = OperatorPOWL(operator=Operator.LOOP, children=[pest_monitoring, climate_control])
+loop_climate_control = OperatorPOWL(operator=Operator.LOOP, children=[climate_control, nutrient_mix])
+loop_nutrient_mix = OperatorPOWL(operator=Operator.LOOP, children=[nutrient_mix, automated_planting])
+loop_automated_planting = OperatorPOWL(operator=Operator.LOOP, children=[automated_planting, growth_analysis])
+loop_growth_analysis = OperatorPOWL(operator=Operator.LOOP, children=[growth_analysis, robotic_harvest])
+loop_robotic_harvest = OperatorPOWL(operator=Operator.LOOP, children=[robotic_harvest, quality_sort])
+loop_quality_sort = OperatorPOWL(operator=Operator.LOOP, children=[quality_sort, eco_packaging])
+loop_eco_packaging = OperatorPOWL(operator=Operator.LOOP, children=[eco_packaging, blockchain_track])
+loop_blockchain_track = OperatorPOWL(operator=Operator.LOOP, children=[blockchain_track, route_planning])
+loop_route_planning = OperatorPOWL(operator=Operator.LOOP, children=[route_planning, feedback_collect])
+loop_feedback_collect = OperatorPOWL(operator=Operator.LOOP, children=[feedback_collect, waste_recycling])
+loop_waste_recycling = OperatorPOWL(operator=Operator.LOOP, children=[waste_recycling, data_analytics])
+loop_data_analytics = OperatorPOWL(operator=Operator.LOOP, children=[data_analytics, demand_forecast])
+loop_demand_forecast = OperatorPOWL(operator=Operator.LOOP, children=[demand_forecast, maintenance_alert])
+
+root = StrictPartialOrder(nodes=[loop_seed_sourcing, loop_pest_monitoring, loop_climate_control, loop_nutrient_mix, loop_automated_planting, loop_growth_analysis, loop_robotic_harvest, loop_quality_sort, loop_eco_packaging, loop_blockchain_track, loop_route_planning, loop_feedback_collect, loop_waste_recycling, loop_data_analytics, loop_demand_forecast, loop_maintenance_alert])
+
+# Define the dependencies
+root.order.add_edge(loop_seed_sourcing, loop_pest_monitoring)
+root.order.add_edge(loop_pest_monitoring, loop_climate_control)
+root.order.add_edge(loop_climate_control, loop_nutrient_mix)
+root.order.add_edge(loop_nutrient_mix, loop_automated_planting)
+root.order.add_edge(loop_automated_planting, loop_growth_analysis)
+root.order.add_edge(loop_growth_analysis, loop_robotic_harvest)
+root.order.add_edge(loop_robotic_harvest, loop_quality_sort)
+root.order.add_edge(loop_quality_sort, loop_eco_packaging)
+root.order.add_edge(loop_eco_packaging, loop_blockchain_track)
+root.order.add_edge(loop_blockchain_track, loop_route_planning)
+root.order.add_edge(loop_route_planning, loop_feedback_collect)
+root.order.add_edge(loop_feedback_collect, loop_waste_recycling)
+root.order.add_edge(loop_waste_recycling, loop_data_analytics)
+root.order.add_edge(loop_data_analytics, loop_demand_forecast)
+root.order.add_edge(loop_demand_forecast, loop_maintenance_alert)

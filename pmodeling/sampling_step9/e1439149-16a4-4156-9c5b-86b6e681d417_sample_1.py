@@ -1,0 +1,56 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+Trend_Scan = Transition(label='Trend Scan')
+Idea_Harvest = Transition(label='Idea Harvest')
+Workshop_Host = Transition(label='Workshop Host')
+Concept_Filter = Transition(label='Concept Filter')
+Prototype_Build = Transition(label='Prototype Build')
+Expert_Review = Transition(label='Expert Review')
+Feasibility_Check = Transition(label='Feasibility Check')
+Risk_Assess = Transition(label='Risk Assess')
+Pilot_Launch = Transition(label='Pilot Launch')
+Data_Capture = Transition(label='Data Capture')
+Performance_Review = Transition(label='Performance Review')
+Scale_Plan = Transition(label='Scale Plan')
+Resource_Align = Transition(label='Resource Align')
+Learn_Share = Transition(label='Learn Share')
+Culture_Embed = Transition(label='Culture Embed')
+
+# Define silent transitions
+skip = SilentTransition()
+
+# Define the POWL model
+loop = OperatorPOWL(operator=Operator.LOOP, children=[Trend_Scan, Idea_Harvest])
+xor = OperatorPOWL(operator=Operator.XOR, children=[Workshop_Host, skip])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[Concept_Filter, skip])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[Prototype_Build, skip])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[Expert_Review, skip])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[Feasibility_Check, skip])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[Risk_Assess, skip])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[Pilot_Launch, skip])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[Data_Capture, skip])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[Performance_Review, skip])
+xor10 = OperatorPOWL(operator=Operator.XOR, children=[Scale_Plan, skip])
+xor11 = OperatorPOWL(operator=Operator.XOR, children=[Resource_Align, skip])
+xor12 = OperatorPOWL(operator=Operator.XOR, children=[Learn_Share, skip])
+xor13 = OperatorPOWL(operator=Operator.XOR, children=[Culture_Embed, skip])
+
+# Create the root POWL model
+root = StrictPartialOrder(nodes=[loop, xor, xor2, xor3, xor4, xor5, xor6, xor7, xor8, xor9, xor10, xor11, xor12, xor13])
+root.order.add_edge(loop, xor)
+root.order.add_edge(xor, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor8)
+root.order.add_edge(xor8, xor9)
+root.order.add_edge(xor9, xor10)
+root.order.add_edge(xor10, xor11)
+root.order.add_edge(xor11, xor12)
+root.order.add_edge(xor12, xor13)
+root.order.add_edge(xor13, loop)

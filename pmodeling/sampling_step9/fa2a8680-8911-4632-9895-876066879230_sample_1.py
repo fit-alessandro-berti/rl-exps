@@ -1,0 +1,32 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+client_meet = Transition(label='Client Meet')
+requirement_gather = Transition(label='Requirement Gather')
+module_design = Transition(label='Module Design')
+supplier_vetting = Transition(label='Supplier Vetting')
+component_order = Transition(label='Component Order')
+prototype_build = Transition(label='Prototype Build')
+field_testing = Transition(label='Field Testing')
+test_analysis = Transition(label='Test Analysis')
+software_setup = Transition(label='Software Setup')
+data_integration = Transition(label='Data Integration')
+pilot_train = Transition(label='Pilot Train')
+compliance_check = Transition(label='Compliance Check')
+fleet_deploy = Transition(label='Fleet Deploy')
+remote_monitor = Transition(label='Remote Monitor')
+maintenance_plan = Transition(label='Maintenance Plan')
+performance_tune = Transition(label='Performance Tune')
+
+skip = SilentTransition()
+
+loop_client = OperatorPOWL(operator=Operator.LOOP, children=[client_meet, requirement_gather])
+loop_module = OperatorPOWL(operator=Operator.LOOP, children=[module_design, supplier_vetting, component_order, prototype_build, field_testing, test_analysis])
+loop_pilot = OperatorPOWL(operator=Operator.LOOP, children=[software_setup, data_integration, pilot_train, compliance_check, fleet_deploy, remote_monitor, maintenance_plan, performance_tune])
+
+root = StrictPartialOrder(nodes=[loop_client, loop_module, loop_pilot])
+root.order.add_edge(loop_client, loop_module)
+root.order.add_edge(loop_module, loop_pilot)
+
+print(root)

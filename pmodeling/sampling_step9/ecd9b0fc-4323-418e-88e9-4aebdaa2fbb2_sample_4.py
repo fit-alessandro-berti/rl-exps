@@ -1,0 +1,50 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+structure_check = Transition(label='Structure Check')
+hydroponic_install = Transition(label='Hydroponic Install')
+lighting_setup = Transition(label='Lighting Setup')
+climate_control = Transition(label='Climate Control')
+seed_selection = Transition(label='Seed Selection')
+nutrient_mix = Transition(label='Nutrient Mix')
+water_recycling = Transition(label='Water Recycling')
+sensor_deploy = Transition(label='Sensor Deploy')
+pest_control = Transition(label='Pest Control')
+growth_monitor = Transition(label='Growth Monitor')
+harvest_plan = Transition(label='Harvest Plan')
+packaging_prep = Transition(label='Packaging Prep')
+delivery_route = Transition(label='Delivery Route')
+data_analysis = Transition(label='Data Analysis')
+yield_forecast = Transition(label='Yield Forecast')
+skip = SilentTransition()
+
+# Define the process structure
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[climate_control, pest_control])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[growth_monitor, harvest_plan])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[packaging_prep, delivery_route])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[data_analysis, yield_forecast])
+
+# Define the process
+root = StrictPartialOrder(nodes=[site_survey, structure_check, hydroponic_install, lighting_setup, loop1, nutrient_mix, water_recycling, sensor_deploy, loop2, loop3, loop4])
+root.order.add_edge(site_survey, structure_check)
+root.order.add_edge(structure_check, hydroponic_install)
+root.order.add_edge(hydroponic_install, lighting_setup)
+root.order.add_edge(lighting_setup, climate_control)
+root.order.add_edge(climate_control, loop1)
+root.order.add_edge(pest_control, loop1)
+root.order.add_edge(loop1, nutrient_mix)
+root.order.add_edge(nutrient_mix, water_recycling)
+root.order.add_edge(water_recycling, sensor_deploy)
+root.order.add_edge(sensor_deploy, growth_monitor)
+root.order.add_edge(growth_monitor, loop2)
+root.order.add_edge(harvest_plan, loop2)
+root.order.add_edge(loop2, packaging_prep)
+root.order.add_edge(packaging_prep, loop3)
+root.order.add_edge(delivery_route, loop3)
+root.order.add_edge(loop3, data_analysis)
+root.order.add_edge(data_analysis, loop4)
+root.order.add_edge(yield_forecast, loop4)
+
+print(root)

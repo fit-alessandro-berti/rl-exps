@@ -1,0 +1,23 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+SiteSurvey = Transition(label='Site Survey')
+PermitReview = Transition(label='Permit Review')
+DesignLayout = Transition(label='Design Layout')
+MaterialSourcing = Transition(label='Material Sourcing')
+IrrigationSetup = Transition(label='Irrigation Setup')
+SensorInstall = Transition(label='Sensor Install')
+StructuralTest = Transition(label='Structural Test')
+RecruitFarmers = Transition(label='Recruit Farmers')
+TrialPlanting = Transition(label='Trial Planting')
+PestControl = Transition(label='Pest Control')
+SoillessPrep = Transition(label='Soilless Prep')
+SystemCalibrate = Transition(label='System Calibrate')
+DataMonitor = Transition(label='Data Monitor')
+HarvestPlan = Transition(label='Harvest Plan')
+CommunityOutreach = Transition(label='Community Outreach')
+skip = SilentTransition()
+loop = OperatorPOWL(operator=Operator.LOOP, children=[SiteSurvey, PermitReview, DesignLayout, MaterialSourcing, IrrigationSetup, SensorInstall, StructuralTest, RecruitFarmers, TrialPlanting, PestControl, SoillessPrep, SystemCalibrate, DataMonitor, HarvestPlan, CommunityOutreach])
+xor = OperatorPOWL(operator=Operator.XOR, children=[skip])
+root = StrictPartialOrder(nodes=[loop, xor])
+root.order.add_edge(loop, xor)

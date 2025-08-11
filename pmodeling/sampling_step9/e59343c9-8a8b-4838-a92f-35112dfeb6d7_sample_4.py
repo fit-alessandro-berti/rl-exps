@@ -1,0 +1,40 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+permit_approval = Transition(label='Permit Approval')
+design_layout = Transition(label='Design Layout')
+system_procure = Transition(label='System Procure')
+nutrient_prep = Transition(label='Nutrient Prep')
+structure_build = Transition(label='Structure Build')
+sensor_install = Transition(label='Sensor Install')
+climate_setup = Transition(label='Climate Setup')
+seed_select = Transition(label='Seed Select')
+germinate_seeds = Transition(label='Germinate Seeds')
+monitor_growth = Transition(label='Monitor Growth')
+data_analyze = Transition(label='Data Analyze')
+pest_control = Transition(label='Pest Control')
+harvest_crop = Transition(label='Harvest Crop')
+package_goods = Transition(label='Package Goods')
+ship_products = Transition(label='Ship Products')
+
+skip = SilentTransition()
+
+site_approval = OperatorPOWL(operator=Operator.LOOP, children=[site_survey, permit_approval])
+design_struct = OperatorPOWL(operator=Operator.LOOP, children=[design_layout, system_procure])
+procure_nutrients = OperatorPOWL(operator=Operator.LOOP, children=[nutrient_prep, structure_build])
+install_sensors = OperatorPOWL(operator=Operator.LOOP, children=[sensor_install, climate_setup])
+select_seeds = OperatorPOWL(operator=Operator.LOOP, children=[seed_select, germinate_seeds])
+monitor_growth = OperatorPOWL(operator=Operator.LOOP, children=[monitor_growth, data_analyze])
+pest_control = OperatorPOWL(operator=Operator.LOOP, children=[pest_control, harvest_crop])
+package_goods = OperatorPOWL(operator=Operator.LOOP, children=[package_goods, ship_products])
+
+root = StrictPartialOrder(nodes=[site_approval, design_struct, procure_nutrients, install_sensors, select_seeds, monitor_growth, pest_control, package_goods])
+root.order.add_edge(site_approval, design_struct)
+root.order.add_edge(site_approval, procure_nutrients)
+root.order.add_edge(procure_nutrients, install_sensors)
+root.order.add_edge(install_sensors, select_seeds)
+root.order.add_edge(select_seeds, monitor_growth)
+root.order.add_edge(monitor_growth, pest_control)
+root.order.add_edge(pest_control, package_goods)
