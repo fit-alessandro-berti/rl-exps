@@ -3,6 +3,7 @@ import json
 import random
 import torch
 import argparse
+import sys
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from typing import List
 import pm4py
@@ -205,6 +206,13 @@ def parse_arguments():
         help='Top-p sampling parameter'
     )
     
+    parser.add_argument(
+        '--num-total-files',
+        type=int,
+        default=sys.maxsize,
+        help='Total number of new files to generate in the current execution (default: no limit)'
+    )
+    
     return parser.parse_args()
 
 
@@ -242,6 +250,11 @@ def main():
 
     # Process each description
     for idx, json_file in enumerate(json_files, 1):
+        # Check if we've reached the total files limit
+        if total_files >= args.num_total_files:
+            print(f"\n⚠️ Reached the limit of {args.num_total_files} total files. Stopping execution.")
+            break
+            
         base_name = os.path.splitext(json_file)[0]
         json_path = os.path.join(desc_folder, json_file)
 
@@ -266,8 +279,14 @@ def main():
         # Generate prompt
         prompt = get_powl_prompt(desc_data["description"], desc_data["activities"])
 
-        # Generate only the number of *missing* samples
+        # Calculate how many samples we can generate before hitting the limit
         num_samples_to_generate = args.num_samples - sum(existing_outputs)
+        remaining_files_allowed = args.num_total_files - total_files
+        num_samples_to_generate = min(num_samples_to_generate, remaining_files_allowed)
+        
+        if num_samples_to_generate <= 0:
+            continue
+            
         samples = generate_samples(prompt, num_samples_to_generate, model, tokenizer)
 
         # Save missing samples
@@ -276,12 +295,20 @@ def main():
             if already_exists:
                 print(f"  Skipping sample {sample_idx}: {os.path.basename(output_path)} already exists")
                 continue
-            # Extract code from response
-            code = extract_code_from_response(next(sample_iter))
-            with open(output_path, 'w', encoding='utf-8') as f:
-                f.write(code)
-            print(f"  Saved sample {sample_idx} to {os.path.basename(output_path)}")
-            total_files += 1
+            
+            # Check if we've reached the limit
+            if total_files >= args.num_total_files:
+                break
+                
+            # Only process if we have samples left to consume
+            if num_samples_to_generate > 0:
+                # Extract code from response
+                code = extract_code_from_response(next(sample_iter))
+                with open(output_path, 'w', encoding='utf-8') as f:
+                    f.write(code)
+                print(f"  Saved sample {sample_idx} to {os.path.basename(output_path)}")
+                total_files += 1
+                num_samples_to_generate -= 1
 
     print(
         f"\n✅ Sampling complete! {total_files} new samples generated, {skipped_files} descriptions skipped (all samples already existed).")
