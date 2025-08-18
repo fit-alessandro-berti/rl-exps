@@ -1,0 +1,23 @@
+0		889		red
+100		665		red
+200		735		red
+300		410		red
+400		180		red
+500		138		red
+600		151		red
+700		146		red
+800		139		red
+900		140		red
+1000	140		red
+1100	7		blue
+1200	4		blue
+1300	6		blue
+1400	3		blue
+1500	2		blue
+1600	5		blue
+1700	2		blue
+1800	2		blue
+1900	0		blue
+2000	2		blue
+
+

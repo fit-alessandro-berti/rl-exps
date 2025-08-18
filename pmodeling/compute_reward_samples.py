@@ -7,9 +7,10 @@ from pm4py.objects.process_tree.obj import Operator
 # ---------------------------------------------------------------------------#
 # 1. Configuration                                                            #
 # ---------------------------------------------------------------------------#
-SAMPLING_DIR = "sampling_step9"
+SAMPLING_DIR = "1000"
 TEST_POWL_DIR = "test/powl"
-OUTPUT_CSV = "reward_scores_step9.csv"
+OUTPUT_CSV = "reward2_partial/"+SAMPLING_DIR+".csv"
+SAMPLING_DIR = "reward2_partial/" + SAMPLING_DIR
 
 # ---------------------------------------------------------------------------#
 # 2. Helper Functions                                                         #
