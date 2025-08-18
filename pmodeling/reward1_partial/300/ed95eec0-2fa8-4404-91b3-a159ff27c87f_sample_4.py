@@ -1,0 +1,43 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define activities
+TrendScan = Transition(label='Trend Scan')
+IdeaHarvest = Transition(label='Idea Harvest')
+SectorMatch = Transition(label='Sector Match')
+BrainstormHub = Transition(label='Brainstorm Hub')
+ConceptFilter = Transition(label='Concept Filter')
+PrototypeBuild = Transition(label='Prototype Build')
+HybridTesting = Transition(label='Hybrid Testing')
+StakeholderSync = Transition(label='Stakeholder Sync')
+RiskAssess = Transition(label='Risk Assess')
+ScenarioMap = Transition(label='Scenario Map')
+StrategyAlign = Transition(label='Strategy Align')
+PilotLaunch = Transition(label='Pilot Launch')
+DataCapture = Transition(label='Data Capture')
+MarketSense = Transition(label='Market Sense')
+ScalePlan = Transition(label='Scale Plan')
+
+# Define operators
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[SectorMatch, IdeaHarvest])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[BrainstormHub, ConceptFilter])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[HybridTesting, RiskAssess])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[StakeholderSync, ScenarioMap])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[StrategyAlign, DataCapture])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[PilotLaunch, MarketSense])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[ScalePlan, MarketSense])
+
+# Define root
+root = StrictPartialOrder(nodes=[TrendScan, xor1, xor2, xor3, xor4, xor5, xor6, xor7])
+root.order.add_edge(TrendScan, xor1)
+root.order.add_edge(TrendScan, xor2)
+root.order.add_edge(TrendScan, xor3)
+root.order.add_edge(TrendScan, xor4)
+root.order.add_edge(TrendScan, xor5)
+root.order.add_edge(TrendScan, xor6)
+root.order.add_edge(TrendScan, xor7)
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)

@@ -1,0 +1,40 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+permit_approval = Transition(label='Permit Approval')
+design_layout = Transition(label='Design Layout')
+system_procure = Transition(label='System Procure')
+nutrient_prep = Transition(label='Nutrient Prep')
+structure_build = Transition(label='Structure Build')
+sensor_install = Transition(label='Sensor Install')
+climate_setup = Transition(label='Climate Setup')
+seed_select = Transition(label='Seed Select')
+germinate_seeds = Transition(label='Germinate Seeds')
+monitor_growth = Transition(label='Monitor Growth')
+data_analyze = Transition(label='Data Analyze')
+pest_control = Transition(label='Pest Control')
+harvest_crop = Transition(label='Harvest Crop')
+package_goods = Transition(label='Package Goods')
+ship_products = Transition(label='Ship Products')
+
+skip = SilentTransition()
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[permit_approval, site_survey])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[design_layout, system_procure])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[nutrient_prep, structure_build])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[sensor_install, climate_setup])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[seed_select, germinate_seeds])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[monitor_growth, data_analyze])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[pest_control, harvest_crop])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[package_goods, ship_products])
+
+root = StrictPartialOrder(nodes=[xor1, xor2, xor3, xor4, xor5, xor6, xor7, xor8])
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor8)

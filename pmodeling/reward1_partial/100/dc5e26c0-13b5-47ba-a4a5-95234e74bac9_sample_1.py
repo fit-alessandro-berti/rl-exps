@@ -1,0 +1,50 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define the transitions for each activity
+Site_Survey = Transition(label='Site Survey')
+Design_Layout = Transition(label='Design Layout')
+Climate_Setup = Transition(label='Climate Setup')
+Sensor_Install = Transition(label='Sensor Install')
+Nutrient_Mix = Transition(label='Nutrient Mix')
+Automation_Code = Transition(label='Automation Code')
+Crop_Planning = Transition(label='Crop Planning')
+Pest_Control = Transition(label='Pest Control')
+Energy_Audit = Transition(label='Energy Audit')
+Waste_Sort = Transition(label='Waste Sort')
+Planting_Tier = Transition(label='Planting Tier')
+Harvest_Prep = Transition(label='Harvest Prep')
+Logistics_Plan = Transition(label='Logistics Plan')
+Community_Meet = Transition(label='Community Meet')
+Data_Review = Transition(label='Data Review')
+System_Upgrade = Transition(label='System Upgrade')
+
+# Define the silent transitions
+skip = SilentTransition()
+
+# Define the loops and XORs for the process
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[Climate_Setup, Sensor_Install])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[Energy_Audit, Waste_Sort])
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[Planting_Tier, skip])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[Harvest_Prep, skip])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[Logistics_Plan, skip])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[Community_Meet, skip])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[Data_Review, skip])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[System_Upgrade, skip])
+
+# Define the strict partial order
+root = StrictPartialOrder(nodes=[Site_Survey, Design_Layout, loop1, Nutrient_Mix, Automation_Code, Crop_Planning, Pest_Control, loop2, xor1, xor2, xor3, xor4, xor5, xor6])
+root.order.add_edge(Site_Survey, Design_Layout)
+root.order.add_edge(Design_Layout, loop1)
+root.order.add_edge(loop1, Nutrient_Mix)
+root.order.add_edge(Nutrient_Mix, Automation_Code)
+root.order.add_edge(Automation_Code, Crop_Planning)
+root.order.add_edge(Crop_Planning, Pest_Control)
+root.order.add_edge(Pest_Control, loop2)
+root.order.add_edge(loop2, xor1)
+root.order.add_edge(xor1, Planting_Tier)
+root.order.add_edge(Planting_Tier, Harvest_Prep)
+root.order.add_edge(Harvest_Prep, Logistics_Plan)
+root.order.add_edge(Logistics_Plan, Community_Meet)
+root.order.add_edge(Community_Meet, Data_Review)
+root.order.add_edge(Data_Review, System_Upgrade)
+root.order.add_edge(System_Upgrade, Site_Survey)

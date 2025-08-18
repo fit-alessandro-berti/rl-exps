@@ -1,0 +1,40 @@
+root = StrictPartialOrder(
+    nodes=[
+        Transition(label='Provenance Check'),
+        Transition(label='Material Test'),
+        Transition(label='Archive Search'),
+        Transition(label='Expert Review'),
+        Transition(label='3D Scanning'),
+        Transition(label='Wear Analysis'),
+        Transition(label='Database Cross'),
+        Transition(label='Law Consult'),
+        Transition(label='Forgery Detect'),
+        Transition(label='Certification'),
+        Transition(label='Document Prep'),
+        Transition(label='Client Brief'),
+        Transition(label='Secure Storage'),
+        Transition(label='Risk Assessment'),
+        Transition(label='Final Approval')
+    ],
+    order=[
+        (Transition(label='Provenance Check'), Transition(label='Material Test')),
+        (Transition(label='Provenance Check'), Transition(label='Archive Search')),
+        (Transition(label='Provenance Check'), Transition(label='Expert Review')),
+        (Transition(label='Material Test'), Transition(label='3D Scanning')),
+        (Transition(label='Material Test'), Transition(label='Wear Analysis')),
+        (Transition(label='Archive Search'), Transition(label='Database Cross')),
+        (Transition(label='Archive Search'), Transition(label='Law Consult')),
+        (Transition(label='Expert Review'), Transition(label='Database Cross')),
+        (Transition(label='Expert Review'), Transition(label='Law Consult')),
+        (Transition(label='3D Scanning'), Transition(label='Forgery Detect')),
+        (Transition(label='Wear Analysis'), Transition(label='Forgery Detect')),
+        (Transition(label='Database Cross'), Transition(label='Certification')),
+        (Transition(label='Law Consult'), Transition(label='Certification')),
+        (Transition(label='Forgery Detect'), Transition(label='Certification')),
+        (Transition(label='Certification'), Transition(label='Document Prep')),
+        (Transition(label='Certification'), Transition(label='Client Brief')),
+        (Transition(label='Certification'), Transition(label='Secure Storage')),
+        (Transition(label='Certification'), Transition(label='Risk Assessment')),
+        (Transition(label='Risk Assessment'), Transition(label='Final Approval'))
+    ]
+)

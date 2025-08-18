@@ -1,0 +1,58 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL model
+farm_selection = Transition(label='Farm Selection')
+milk_testing = Transition(label='Milk Testing')
+batch_pasteurize = Transition(label='Batch Pasteurize')
+culture_add = Transition(label='Culture Add')
+curd_cut = Transition(label='Curd Cut')
+whey_drain = Transition(label='Whey Drain')
+mold_inoculate = Transition(label='Mold Inoculate')
+press_form = Transition(label='Press Form')
+salt_rub = Transition(label='Salt Rub')
+aging_monitor = Transition(label='Aging Monitor')
+flavor_adjust = Transition(label='Flavor Adjust')
+packaging_design = Transition(label='Packaging Design')
+label_approval = Transition(label='Label Approval')
+order_processing = Transition(label='Order Processing')
+cold_storage = Transition(label='Cold Storage')
+delivery_schedule = Transition(label='Delivery Schedule')
+retail_setup = Transition(label='Retail Setup')
+feedback_collect = Transition(label='Feedback Collect')
+
+# Define the relationships between the activities
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[aging_monitor, flavor_adjust])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[packaging_design, label_approval])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[order_processing, cold_storage])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[delivery_schedule, retail_setup])
+loop5 = OperatorPOWL(operator=Operator.LOOP, children=[feedback_collect])
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[farm_selection, milk_testing])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[batch_pasteurize, culture_add])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[curd_cut, whey_drain])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[mold_inoculate, press_form])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[salt_rub, aging_monitor])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[flavor_adjust, packaging_design])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[label_approval, order_processing])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[cold_storage, delivery_schedule])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[retail_setup, feedback_collect])
+
+# Define the root of the POWL model
+root = StrictPartialOrder(nodes=[xor1, xor2, xor3, xor4, xor5, xor6, xor7, xor8, xor9, loop1, loop2, loop3, loop4, loop5])
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor8)
+root.order.add_edge(xor8, xor9)
+root.order.add_edge(xor9, loop1)
+root.order.add_edge(loop1, loop2)
+root.order.add_edge(loop2, loop3)
+root.order.add_edge(loop3, loop4)
+root.order.add_edge(loop4, loop5)
+root.order.add_edge(loop5, loop1)
+
+print(root)

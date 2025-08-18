@@ -1,0 +1,23 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+A = Transition(label='Farm Sourcing')
+B = Transition(label='Lot Selection')
+C = Transition(label='Bean Sorting')
+D = Transition(label='Fermentation')
+E = Transition(label='Drying Process')
+F = Transition(label='Quality Control')
+G = Transition(label='Chemical Testing')
+H = Transition(label='Sensory Analysis')
+I = Transition(label='Roast Profiling')
+J = Transition(label='Eco Packaging')
+K = Transition(label='Traceability QR')
+L = Transition(label='Cold Transport')
+M = Transition(label='Env Monitoring')
+N = Transition(label='Customer Feedback')
+O = Transition(label='Subscription Adjust')
+skip = SilentTransition()
+loop = OperatorPOWL(operator=Operator.LOOP, children=[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O])
+xor = OperatorPOWL(operator=Operator.XOR, children=[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O])
+root = StrictPartialOrder(nodes=[loop, xor])
+root.order.add_edge(loop, xor)

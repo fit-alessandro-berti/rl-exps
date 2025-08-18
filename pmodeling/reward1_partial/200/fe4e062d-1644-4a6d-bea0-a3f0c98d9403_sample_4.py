@@ -1,0 +1,53 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the transitions (activities)
+client_profiling = Transition(label='Client Profiling')
+ingredient_sourcing = Transition(label='Ingredient Sourcing')
+quality_check = Transition(label='Quality Check')
+blend_experiment = Transition(label='Blend Experiment')
+maturation_cycle = Transition(label='Maturation Cycle')
+sensory_panel = Transition(label='Sensory Panel')
+refinement_loop = Transition(label='Refinement Loop')
+stability_test = Transition(label='Stability Test')
+packaging_design = Transition(label='Packaging Design')
+batch_coordination = Transition(label='Batch Coordination')
+compliance_audit = Transition(label='Compliance Audit')
+market_survey = Transition(label='Market Survey')
+feedback_review = Transition(label='Feedback Review')
+order_finalize = Transition(label='Order Finalize')
+distribution_plan = Transition(label='Distribution Plan')
+inventory_update = Transition(label='Inventory Update')
+
+# Define the silent transition (no action)
+skip = SilentTransition()
+
+# Define the operators
+xor = OperatorPOWL(operator=Operator.XOR, children=[quality_check, skip])
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[blend_experiment, sensory_panel])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[refinement_loop, stability_test])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[packaging_design, batch_coordination])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[compliance_audit, market_survey])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[feedback_review, order_finalize])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[distribution_plan, inventory_update])
+
+# Define the root
+root = StrictPartialOrder(nodes=[client_profiling, ingredient_sourcing, xor, maturation_cycle, loop1, loop2, xor2, loop3, loop4, xor3])
+root.order.add_edge(client_profiling, ingredient_sourcing)
+root.order.add_edge(ingredient_sourcing, xor)
+root.order.add_edge(xor, quality_check)
+root.order.add_edge(quality_check, stability_test)
+root.order.add_edge(stability_test, refinement_loop)
+root.order.add_edge(refinement_loop, sensory_panel)
+root.order.add_edge(sensory_panel, blend_experiment)
+root.order.add_edge(blend_experiment, maturation_cycle)
+root.order.add_edge(maturation_cycle, xor2)
+root.order.add_edge(xor2, packaging_design)
+root.order.add_edge(packaging_design, batch_coordination)
+root.order.add_edge(batch_coordination, compliance_audit)
+root.order.add_edge(compliance_audit, market_survey)
+root.order.add_edge(market_survey, feedback_review)
+root.order.add_edge(feedback_review, order_finalize)
+root.order.add_edge(order_finalize, distribution_plan)
+root.order.add_edge(distribution_plan, inventory_update)

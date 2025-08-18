@@ -1,0 +1,45 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+milk_sourcing = Transition(label='Milk Sourcing')
+farm_audit = Transition(label='Farm Audit')
+milk_testing = Transition(label='Milk Testing')
+batch_forming = Transition(label='Batch Forming')
+curd_cutting = Transition(label='Curd Cutting')
+molding_cheese = Transition(label='Molding Cheese')
+salting_process = Transition(label='Salting Process')
+aging_control = Transition(label='Aging Control')
+quality_check = Transition(label='Quality Check')
+packaging_design = Transition(label='Packaging Design')
+label_printing = Transition(label='Label Printing')
+inventory_update = Transition(label='Inventory Update')
+order_receiving = Transition(label='Order Receiving')
+retail_coordination = Transition(label='Retail Coordination')
+shipping_prep = Transition(label='Shipping Prep')
+customer_feedback = Transition(label='Customer Feedback')
+demand_forecast = Transition(label='Demand Forecast')
+limited_release = Transition(label='Limited Release')
+
+# Define the POWL model
+loop_farm_audit = OperatorPOWL(operator=Operator.LOOP, children=[farm_audit])
+xor_milk_sourcing = OperatorPOWL(operator=Operator.XOR, children=[milk_sourcing, loop_farm_audit])
+xor_milk_testing = OperatorPOWL(operator=Operator.XOR, children=[milk_testing, xor_milk_sourcing])
+xor_batch_forming = OperatorPOWL(operator=Operator.XOR, children=[batch_forming, xor_milk_testing])
+xor_curd_cutting = OperatorPOWL(operator=Operator.XOR, children=[curd_cutting, xor_batch_forming])
+xor_molding_cheese = OperatorPOWL(operator=Operator.XOR, children=[molding_cheese, xor_curd_cutting])
+xor_salting_process = OperatorPOWL(operator=Operator.XOR, children=[salting_process, xor_molding_cheese])
+xor_aging_control = OperatorPOWL(operator=Operator.XOR, children=[aging_control, xor_salting_process])
+xor_quality_check = OperatorPOWL(operator=Operator.XOR, children=[quality_check, xor_aging_control])
+xor_packaging_design = OperatorPOWL(operator=Operator.XOR, children=[packaging_design, xor_quality_check])
+xor_label_printing = OperatorPOWL(operator=Operator.XOR, children=[label_printing, xor_packaging_design])
+xor_inventory_update = OperatorPOWL(operator=Operator.XOR, children=[inventory_update, xor_label_printing])
+xor_order_receiving = OperatorPOWL(operator=Operator.XOR, children=[order_receiving, xor_inventory_update])
+xor_retail_coordination = OperatorPOWL(operator=Operator.XOR, children=[retail_coordination, xor_order_receiving])
+xor_shipping_prep = OperatorPOWL(operator=Operator.XOR, children=[shipping_prep, xor_retail_coordination])
+xor_customer_feedback = OperatorPOWL(operator=Operator.XOR, children=[customer_feedback, xor_shipping_prep])
+xor_demand_forecast = OperatorPOWL(operator=Operator.XOR, children=[demand_forecast, xor_customer_feedback])
+xor_limited_release = OperatorPOWL(operator=Operator.XOR, children=[limited_release, xor_demand_forecast])
+
+root = StrictPartialOrder(nodes=[xor_milk_testing, xor_batch_forming, xor_curd_cutting, xor_molding_cheese, xor_salting_process, xor_aging_control, xor_quality_check, xor_packaging_design, xor_label_printing, xor_inventory_update, xor_order_receiving, xor_retail_coordination, xor_shipping_prep, xor_customer_feedback, xor_demand_forecast, xor_limited_release])

@@ -1,0 +1,40 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+design_layout = Transition(label='Design Layout')
+climate_setup = Transition(label='Climate Setup')
+sensor_install = Transition(label='Sensor Install')
+nutrient_mix = Transition(label='Nutrient Mix')
+automation_code = Transition(label='Automation Code')
+crop_planning = Transition(label='Crop Planning')
+pest_control = Transition(label='Pest Control')
+energy_audit = Transition(label='Energy Audit')
+waste_sort = Transition(label='Waste Sort')
+planting_tier = Transition(label='Planting Tier')
+harvest_prep = Transition(label='Harvest Prep')
+logistics_plan = Transition(label='Logistics Plan')
+community_meet = Transition(label='Community Meet')
+data_review = Transition(label='Data Review')
+system_upgrade = Transition(label='System Upgrade')
+
+skip = SilentTransition()
+
+site_survey_xor_design_layout = OperatorPOWL(operator=Operator.XOR, children=[site_survey, design_layout])
+climate_xor_sensor_install = OperatorPOWL(operator=Operator.XOR, children=[climate_setup, sensor_install])
+nutrient_xor_automation_code = OperatorPOWL(operator=Operator.XOR, children=[nutrient_mix, automation_code])
+crop_xor_pest_control = OperatorPOWL(operator=Operator.XOR, children=[crop_planning, pest_control])
+energy_xor_waste_sort = OperatorPOWL(operator=Operator.XOR, children=[energy_audit, waste_sort])
+planting_xor_harvest_prep = OperatorPOWL(operator=Operator.XOR, children=[planting_tier, harvest_prep])
+logistics_xor_community_meet = OperatorPOWL(operator=Operator.XOR, children=[logistics_plan, community_meet])
+data_xor_system_upgrade = OperatorPOWL(operator=Operator.XOR, children=[data_review, system_upgrade])
+
+root = StrictPartialOrder(nodes=[site_survey_xor_design_layout, climate_xor_sensor_install, nutrient_xor_automation_code, crop_xor_pest_control, energy_xor_waste_sort, planting_xor_harvest_prep, logistics_xor_community_meet, data_xor_system_upgrade])
+root.order.add_edge(site_survey_xor_design_layout, climate_xor_sensor_install)
+root.order.add_edge(site_survey_xor_design_layout, nutrient_xor_automation_code)
+root.order.add_edge(climate_xor_sensor_install, crop_xor_pest_control)
+root.order.add_edge(nutrient_xor_automation_code, energy_xor_waste_sort)
+root.order.add_edge(energy_xor_waste_sort, planting_xor_harvest_prep)
+root.order.add_edge(planting_xor_harvest_prep, logistics_xor_community_meet)
+root.order.add_edge(logistics_xor_community_meet, data_xor_system_upgrade)

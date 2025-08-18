@@ -1,0 +1,37 @@
+root = StrictPartialOrder(
+    nodes=[
+        Transition(label='Site Survey'),
+        Transition(label='Design Plan'),
+        Transition(label='Permit Acquire'),
+        Transition(label='Structural Retrofit'),
+        Transition(label='System Install'),
+        Transition(label='Lighting Setup'),
+        Transition(label='Sensor Deploy'),
+        Transition(label='Seed Sourcing'),
+        Transition(label='Nutrient Prep'),
+        Transition(label='Staff Training'),
+        Transition(label='Data Monitor'),
+        Transition(label='Yield Analyze'),
+        Transition(label='Compliance Check'),
+        Transition(label='Community Meet'),
+        Transition(label='Market Launch'),
+        Transition(label='Logistics Plan'),
+    ],
+    order=[
+        ('Site Survey', 'Design Plan'),
+        ('Design Plan', 'Permit Acquire'),
+        ('Permit Acquire', 'Structural Retrofit'),
+        ('Structural Retrofit', 'System Install'),
+        ('System Install', 'Lighting Setup'),
+        ('Lighting Setup', 'Sensor Deploy'),
+        ('Sensor Deploy', 'Seed Sourcing'),
+        ('Seed Sourcing', 'Nutrient Prep'),
+        ('Nutrient Prep', 'Staff Training'),
+        ('Staff Training', 'Data Monitor'),
+        ('Data Monitor', 'Yield Analyze'),
+        ('Yield Analyze', 'Compliance Check'),
+        ('Compliance Check', 'Community Meet'),
+        ('Community Meet', 'Market Launch'),
+        ('Market Launch', 'Logistics Plan')
+    ]
+)

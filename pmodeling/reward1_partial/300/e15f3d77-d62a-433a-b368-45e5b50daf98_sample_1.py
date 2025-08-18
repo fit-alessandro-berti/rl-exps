@@ -1,0 +1,30 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions for each activity
+gather_specs = Transition(label='Gather Specs')
+adapt_design = Transition(label='Adapt Design')
+source_parts = Transition(label='Source Parts')
+component_test = Transition(label='Component Test')
+assemble_frame = Transition(label='Assemble Frame')
+install_firmware = Transition(label='Install Firmware')
+calibrate_sensors = Transition(label='Calibrate Sensors')
+stress_test = Transition(label='Stress Test')
+flight_simulate = Transition(label='Flight Simulate')
+validate_battery = Transition(label='Validate Battery')
+check_accuracy = Transition(label='Check Accuracy')
+package_units = Transition(label='Package Units')
+create_manuals = Transition(label='Create Manuals')
+ship_drones = Transition(label='Ship Drones')
+collect_feedback = Transition(label='Collect Feedback')
+
+# Define the POWL model
+loop = OperatorPOWL(operator=Operator.LOOP, children=[gather_specs, adapt_design, source_parts, component_test, assemble_frame, install_firmware, calibrate_sensors, stress_test, flight_simulate, validate_battery, check_accuracy])
+xor = OperatorPOWL(operator=Operator.XOR, children=[package_units, create_manuals])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[ship_drones, collect_feedback])
+root = StrictPartialOrder(nodes=[loop, xor, xor2])
+root.order.add_edge(loop, xor)
+root.order.add_edge(loop, xor2)
+
+print(root)

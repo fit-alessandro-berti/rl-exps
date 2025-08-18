@@ -1,0 +1,70 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define activities
+AssetListing = Transition(label='Asset Listing')
+ValuationCheck = Transition(label='Valuation Check')
+ComplianceScan = Transition(label='Compliance Scan')
+LegalReview = Transition(label='Legal Review')
+RemoteAudit = Transition(label='Remote Audit')
+AuctionSetup = Transition(label='Auction Setup')
+BidMonitoring = Transition(label='Bid Monitoring')
+FraudDetection = Transition(label='Fraud Detection')
+OwnershipTransfer = Transition(label='Ownership Transfer')
+PaymentClearing = Transition(label='Payment Clearing')
+TaxCalculation = Transition(label='Tax Calculation')
+FundAllocation = Transition(label='Fund Allocation')
+DisputeHandling = Transition(label='Dispute Handling')
+ReportGeneration = Transition(label='Report Generation')
+StakeholderUpdate = Transition(label='Stakeholder Update')
+
+# Define silent transitions
+skip = SilentTransition()
+
+# Define POWL models for each activity
+valuation_check_loop = OperatorPOWL(operator=Operator.LOOP, children=[ValuationCheck])
+compliance_scan_loop = OperatorPOWL(operator=Operator.LOOP, children=[ComplianceScan])
+remote_audit_loop = OperatorPOWL(operator=Operator.LOOP, children=[RemoteAudit])
+auction_setup_loop = OperatorPOWL(operator=Operator.LOOP, children=[AuctionSetup])
+bid_monitoring_loop = OperatorPOWL(operator=Operator.LOOP, children=[BidMonitoring])
+fraud_detection_loop = OperatorPOWL(operator=Operator.LOOP, children=[FraudDetection])
+ownership_transfer_loop = OperatorPOWL(operator=Operator.LOOP, children=[OwnershipTransfer])
+payment_clearing_loop = OperatorPOWL(operator=Operator.LOOP, children=[PaymentClearing])
+tax_calculation_loop = OperatorPOWL(operator=Operator.LOOP, children=[TaxCalculation])
+fund_allocation_loop = OperatorPOWL(operator=Operator.LOOP, children=[FundAllocation])
+dispute_handling_loop = OperatorPOWL(operator=Operator.LOOP, children=[DisputeHandling])
+report_generation_loop = OperatorPOWL(operator=Operator.LOOP, children=[ReportGeneration])
+stakeholder_update_loop = OperatorPOWL(operator=Operator.LOOP, children=[StakeholderUpdate])
+
+# Define exclusive choices
+valuation_check_xor = OperatorPOWL(operator=Operator.XOR, children=[ValuationCheck, skip])
+compliance_scan_xor = OperatorPOWL(operator=Operator.XOR, children=[ComplianceScan, skip])
+remote_audit_xor = OperatorPOWL(operator=Operator.XOR, children=[RemoteAudit, skip])
+auction_setup_xor = OperatorPOWL(operator=Operator.XOR, children=[AuctionSetup, skip])
+bid_monitoring_xor = OperatorPOWL(operator=Operator.XOR, children=[BidMonitoring, skip])
+fraud_detection_xor = OperatorPOWL(operator=Operator.XOR, children=[FraudDetection, skip])
+ownership_transfer_xor = OperatorPOWL(operator=Operator.XOR, children=[OwnershipTransfer, skip])
+payment_clearing_xor = OperatorPOWL(operator=Operator.XOR, children=[PaymentClearing, skip])
+tax_calculation_xor = OperatorPOWL(operator=Operator.XOR, children=[TaxCalculation, skip])
+fund_allocation_xor = OperatorPOWL(operator=Operator.XOR, children=[FundAllocation, skip])
+dispute_handling_xor = OperatorPOWL(operator=Operator.XOR, children=[DisputeHandling, skip])
+report_generation_xor = OperatorPOWL(operator=Operator.XOR, children=[ReportGeneration, skip])
+stakeholder_update_xor = OperatorPOWL(operator=Operator.XOR, children=[StakeholderUpdate, skip])
+
+# Define the root POWL model
+root = StrictPartialOrder(nodes=[AssetListing, valuation_check_loop, compliance_scan_loop, legal_review_loop, remote_audit_loop, auction_setup_loop, bid_monitoring_loop, fraud_detection_loop, ownership_transfer_loop, payment_clearing_loop, tax_calculation_loop, fund_allocation_loop, dispute_handling_loop, report_generation_loop, stakeholder_update_loop])
+root.order.add_edge(AssetListing, valuation_check_loop)
+root.order.add_edge(valuation_check_loop, compliance_scan_loop)
+root.order.add_edge(compliance_scan_loop, legal_review_loop)
+root.order.add_edge(legal_review_loop, remote_audit_loop)
+root.order.add_edge(remote_audit_loop, auction_setup_loop)
+root.order.add_edge(auction_setup_loop, bid_monitoring_loop)
+root.order.add_edge(bid_monitoring_loop, fraud_detection_loop)
+root.order.add_edge(fraud_detection_loop, ownership_transfer_loop)
+root.order.add_edge(ownership_transfer_loop, payment_clearing_loop)
+root.order.add_edge(payment_clearing_loop, tax_calculation_loop)
+root.order.add_edge(tax_calculation_loop, fund_allocation_loop)
+root.order.add_edge(fund_allocation_loop, dispute_handling_loop)
+root.order.add_edge(dispute_handling_loop, report_generation_loop)
+root.order.add_edge(report_generation_loop, stakeholder_update_loop)

@@ -1,0 +1,40 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+climate_study = Transition(label='Climate Study')
+system_design = Transition(label='System Design')
+seed_selection = Transition(label='Seed Selection')
+unit_install = Transition(label='Unit Install')
+sensor_setup = Transition(label='Sensor Setup')
+nutrient_mix = Transition(label='Nutrient Mix')
+energy_audit = Transition(label='Energy Audit')
+pest_control = Transition(label='Pest Control')
+crop_plan = Transition(label='Crop Plan')
+quality_check = Transition(label='Quality Check')
+yield_forecast = Transition(label='Yield Forecast')
+supply_sync = Transition(label='Supply Sync')
+staff_train = Transition(label='Staff Train')
+data_review = Transition(label='Data Review')
+
+skip = SilentTransition()
+
+site_survey_xor_climate = OperatorPOWL(operator=Operator.XOR, children=[site_survey, climate_study])
+system_design_xor_seed_selection = OperatorPOWL(operator=Operator.XOR, children=[system_design, seed_selection])
+unit_install_xor_sensor_setup = OperatorPOWL(operator=Operator.XOR, children=[unit_install, sensor_setup])
+nutrient_mix_xor_energy_audit = OperatorPOWL(operator=Operator.XOR, children=[nutrient_mix, energy_audit])
+pest_control_xor_crop_plan = OperatorPOWL(operator=Operator.XOR, children=[pest_control, crop_plan])
+quality_check_xor_yield_forecast = OperatorPOWL(operator=Operator.XOR, children=[quality_check, yield_forecast])
+supply_sync_xor_staff_train = OperatorPOWL(operator=Operator.XOR, children=[supply_sync, staff_train])
+data_review_xor = OperatorPOWL(operator=Operator.XOR, children=[data_review])
+
+root = StrictPartialOrder(nodes=[site_survey_xor_climate, system_design_xor_seed_selection, unit_install_xor_sensor_setup, nutrient_mix_xor_energy_audit, pest_control_xor_crop_plan, quality_check_xor_yield_forecast, supply_sync_xor_staff_train, data_review_xor])
+root.order.add_edge(site_survey_xor_climate, system_design_xor_seed_selection)
+root.order.add_edge(system_design_xor_seed_selection, unit_install_xor_sensor_setup)
+root.order.add_edge(unit_install_xor_sensor_setup, nutrient_mix_xor_energy_audit)
+root.order.add_edge(nutrient_mix_xor_energy_audit, pest_control_xor_crop_plan)
+root.order.add_edge(pest_control_xor_crop_plan, quality_check_xor_yield_forecast)
+root.order.add_edge(quality_check_xor_yield_forecast, supply_sync_xor_staff_train)
+root.order.add_edge(supply_sync_xor_staff_train, data_review_xor)
+
+print(root)

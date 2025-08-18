@@ -1,0 +1,31 @@
+root = StrictPartialOrder(nodes=[
+    Transition(label='Seed Select'),
+    Transition(label='Nutrient Mix'),
+    Transition(label='Climate Setup'),
+    Transition(label='Light Adjust'),
+    Transition(label='CO2 Control'),
+    Transition(label='Humidity Tune'),
+    Transition(label='Growth Monitor'),
+    Transition(label='Pest Detect'),
+    Transition(label='Harvest Plan'),
+    Transition(label='Produce Sort'),
+    Transition(label='Pack Biodeg'),
+    Transition(label='Drone Dispatch'),
+    Transition(label='Waste Recycle'),
+    Transition(label='Compost Create'),
+    Transition(label='Cycle Review')
+])
+
+root.order.add_edge(root.nodes[0], root.nodes[1])
+root.order.add_edge(root.nodes[1], root.nodes[2])
+root.order.add_edge(root.nodes[2], root.nodes[3])
+root.order.add_edge(root.nodes[2], root.nodes[4])
+root.order.add_edge(root.nodes[2], root.nodes[5])
+root.order.add_edge(root.nodes[2], root.nodes[6])
+root.order.add_edge(root.nodes[6], root.nodes[7])
+root.order.add_edge(root.nodes[7], root.nodes[8])
+root.order.add_edge(root.nodes[8], root.nodes[9])
+root.order.add_edge(root.nodes[9], root.nodes[10])
+root.order.add_edge(root.nodes[10], root.nodes[11])
+root.order.add_edge(root.nodes[11], root.nodes[12])
+root.order.add_edge(root.nodes[12], root.nodes[13])

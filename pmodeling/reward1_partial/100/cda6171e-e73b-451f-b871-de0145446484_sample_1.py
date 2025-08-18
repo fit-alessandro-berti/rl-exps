@@ -1,0 +1,71 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define activities
+site_analysis = Transition(label='Site Analysis')
+structure_check = Transition(label='Structure Check')
+modify_layout = Transition(label='Modify Layout')
+install_hvac = Transition(label='Install HVAC')
+setup_hydroponics = Transition(label='Setup Hydroponics')
+prepare_nutrients = Transition(label='Prepare Nutrients')
+select_seeds = Transition(label='Select Seeds')
+automate_planting = Transition(label='Automate Planting')
+deploy_sensors = Transition(label='Deploy Sensors')
+pest_control = Transition(label='Pest Control')
+optimize_energy = Transition(label='Optimize Energy')
+recycle_water = Transition(label='Recycle Water')
+automate_harvest = Transition(label='Automate Harvest')
+package_crops = Transition(label='Package Crops')
+coordinate_delivery = Transition(label='Coordinate Delivery')
+analyze_data = Transition(label='Analyze Data')
+
+# Define relationships between activities
+site_analysis_to_structure_check = OperatorPOWL(operator=Operator.XOR, children=[site_analysis, structure_check])
+structure_check_to_modify_layout = OperatorPOWL(operator=Operator.XOR, children=[structure_check, modify_layout])
+modify_layout_to_install_hvac = OperatorPOWL(operator=Operator.XOR, children=[modify_layout, install_hvac])
+install_hvac_to_setup_hydroponics = OperatorPOWL(operator=Operator.XOR, children=[install_hvac, setup_hydroponics])
+setup_hydroponics_to_prepare_nutrients = OperatorPOWL(operator=Operator.XOR, children=[setup_hydroponics, prepare_nutrients])
+prepare_nutrients_to_select_seeds = OperatorPOWL(operator=Operator.XOR, children=[prepare_nutrients, select_seeds])
+select_seeds_to_automate_planting = OperatorPOWL(operator=Operator.XOR, children=[select_seeds, automate_planting])
+automate_planting_to_deploy_sensors = OperatorPOWL(operator=Operator.XOR, children=[automate_planting, deploy_sensors])
+deploy_sensors_to_pest_control = OperatorPOWL(operator=Operator.XOR, children=[deploy_sensors, pest_control])
+pest_control_to_optimize_energy = OperatorPOWL(operator=Operator.XOR, children=[pest_control, optimize_energy])
+optimize_energy_to_recycle_water = OperatorPOWL(operator=Operator.XOR, children=[optimize_energy, recycle_water])
+recycle_water_to_automate_harvest = OperatorPOWL(operator=Operator.XOR, children=[recycle_water, automate_harvest])
+automate_harvest_to_package_crops = OperatorPOWL(operator=Operator.XOR, children=[automate_harvest, package_crops])
+package_crops_to_coordinate_delivery = OperatorPOWL(operator=Operator.XOR, children=[package_crops, coordinate_delivery])
+coordinate_delivery_to_analyze_data = OperatorPOWL(operator=Operator.XOR, children=[coordinate_delivery, analyze_data])
+
+# Create the root node
+root = StrictPartialOrder(nodes=[site_analysis_to_structure_check,
+                                 structure_check_to_modify_layout,
+                                 modify_layout_to_install_hvac,
+                                 install_hvac_to_setup_hydroponics,
+                                 setup_hydroponics_to_prepare_nutrients,
+                                 prepare_nutrients_to_select_seeds,
+                                 select_seeds_to_automate_planting,
+                                 automate_planting_to_deploy_sensors,
+                                 deploy_sensors_to_pest_control,
+                                 pest_control_to_optimize_energy,
+                                 optimize_energy_to_recycle_water,
+                                 recycle_water_to_automate_harvest,
+                                 automate_harvest_to_package_crops,
+                                 package_crops_to_coordinate_delivery,
+                                 coordinate_delivery_to_analyze_data])
+
+# Add edges to define the order of activities
+root.order.add_edge(site_analysis, structure_check)
+root.order.add_edge(structure_check, modify_layout)
+root.order.add_edge(modify_layout, install_hvac)
+root.order.add_edge(install_hvac, setup_hydroponics)
+root.order.add_edge(setup_hydroponics, prepare_nutrients)
+root.order.add_edge(prepare_nutrients, select_seeds)
+root.order.add_edge(select_seeds, automate_planting)
+root.order.add_edge(automate_planting, deploy_sensors)
+root.order.add_edge(deploy_sensors, pest_control)
+root.order.add_edge(pest_control, optimize_energy)
+root.order.add_edge(optimize_energy, recycle_water)
+root.order.add_edge(recycle_water, automate_harvest)
+root.order.add_edge(automate_harvest, package_crops)
+root.order.add_edge(package_crops, coordinate_delivery)
+root.order.add_edge(coordinate_delivery, analyze_data)

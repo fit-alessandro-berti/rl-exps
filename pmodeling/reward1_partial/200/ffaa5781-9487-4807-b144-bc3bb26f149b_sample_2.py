@@ -1,0 +1,43 @@
+root = StrictPartialOrder(nodes=[
+    Transition(label='Provenance Check'),
+    Transition(label='Radiocarbon Test'),
+    Transition(label='Material Analysis'),
+    Transition(label='Microscopic Scan'),
+    Transition(label='Expert Review'),
+    Transition(label='Context Validation'),
+    Transition(label='Legal Audit'),
+    Transition(label='Export Verify'),
+    Transition(label='Digital Imaging'),
+    Transition(label='3D Modeling'),
+    Transition(label='Consensus Meeting'),
+    Transition(label='Final Approval'),
+    Transition(label='Catalog Entry'),
+    Transition(label='Virtual Setup'),
+    Transition(label='Archival Backup')
+])
+
+root.order.add_edge(root.nodes[0], root.nodes[1])
+root.order.add_edge(root.nodes[0], root.nodes[2])
+root.order.add_edge(root.nodes[0], root.nodes[3])
+root.order.add_edge(root.nodes[0], root.nodes[4])
+root.order.add_edge(root.nodes[0], root.nodes[5])
+root.order.add_edge(root.nodes[0], root.nodes[6])
+root.order.add_edge(root.nodes[0], root.nodes[7])
+root.order.add_edge(root.nodes[0], root.nodes[8])
+root.order.add_edge(root.nodes[0], root.nodes[9])
+root.order.add_edge(root.nodes[10], root.nodes[11])
+root.order.add_edge(root.nodes[10], root.nodes[12])
+root.order.add_edge(root.nodes[10], root.nodes[13])
+root.order.add_edge(root.nodes[10], root.nodes[14])
+root.order.add_edge(root.nodes[10], root.nodes[15])
+root.order.add_edge(root.nodes[10], root.nodes[16])
+root.order.add_edge(root.nodes[10], root.nodes[17])
+root.order.add_edge(root.nodes[10], root.nodes[18])
+root.order.add_edge(root.nodes[10], root.nodes[19])
+root.order.add_edge(root.nodes[10], root.nodes[20])
+root.order.add_edge(root.nodes[20], root.nodes[21])
+root.order.add_edge(root.nodes[20], root.nodes[22])
+root.order.add_edge(root.nodes[20], root.nodes[23])
+root.order.add_edge(root.nodes[20], root.nodes[24])
+root.order.add_edge(root.nodes[20], root.nodes[25])
+root.order.add_edge(root.nodes[20], root.nodes[26])

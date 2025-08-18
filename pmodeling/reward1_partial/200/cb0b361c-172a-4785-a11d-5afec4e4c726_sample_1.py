@@ -1,0 +1,53 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL model
+site_survey = Transition(label='Site Survey')
+structural_audit = Transition(label='Structural Audit')
+layout_design = Transition(label='Layout Design')
+system_install = Transition(label='System Install')
+climate_setup = Transition(label='Climate Setup')
+water_testing = Transition(label='Water Testing')
+nutrient_mix = Transition(label='Nutrient Mix')
+seed_selection = Transition(label='Seed Selection')
+planting_prep = Transition(label='Planting Prep')
+growth_monitor = Transition(label='Growth Monitor')
+pest_inspect = Transition(label='Pest Inspect')
+harvest_plan = Transition(label='Harvest Plan')
+packaging_prep = Transition(label='Packaging Prep')
+distribution = Transition(label='Distribution')
+sustainability = Transition(label='Sustainability')
+
+skip = SilentTransition()
+
+site_survey_to_audit = OperatorPOWL(operator=Operator.XOR, children=[site_survey, structural_audit])
+audit_to_design = OperatorPOWL(operator=Operator.XOR, children=[structural_audit, layout_design])
+design_to_install = OperatorPOWL(operator=Operator.XOR, children=[layout_design, system_install])
+install_to_setup = OperatorPOWL(operator=Operator.XOR, children=[system_install, climate_setup])
+setup_to_testing = OperatorPOWL(operator=Operator.XOR, children=[climate_setup, water_testing])
+testing_to_mix = OperatorPOWL(operator=Operator.XOR, children=[water_testing, nutrient_mix])
+mix_to_selection = OperatorPOWL(operator=Operator.XOR, children=[nutrient_mix, seed_selection])
+selection_to_prep = OperatorPOWL(operator=Operator.XOR, children=[seed_selection, planting_prep])
+prep_to_monitor = OperatorPOWL(operator=Operator.XOR, children=[planting_prep, growth_monitor])
+monitor_to_inspect = OperatorPOWL(operator=Operator.XOR, children=[growth_monitor, pest_inspect])
+inspect_to_plan = OperatorPOWL(operator=Operator.XOR, children=[pest_inspect, harvest_plan])
+plan_to_prep = OperatorPOWL(operator=Operator.XOR, children=[harvest_plan, packaging_prep])
+prep_to_distribute = OperatorPOWL(operator=Operator.XOR, children=[packaging_prep, distribution])
+distribute_to_sustainability = OperatorPOWL(operator=Operator.XOR, children=[distribution, sustainability])
+
+root = StrictPartialOrder(nodes=[site_survey_to_audit, audit_to_design, design_to_install, install_to_setup, setup_to_testing, testing_to_mix, mix_to_selection, selection_to_prep, prep_to_monitor, monitor_to_inspect, inspect_to_plan, plan_to_prep, prep_to_distribute, distribute_to_sustainability])
+
+root.order.add_edge(site_survey_to_audit, audit_to_design)
+root.order.add_edge(audit_to_design, design_to_install)
+root.order.add_edge(design_to_install, install_to_setup)
+root.order.add_edge(install_to_setup, setup_to_testing)
+root.order.add_edge(setup_to_testing, testing_to_mix)
+root.order.add_edge(testing_to_mix, mix_to_selection)
+root.order.add_edge(mix_to_selection, selection_to_prep)
+root.order.add_edge(selection_to_prep, prep_to_monitor)
+root.order.add_edge(prep_to_monitor, monitor_to_inspect)
+root.order.add_edge(monitor_to_inspect, inspect_to_plan)
+root.order.add_edge(inspect_to_plan, plan_to_prep)
+root.order.add_edge(plan_to_prep, prep_to_distribute)
+root.order.add_edge(prep_to_distribute, distribute_to_sustainability)

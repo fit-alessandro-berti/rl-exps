@@ -1,0 +1,46 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+data_capture = Transition(label='Data Capture')
+fingerprint_art = Transition(label='Fingerprint Art')
+record_input = Transition(label='Record Input')
+historical_check = Transition(label='Historical Check')
+stakeholder_vote = Transition(label='Stakeholder Vote')
+consensus_validate = Transition(label='Consensus Validate')
+timestamp_entry = Transition(label='Timestamp Entry')
+ledger_update = Transition(label='Ledger Update')
+ai_patternscan = Transition(label='AI PatternScan')
+flag_anomaly = Transition(label='Flag Anomaly')
+dispute_submit = Transition(label='Dispute Submit')
+panel_review = Transition(label='Panel Review')
+arbitrate_case = Transition(label='Arbitrate Case')
+trade_monitor = Transition(label='Trade Monitor')
+feedback_loop = Transition(label='Feedback Loop')
+insurance_sync = Transition(label='Insurance Sync')
+collector_notify = Transition(label='Collector Notify')
+
+skip = SilentTransition()
+
+# Process flow
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[historical_check, stakeholder_vote])
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[consensus_validate, skip])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[timestamp_entry, ledger_update])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[ai_patternscan, flag_anomaly])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[dispute_submit, panel_review])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[arbitrate_case, skip])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[trade_monitor, feedback_loop])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[insurance_sync, collector_notify])
+
+root = StrictPartialOrder(nodes=[data_capture, fingerprint_art, record_input, loop1, xor1, loop2, xor2, loop3, xor3, loop4, xor4])
+root.order.add_edge(data_capture, fingerprint_art)
+root.order.add_edge(fingerprint_art, record_input)
+root.order.add_edge(record_input, loop1)
+root.order.add_edge(loop1, xor1)
+root.order.add_edge(xor1, loop2)
+root.order.add_edge(loop2, xor2)
+root.order.add_edge(xor2, loop3)
+root.order.add_edge(loop3, xor3)
+root.order.add_edge(xor3, loop4)
+root.order.add_edge(loop4, xor4)
+
+print(root)

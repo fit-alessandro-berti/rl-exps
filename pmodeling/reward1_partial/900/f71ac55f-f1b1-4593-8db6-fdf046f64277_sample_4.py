@@ -1,0 +1,63 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define activities (same names as in the description)
+site_survey = Transition(label='Site Survey')
+permit_review = Transition(label='Permit Review')
+design_layout = Transition(label='Design Layout')
+system_assembly = Transition(label='System Assembly')
+climate_setup = Transition(label='Climate Setup')
+nutrient_prep = Transition(label='Nutrient Prep')
+irrigation_test = Transition(label='Irrigation Test')
+lighting_config = Transition(label='Lighting Config')
+energy_install = Transition(label='Energy Install')
+sensor_setup = Transition(label='Sensor Setup')
+automation_deploy = Transition(label='Automation Deploy')
+crop_seeding = Transition(label='Crop Seeding')
+waste_plan = Transition(label='Waste Plan')
+staff_training = Transition(label='Staff Training')
+community_outreach = Transition(label='Community Outreach')
+yield_monitor = Transition(label='Yield Monitor')
+maintenance_check = Transition(label='Maintenance Check')
+
+# Define silent transitions (tau labels)
+skip = SilentTransition()
+
+# Define choices
+site_and_permit = OperatorPOWL(operator=Operator.XOR, children=[site_survey, permit_review])
+design_and_system = OperatorPOWL(operator=Operator.XOR, children=[design_layout, system_assembly])
+climate_and_lighting = OperatorPOWL(operator=Operator.XOR, children=[climate_setup, lighting_config])
+energy_and_sensor = OperatorPOWL(operator=Operator.XOR, children=[energy_install, sensor_setup])
+automation_and_seeding = OperatorPOWL(operator=Operator.XOR, children=[automation_deploy, crop_seeding])
+waste_and_training = OperatorPOWL(operator=Operator.XOR, children=[waste_plan, staff_training])
+outreach_and_monitor = OperatorPOWL(operator=Operator.XOR, children=[community_outreach, yield_monitor])
+maintenance = OperatorPOWL(operator=Operator.XOR, children=[maintenance_check])
+
+# Define loops
+site_and_permit_loop = OperatorPOWL(operator=Operator.LOOP, children=[site_survey, permit_review])
+design_and_system_loop = OperatorPOWL(operator=Operator.LOOP, children=[design_layout, system_assembly])
+climate_and_lighting_loop = OperatorPOWL(operator=Operator.LOOP, children=[climate_setup, lighting_config])
+energy_and_sensor_loop = OperatorPOWL(operator=Operator.LOOP, children=[energy_install, sensor_setup])
+automation_and_seeding_loop = OperatorPOWL(operator=Operator.LOOP, children=[automation_deploy, crop_seeding])
+waste_and_training_loop = OperatorPOWL(operator=Operator.LOOP, children=[waste_plan, staff_training])
+outreach_and_monitor_loop = OperatorPOWL(operator=Operator.LOOP, children=[community_outreach, yield_monitor])
+maintenance_loop = OperatorPOWL(operator=Operator.LOOP, children=[maintenance_check])
+
+# Define partial order
+root = StrictPartialOrder(nodes=[site_and_permit, design_and_system, climate_and_lighting, energy_and_sensor, automation_and_seeding, waste_and_training, outreach_and_monitor, maintenance, site_and_permit_loop, design_and_system_loop, climate_and_lighting_loop, energy_and_sensor_loop, automation_and_seeding_loop, waste_and_training_loop, outreach_and_monitor_loop, maintenance_loop])
+root.order.add_edge(site_and_permit, design_and_system)
+root.order.add_edge(design_and_system, climate_and_lighting)
+root.order.add_edge(climate_and_lighting, energy_and_sensor)
+root.order.add_edge(energy_and_sensor, automation_and_seeding)
+root.order.add_edge(automation_and_seeding, waste_and_training)
+root.order.add_edge(waste_and_training, outreach_and_monitor)
+root.order.add_edge(outreach_and_monitor, maintenance)
+root.order.add_edge(site_and_permit, site_and_permit_loop)
+root.order.add_edge(design_and_system, design_and_system_loop)
+root.order.add_edge(climate_and_lighting, climate_and_lighting_loop)
+root.order.add_edge(energy_and_sensor, energy_and_sensor_loop)
+root.order.add_edge(automation_and_seeding, automation_and_seeding_loop)
+root.order.add_edge(waste_and_training, waste_and_training_loop)
+root.order.add_edge(outreach_and_monitor, outreach_and_monitor_loop)
+root.order.add_edge(maintenance, maintenance_loop)

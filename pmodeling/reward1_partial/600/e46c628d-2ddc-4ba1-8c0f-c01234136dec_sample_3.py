@@ -1,0 +1,51 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL nodes
+threat_assess = Transition(label='Threat Assess')
+alert_dispatch = Transition(label='Alert Dispatch')
+resource_check = Transition(label='Resource Check')
+team_mobilize = Transition(label='Team Mobilize')
+command_setup = Transition(label='Command Setup')
+intel_gather = Transition(label='Intel Gather')
+risk_evaluate = Transition(label='Risk Evaluate')
+priority_set = Transition(label='Priority Set')
+field_deploy = Transition(label='Field Deploy')
+comm_sync = Transition(label='Comm Sync')
+public_update = Transition(label='Public Update')
+supply_manage = Transition(label='Supply Manage')
+safety_monitor = Transition(label='Safety Monitor')
+incident_log = Transition(label='Incident Log')
+recovery_plan = Transition(label='Recovery Plan')
+debrief_team = Transition(label='Debrief Team')
+data_archive = Transition(label='Data Archive')
+
+# Define the POWL edges
+threat_assess_order = OperatorPOWL(operator=Operator.ORDER, children=[alert_dispatch, resource_check])
+alert_dispatch_order = OperatorPOWL(operator=Operator.ORDER, children=[team_mobilize, command_setup])
+resource_check_order = OperatorPOWL(operator=Operator.ORDER, children=[intel_gather, risk_evaluate])
+team_mobilize_order = OperatorPOWL(operator=Operator.ORDER, children=[priority_set, field_deploy])
+command_setup_order = OperatorPOWL(operator=Operator.ORDER, children=[comm_sync, public_update])
+intel_gather_order = OperatorPOWL(operator=Operator.ORDER, children=[supply_manage, safety_monitor])
+risk_evaluate_order = OperatorPOWL(operator=Operator.ORDER, children=[incident_log, recovery_plan])
+priority_set_order = OperatorPOWL(operator=Operator.ORDER, children=[debrief_team, data_archive])
+
+# Define the root POWL model
+root = StrictPartialOrder(nodes=[threat_assess, alert_dispatch, resource_check, team_mobilize, command_setup, intel_gather, risk_evaluate, priority_set, field_deploy, comm_sync, public_update, supply_manage, safety_monitor, incident_log, recovery_plan, debrief_team, data_archive])
+root.order.add_edge(threat_assess, alert_dispatch_order)
+root.order.add_edge(alert_dispatch, resource_check_order)
+root.order.add_edge(resource_check, team_mobilize_order)
+root.order.add_edge(team_mobilize, command_setup_order)
+root.order.add_edge(command_setup, intel_gather_order)
+root.order.add_edge(intel_gather, risk_evaluate_order)
+root.order.add_edge(risk_evaluate, priority_set_order)
+root.order.add_edge(priority_set, field_deploy_order)
+root.order.add_edge(field_deploy, comm_sync_order)
+root.order.add_edge(comm_sync, public_update_order)
+root.order.add_edge(public_update, supply_manage_order)
+root.order.add_edge(supply_manage, safety_monitor_order)
+root.order.add_edge(safety_monitor, incident_log_order)
+root.order.add_edge(incident_log, recovery_plan_order)
+root.order.add_edge(recovery_plan, debrief_team_order)
+root.order.add_edge(debrief_team, data_archive_order)

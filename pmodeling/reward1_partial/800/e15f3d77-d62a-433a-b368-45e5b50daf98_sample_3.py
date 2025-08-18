@@ -1,0 +1,68 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+Gather_Specs = Transition(label='Gather Specs')
+Adapt_Design = Transition(label='Adapt Design')
+Source_Parts = Transition(label='Source Parts')
+Component_Test = Transition(label='Component Test')
+Assemble_Frame = Transition(label='Assemble Frame')
+Install_Firmware = Transition(label='Install Firmware')
+Calibrate_Sensors = Transition(label='Calibrate Sensors')
+Stress_Test = Transition(label='Stress Test')
+Flight_Simulate = Transition(label='Flight Simulate')
+Validate_Battery = Transition(label='Validate Battery')
+Check_Accuracy = Transition(label='Check Accuracy')
+Package_Units = Transition(label='Package Units')
+Create_Manuals = Transition(label='Create Manuals')
+Ship_Drones = Transition(label='Ship Drones')
+Collect_Feedback = Transition(label='Collect Feedback')
+
+skip = SilentTransition()
+
+# Gather Specs --> Adapt Design
+# Adapt Design --> Source Parts
+# Source Parts --> Component Test
+# Component Test --> Assemble Frame
+# Assemble Frame --> Install Firmware
+# Install Firmware --> Calibrate Sensors
+# Calibrate Sensors --> Stress Test
+# Stress Test --> Flight Simulate
+# Flight Simulate --> Validate Battery
+# Validate Battery --> Check Accuracy
+# Check Accuracy --> Package Units
+# Package Units --> Create Manuals
+# Create Manuals --> Ship Drones
+# Ship Drones --> Collect Feedback
+
+root = StrictPartialOrder(nodes=[
+    Gather_Specs,
+    Adapt_Design,
+    Source_Parts,
+    Component_Test,
+    Assemble_Frame,
+    Install_Firmware,
+    Calibrate_Sensors,
+    Stress_Test,
+    Flight_Simulate,
+    Validate_Battery,
+    Check_Accuracy,
+    Package_Units,
+    Create_Manuals,
+    Ship_Drones,
+    Collect_Feedback
+])
+root.order.add_edge(Gather_Specs, Adapt_Design)
+root.order.add_edge(Adapt_Design, Source_Parts)
+root.order.add_edge(Source_Parts, Component_Test)
+root.order.add_edge(Component_Test, Assemble_Frame)
+root.order.add_edge(Assemble_Frame, Install_Firmware)
+root.order.add_edge(Install_Firmware, Calibrate_Sensors)
+root.order.add_edge(Calibrate_Sensors, Stress_Test)
+root.order.add_edge(Stress_Test, Flight_Simulate)
+root.order.add_edge(Flight_Simulate, Validate_Battery)
+root.order.add_edge(Validate_Battery, Check_Accuracy)
+root.order.add_edge(Check_Accuracy, Package_Units)
+root.order.add_edge(Package_Units, Create_Manuals)
+root.order.add_edge(Create_Manuals, Ship_Drones)
+root.order.add_edge(Ship_Drones, Collect_Feedback)

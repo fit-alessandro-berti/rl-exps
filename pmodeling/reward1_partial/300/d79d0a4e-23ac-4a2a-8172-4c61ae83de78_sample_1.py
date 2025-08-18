@@ -1,0 +1,36 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+spec_review = Transition(label='Spec Review')
+component_pick = Transition(label='Component Pick')
+frame_build = Transition(label='Frame Build')
+motor_mount = Transition(label='Motor Mount')
+sensor_fit = Transition(label='Sensor Fit')
+wiring_setup = Transition(label='Wiring Setup')
+software_load = Transition(label='Software Load')
+calibration_test = Transition(label='Calibration Test')
+stress_check = Transition(label='Stress Check')
+firmware_flash = Transition(label='Firmware Flash')
+feedback_loop = Transition(label='Feedback Loop')
+package_prep = Transition(label='Package Prep')
+doc_compile = Transition(label='Doc Compile')
+ship_arrange = Transition(label='Ship Arrange')
+remote_setup = Transition(label='Remote Setup')
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[component_pick, frame_build])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[motor_mount, sensor_fit])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[wiring_setup, software_load])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[calibration_test, stress_check])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[firmware_flash, feedback_loop])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[package_prep, doc_compile])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[ship_arrange, remote_setup])
+
+root = StrictPartialOrder(nodes=[spec_review, xor1, xor2, xor3, xor4, xor5, xor6, xor7])
+root.order.add_edge(spec_review, xor1)
+root.order.add_edge(spec_review, xor2)
+root.order.add_edge(spec_review, xor3)
+root.order.add_edge(spec_review, xor4)
+root.order.add_edge(spec_review, xor5)
+root.order.add_edge(spec_review, xor6)
+root.order.add_edge(spec_review, xor7)

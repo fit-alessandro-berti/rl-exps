@@ -1,0 +1,40 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+seed_selection = Transition(label='Seed Selection')
+germination_start = Transition(label='Germination Start')
+nutrient_mix = Transition(label='Nutrient Mix')
+climate_adjust = Transition(label='Climate Adjust')
+light_scheduling = Transition(label='Light Scheduling')
+pest_inspection = Transition(label='Pest Inspection')
+bio_control = Transition(label='Bio Control')
+growth_monitor = Transition(label='Growth Monitor')
+water_recirc = Transition(label='Water Recirc')
+harvest_plan = Transition(label='Harvest Plan')
+yield_forecast = Transition(label='Yield Forecast')
+quality_check = Transition(label='Quality Check')
+packaging_prep = Transition(label='Packaging Prep')
+cold_storage = Transition(label='Cold Storage')
+delivery_route = Transition(label='Delivery Route')
+energy_audit = Transition(label='Energy Audit')
+sustain_report = Transition(label='Sustain Report')
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[pest_inspection, bio_control])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[quality_check, packaging_prep])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[cold_storage, delivery_route])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[energy_audit, sustain_report])
+
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[seed_selection, germination_start])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[nutrient_mix, climate_adjust, light_scheduling, xor1])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[growth_monitor, water_recirc, xor2])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[harvest_plan, yield_forecast, xor3])
+loop5 = OperatorPOWL(operator=Operator.LOOP, children=[xor4, xor5])
+
+root = StrictPartialOrder(nodes=[loop1, loop2, loop3, loop4, loop5])
+root.order.add_edge(loop1, loop2)
+root.order.add_edge(loop2, loop3)
+root.order.add_edge(loop3, loop4)
+root.order.add_edge(loop4, loop5)
+root.order.add_edge(loop5, xor4)
+root.order.add_edge(loop5, xor5)

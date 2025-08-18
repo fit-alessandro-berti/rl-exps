@@ -1,0 +1,60 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL model for the process
+Site_Select = Transition(label='Site Select')
+Env_Assess = Transition(label='Env Assess')
+Design_Modules = Transition(label='Design Modules')
+Hydroponics_Setup = Transition(label='Hydroponics Setup')
+Software_Dev = Transition(label='Software Dev')
+Seed_Choose = Transition(label='Seed Choose')
+LED_Install = Transition(label='LED Install')
+Train_Staff = Transition(label='Train Staff')
+Compliance_Check = Transition(label='Compliance Check')
+Engage_Community = Transition(label='Engage Community')
+Plant_Crops = Transition(label='Plant Crops')
+Monitor_Growth = Transition(label='Monitor Growth')
+Optimize_Yields = Transition(label='Optimize Yields')
+Waste_Manage = Transition(label='Waste Manage')
+Energy_Audit = Transition(label='Energy Audit')
+Water_Recycle = Transition(label='Water Recycle')
+
+# Define the partial order structure
+root = StrictPartialOrder(nodes=[
+    Site_Select,
+    Env_Assess,
+    Design_Modules,
+    Hydroponics_Setup,
+    Software_Dev,
+    Seed_Choose,
+    LED_Install,
+    Train_Staff,
+    Compliance_Check,
+    Engage_Community,
+    Plant_Crops,
+    Monitor_Growth,
+    Optimize_Yields,
+    Waste_Manage,
+    Energy_Audit,
+    Water_Recycle
+])
+
+# Define the order dependencies
+root.order.add_edge(Site_Select, Env_Assess)
+root.order.add_edge(Site_Select, Design_Modules)
+root.order.add_edge(Site_Select, Hydroponics_Setup)
+root.order.add_edge(Site_Select, Software_Dev)
+root.order.add_edge(Site_Select, Seed_Choose)
+root.order.add_edge(Site_Select, LED_Install)
+root.order.add_edge(Site_Select, Train_Staff)
+root.order.add_edge(Site_Select, Compliance_Check)
+root.order.add_edge(Site_Select, Engage_Community)
+root.order.add_edge(Site_Select, Plant_Crops)
+root.order.add_edge(Site_Select, Monitor_Growth)
+root.order.add_edge(Site_Select, Optimize_Yields)
+root.order.add_edge(Site_Select, Waste_Manage)
+root.order.add_edge(Site_Select, Energy_Audit)
+root.order.add_edge(Site_Select, Water_Recycle)
+
+# Print the root of the POWL model
+print(root)

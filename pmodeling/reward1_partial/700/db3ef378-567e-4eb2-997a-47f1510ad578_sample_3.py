@@ -1,0 +1,65 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+MilkCollection = Transition(label='Milk Collection')
+CulturePrep = Transition(label='Culture Prep')
+CurdFormation = Transition(label='Curd Formation')
+WheySeparation = Transition(label='Whey Separation')
+MoldingCheese = Transition(label='Molding Cheese')
+SaltingProcess = Transition(label='Salting Process')
+InitialAging = Transition(label='Initial Aging')
+HumidityControl = Transition(label='Humidity Control')
+TemperatureCheck = Transition(label='Temperature Check')
+FlavorTesting = Transition(label='Flavor Testing')
+FinalAging = Transition(label='Final Aging')
+PackagingArtisanal = Transition(label='Packaging Artisanal')
+LabelPrinting = Transition(label='Label Printing')
+InventoryAudit = Transition(label='Inventory Audit')
+OrderFulfillment = Transition(label='Order Fulfillment')
+SubscriptionSetup = Transition(label='Subscription Setup')
+EventMarketing = Transition(label='Event Marketing')
+
+# Define the process
+root = StrictPartialOrder(
+    nodes=[
+        MilkCollection,
+        CulturePrep,
+        CurdFormation,
+        WheySeparation,
+        MoldingCheese,
+        SaltingProcess,
+        InitialAging,
+        HumidityControl,
+        TemperatureCheck,
+        FlavorTesting,
+        FinalAging,
+        PackagingArtisanal,
+        LabelPrinting,
+        InventoryAudit,
+        OrderFulfillment,
+        SubscriptionSetup,
+        EventMarketing
+    ]
+)
+
+# Define the partial order dependencies
+root.order.add_edge(MilkCollection, CulturePrep)
+root.order.add_edge(CulturePrep, CurdFormation)
+root.order.add_edge(CurdFormation, WheySeparation)
+root.order.add_edge(WheySeparation, MoldingCheese)
+root.order.add_edge(MoldingCheese, SaltingProcess)
+root.order.add_edge(SaltingProcess, InitialAging)
+root.order.add_edge(InitialAging, HumidityControl)
+root.order.add_edge(HumidityControl, TemperatureCheck)
+root.order.add_edge(TemperatureCheck, FlavorTesting)
+root.order.add_edge(FlavorTesting, FinalAging)
+root.order.add_edge(FinalAging, PackagingArtisanal)
+root.order.add_edge(PackagingArtisanal, LabelPrinting)
+root.order.add_edge(LabelPrinting, InventoryAudit)
+root.order.add_edge(InventoryAudit, OrderFulfillment)
+root.order.add_edge(OrderFulfillment, SubscriptionSetup)
+root.order.add_edge(SubscriptionSetup, EventMarketing)
+
+print(root)

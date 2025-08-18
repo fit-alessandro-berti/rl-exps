@@ -1,0 +1,42 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL model for the process
+site_assess = Transition(label='Site Assess')
+env_analysis = Transition(label='Env Analysis')
+modular_install = Transition(label='Modular Install')
+irrigation_setup = Transition(label='Irrigation Setup')
+crop_selection = Transition(label='Crop Selection')
+nutrient_mix = Transition(label='Nutrient Mix')
+lighting_calibrate = Transition(label='Lighting Calibrate')
+pest_monitor = Transition(label='Pest Monitor')
+staff_training = Transition(label='Staff Training')
+energy_integrate = Transition(label='Energy Integrate')
+data_analytics = Transition(label='Data Analytics')
+waste_recycle = Transition(label='Waste Recycle')
+market_develop = Transition(label='Market Develop')
+yield_optimize = Transition(label='Yield Optimize')
+climate_simulate = Transition(label='Climate Simulate')
+
+# Define the POWL model
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[climate_simulate, yield_optimize])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[site_assess, env_analysis])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[modular_install, irrigation_setup])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[crop_selection, nutrient_mix])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[lighting_calibrate, pest_monitor])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[staff_training, energy_integrate])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[data_analytics, waste_recycle])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[market_develop, yield_optimize])
+
+root = StrictPartialOrder(nodes=[xor1, xor2, xor3, xor4, xor5, xor6, xor7, xor8])
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor8)
+root.order.add_edge(xor8, xor1)
+
+# Print the final POWL model
+print(root)

@@ -1,0 +1,37 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+design_layout = Transition(label='Design Layout')
+procure_modules = Transition(label='Procure Modules')
+install_framework = Transition(label='Install Framework')
+setup_sensors = Transition(label='Setup Sensors')
+calibrate_nutrients = Transition(label='Calibrate Nutrients')
+configure_iot = Transition(label='Configure IoT')
+plant_seeding = Transition(label='Plant Seeding')
+monitor_growth = Transition(label='Monitor Growth')
+manage_lighting = Transition(label='Manage Lighting')
+pest_control = Transition(label='Pest Control')
+recycle_waste = Transition(label='Recycle Waste')
+analyze_data = Transition(label='Analyze Data')
+adjust_environment = Transition(label='Adjust Environment')
+harvest_crops = Transition(label='Harvest Crops')
+distribute_produce = Transition(label='Distribute Produce')
+
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[monitor_growth, manage_lighting, pest_control, adjust_environment])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[analyze_data, harvest_crops])
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[recycle_waste, distribute_produce])
+
+root = StrictPartialOrder(nodes=[site_survey, design_layout, procure_modules, install_framework, setup_sensors, calibrate_nutrients, configure_iot, plant_seeding, loop1, loop2, xor1])
+root.order.add_edge(site_survey, design_layout)
+root.order.add_edge(design_layout, procure_modules)
+root.order.add_edge(procure_modules, install_framework)
+root.order.add_edge(install_framework, setup_sensors)
+root.order.add_edge(setup_sensors, calibrate_nutrients)
+root.order.add_edge(calibrate_nutrients, configure_iot)
+root.order.add_edge(configure_iot, plant_seeding)
+root.order.add_edge(plant_seeding, loop1)
+root.order.add_edge(loop1, loop2)
+root.order.add_edge(loop2, xor1)
+root.order.add_edge(xor1, plant_seeding)

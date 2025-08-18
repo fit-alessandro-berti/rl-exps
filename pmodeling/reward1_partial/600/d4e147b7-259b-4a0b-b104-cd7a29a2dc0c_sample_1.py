@@ -1,0 +1,61 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions (activities)
+artifact_intake = Transition(label='Artifact Intake')
+visual_scan = Transition(label='Visual Scan')
+material_test = Transition(label='Material Test')
+radiocarbon_check = Transition(label='Radiocarbon Check')
+provenance_search = Transition(label='Provenance Search')
+archive_review = Transition(label='Archive Review')
+expert_consult = Transition(label='Expert Consult')
+microscope_exam = Transition(label='Microscope Exam')
+infrared_scan = Transition(label='Infrared Scan')
+legal_verify = Transition(label='Legal Verify')
+condition_report = Transition(label='Condition Report')
+digital_catalog = Transition(label='Digital Catalog')
+ownership_audit = Transition(label='Ownership Audit')
+restoration_plan = Transition(label='Restoration Plan')
+final_approval = Transition(label='Final Approval')
+authentication_cert = Transition(label='Authentication Cert')
+
+# Define silent transitions
+skip = SilentTransition()
+
+# Define the POWL model
+root = StrictPartialOrder()
+
+# Add nodes to the POWL model
+root.add_node(artifact_intake)
+root.add_node(visual_scan)
+root.add_node(material_test)
+root.add_node(radiocarbon_check)
+root.add_node(provenance_search)
+root.add_node(archive_review)
+root.add_node(expert_consult)
+root.add_node(microscope_exam)
+root.add_node(infrared_scan)
+root.add_node(legal_verify)
+root.add_node(condition_report)
+root.add_node(digital_catalog)
+root.add_node(ownership_audit)
+root.add_node(restoration_plan)
+root.add_node(final_approval)
+root.add_node(authentication_cert)
+
+# Define the order of the POWL model
+root.order.add_edge(artifact_intake, visual_scan)
+root.order.add_edge(artifact_intake, material_test)
+root.order.add_edge(artifact_intake, radiocarbon_check)
+root.order.add_edge(artifact_intake, provenance_search)
+root.order.add_edge(artifact_intake, archive_review)
+root.order.add_edge(artifact_intake, expert_consult)
+root.order.add_edge(artifact_intake, microscope_exam)
+root.order.add_edge(artifact_intake, infrared_scan)
+root.order.add_edge(artifact_intake, legal_verify)
+root.order.add_edge(artifact_intake, condition_report)
+root.order.add_edge(artifact_intake, digital_catalog)
+root.order.add_edge(artifact_intake, ownership_audit)
+root.order.add_edge(artifact_intake, restoration_plan)
+root.order.add_edge(artifact_intake, final_approval)
+root.order.add_edge(artifact_intake, authentication_cert)

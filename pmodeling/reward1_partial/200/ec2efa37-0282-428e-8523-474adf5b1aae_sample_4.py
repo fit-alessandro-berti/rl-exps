@@ -1,0 +1,31 @@
+root = StrictPartialOrder(nodes=[
+    Transition(label='Quantum Init'),
+    Transition(label='Data Ingest'),
+    Transition(label='AI Forecast'),
+    Transition(label='Inventory Sync'),
+    Transition(label='Procurement Plan'),
+    Transition(label='Production Align'),
+    Transition(label='Distribution Map'),
+    Transition(label='IoT Monitor'),
+    Transition(label='Risk Assess'),
+    Transition(label='Maintenance Alert'),
+    Transition(label='Quantum Compute'),
+    Transition(label='Feedback Loop'),
+    Transition(label='Schedule Adjust'),
+    Transition(label='Demand Update'),
+    Transition(label='Delivery Track'),
+    Transition(label='Compliance Check'),
+])
+root.order.add_edge(root.nodes[0], root.nodes[1])
+root.order.add_edge(root.nodes[1], root.nodes[2])
+root.order.add_edge(root.nodes[2], root.nodes[3])
+root.order.add_edge(root.nodes[3], root.nodes[4])
+root.order.add_edge(root.nodes[4], root.nodes[5])
+root.order.add_edge(root.nodes[5], root.nodes[6])
+root.order.add_edge(root.nodes[6], root.nodes[7])
+root.order.add_edge(root.nodes[7], root.nodes[8])
+root.order.add_edge(root.nodes[8], root.nodes[9])
+root.order.add_edge(root.nodes[9], root.nodes[10])
+root.order.add_edge(root.nodes[10], root.nodes[11])
+root.order.add_edge(root.nodes[11], root.nodes[12])
+root.order.add_edge(root.nodes[12], root.nodes[13])

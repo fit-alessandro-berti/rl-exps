@@ -1,0 +1,62 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL model for the process
+intel_gathering = Transition(label='Intel Gathering')
+risk_assess = Transition(label='Risk Assess')
+behavior_scan = Transition(label='Behavior Scan')
+network_monitor = Transition(label='Network Monitor')
+audit_conduct = Transition(label='Audit Conduct')
+flag_suspicion = Transition(label='Flag Suspicion')
+legal_review = Transition(label='Legal Review')
+compliance_check = Transition(label='Compliance Check')
+employee_train = Transition(label='Employee Train')
+threat_simulate = Transition(label='Threat Simulate')
+incident_plan = Transition(label='Incident Plan')
+response_drill = Transition(label='Response Drill')
+data_encrypt = Transition(label='Data Encrypt')
+partner_liaison = Transition(label='Partner Liaison')
+report_generate = Transition(label='Report Generate')
+feedback_loop = Transition(label='Feedback Loop')
+
+# Define the workflow structure
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[flag_suspicion, legal_review])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[compliance_check, employee_train])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[threat_simulate, response_drill])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[data_encrypt, partner_liaison])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[report_generate, feedback_loop])
+
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[xor1])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[xor2])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[xor3])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[xor4])
+loop5 = OperatorPOWL(operator=Operator.LOOP, children=[xor5])
+
+root = StrictPartialOrder(nodes=[intel_gathering, risk_assess, behavior_scan, network_monitor, audit_conduct, loop1, loop2, loop3, loop4, loop5])
+root.order.add_edge(intel_gathering, risk_assess)
+root.order.add_edge(risk_assess, behavior_scan)
+root.order.add_edge(behavior_scan, network_monitor)
+root.order.add_edge(network_monitor, audit_conduct)
+root.order.add_edge(audit_conduct, loop1)
+root.order.add_edge(loop1, xor1)
+root.order.add_edge(xor1, flag_suspicion)
+root.order.add_edge(flag_suspicion, xor2)
+root.order.add_edge(xor2, legal_review)
+root.order.add_edge(legal_review, xor3)
+root.order.add_edge(xor3, compliance_check)
+root.order.add_edge(compliance_check, xor4)
+root.order.add_edge(xor4, employee_train)
+root.order.add_edge(employee_train, xor5)
+root.order.add_edge(xor5, threat_simulate)
+root.order.add_edge(threat_simulate, data_encrypt)
+root.order.add_edge(data_encrypt, partner_liaison)
+root.order.add_edge(partner_liaison, report_generate)
+root.order.add_edge(report_generate, feedback_loop)
+root.order.add_edge(feedback_loop, loop1)
+root.order.add_edge(loop2, loop3)
+root.order.add_edge(loop3, loop4)
+root.order.add_edge(loop4, loop5)
+
+# Print the root node to verify the POWL model
+print(root)

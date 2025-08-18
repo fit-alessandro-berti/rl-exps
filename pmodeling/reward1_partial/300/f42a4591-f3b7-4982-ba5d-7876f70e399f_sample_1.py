@@ -1,0 +1,40 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+inspect = Transition(label='Inspect Item')
+verify_provenance = Transition(label='Verify Provenance')
+document_condition = Transition(label='Document Condition')
+disassemble_parts = Transition(label='Disassemble Parts')
+clean_components = Transition(label='Clean Components')
+analyze_damage = Transition(label='Analyze Damage')
+select_materials = Transition(label='Select Materials')
+perform_repairs = Transition(label='Perform Repairs')
+match_finishes = Transition(label='Match Finishes')
+apply_treatments = Transition(label='Apply Treatments')
+reassemble_item = Transition(label='Reassemble Item')
+quality_check = Transition(label='Quality Check')
+photograph_results = Transition(label='Photograph Results')
+update_archive = Transition(label='Update Archive')
+client_review = Transition(label='Client Review')
+finalize_report = Transition(label='Finalize Report')
+
+skip = SilentTransition()
+
+inspect_verify_provenance = OperatorPOWL(operator=Operator.XOR, children=[inspect, verify_provenance])
+disassemble_clean = OperatorPOWL(operator=Operator.XOR, children=[disassemble_parts, clean_components])
+analyze_select_materials = OperatorPOWL(operator=Operator.XOR, children=[analyze_damage, select_materials])
+repair_match_finishes = OperatorPOWL(operator=Operator.XOR, children=[perform_repairs, match_finishes])
+treat_reassemble = OperatorPOWL(operator=Operator.XOR, children=[apply_treatments, reassemble_item])
+quality_check_photograph = OperatorPOWL(operator=Operator.XOR, children=[quality_check, photograph_results])
+update_archive_client_review = OperatorPOWL(operator=Operator.XOR, children=[update_archive, client_review])
+finalize_report = Transition(label='Finalize Report')
+
+root = StrictPartialOrder(nodes=[inspect_verify_provenance, disassemble_clean, analyze_select_materials, repair_match_finishes, treat_reassemble, quality_check_photograph, update_archive_client_review, finalize_report])
+root.order.add_edge(inspect_verify_provenance, disassemble_clean)
+root.order.add_edge(disassemble_clean, analyze_select_materials)
+root.order.add_edge(analyze_select_materials, repair_match_finishes)
+root.order.add_edge(repair_match_finishes, treat_reassemble)
+root.order.add_edge(treat_reassemble, quality_check_photograph)
+root.order.add_edge(quality_check_photograph, update_archive_client_review)
+root.order.add_edge(update_archive_client_review, finalize_report)

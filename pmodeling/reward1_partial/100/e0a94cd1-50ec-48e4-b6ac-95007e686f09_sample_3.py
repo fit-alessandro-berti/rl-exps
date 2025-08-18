@@ -1,0 +1,47 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define the activities
+data_ingestion = Transition(label='Data Ingestion')
+quantum_setup = Transition(label='Quantum Setup')
+route_optimize = Transition(label='Route Optimize')
+demand_forecast = Transition(label='Demand Forecast')
+scenario_simulate = Transition(label='Scenario Simulate')
+risk_assess = Transition(label='Risk Assess')
+anomaly_detect = Transition(label='Anomaly Detect')
+supplier_sync = Transition(label='Supplier Sync')
+quantum_communicate = Transition(label='Quantum Communicate')
+inventory_adjust = Transition(label='Inventory Adjust')
+procurement_plan = Transition(label='Procurement Plan')
+performance_track = Transition(label='Performance Track')
+feedback_loop = Transition(label='Feedback Loop')
+decision_automate = Transition(label='Decision Automate')
+cost_analyze = Transition(label='Cost Analyze')
+network_adapt = Transition(label='Network Adapt')
+
+# Define the control flow
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[route_optimize, demand_forecast])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[risk_assess, anomaly_detect])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[supplier_sync, quantum_communicate])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[inventory_adjust, procurement_plan])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[performance_track, feedback_loop])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[decision_automate, cost_analyze])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[network_adapt, quantum_setup])
+
+# Create the POWL model
+root = StrictPartialOrder(nodes=[xor1, xor2, xor3, xor4, xor5, xor6, xor7])
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor1, xor3)
+root.order.add_edge(xor2, xor4)
+root.order.add_edge(xor2, xor5)
+root.order.add_edge(xor3, xor6)
+root.order.add_edge(xor3, xor7)
+root.order.add_edge(xor4, xor1)
+root.order.add_edge(xor4, xor2)
+root.order.add_edge(xor5, xor3)
+root.order.add_edge(xor5, xor4)
+root.order.add_edge(xor6, xor5)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor1)
+root.order.add_edge(xor7, xor2)
+
+print(root)

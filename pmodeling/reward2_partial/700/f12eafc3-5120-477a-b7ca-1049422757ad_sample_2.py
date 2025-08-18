@@ -1,0 +1,37 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define the POWL model
+A = Transition(label='Milk Selection')
+B = Transition(label='Quality Testing')
+C = Transition(label='Milk Pasteurize')
+D = Transition(label='Cheese Crafting')
+E = Transition(label='Controlled Aging')
+F = Transition(label='Sensory Review')
+G = Transition(label='Custom Packaging')
+H = Transition(label='Label Printing')
+I = Transition(label='Export Licensing')
+J = Transition(label='Documentation Prep')
+K = Transition(label='Customs Clearance')
+L = Transition(label='Cold Shipping')
+M = Transition(label='Delivery Tracking')
+N = Transition(label='Feedback Review')
+O = Transition(label='Market Analysis')
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O])
+root.order.add_edge(A, B)
+root.order.add_edge(B, C)
+root.order.add_edge(C, D)
+root.order.add_edge(D, E)
+root.order.add_edge(E, F)
+root.order.add_edge(F, G)
+root.order.add_edge(G, H)
+root.order.add_edge(H, I)
+root.order.add_edge(I, J)
+root.order.add_edge(J, K)
+root.order.add_edge(K, L)
+root.order.add_edge(L, M)
+root.order.add_edge(M, N)
+root.order.add_edge(N, O)
+
+print(root)

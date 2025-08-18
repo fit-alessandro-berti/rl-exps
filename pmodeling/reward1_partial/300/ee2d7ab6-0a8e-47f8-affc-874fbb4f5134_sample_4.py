@@ -1,0 +1,37 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+client_consult = Transition(label='Client Consult')
+spec_gathering = Transition(label='Spec Gathering')
+supplier_sourcing = Transition(label='Supplier Sourcing')
+design_review = Transition(label='Design Review')
+simulation_test = Transition(label='Simulation Test')
+proto_assembly = Transition(label='Proto Assembly')
+quality_check = Transition(label='Quality Check')
+firmware_flash = Transition(label='Firmware Flash')
+sensor_install = Transition(label='Sensor Install')
+final_testing = Transition(label='Final Testing')
+brand_packaging = Transition(label='Brand Packaging')
+shipping_prep = Transition(label='Shipping Prep')
+delivery_schedule = Transition(label='Delivery Schedule')
+client_training = Transition(label='Client Training')
+diagnostics_setup = Transition(label='Diagnostics Setup')
+
+xor = OperatorPOWL(operator=Operator.XOR, children=[client_consult, spec_gathering])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[supplier_sourcing, design_review])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[simulation_test, proto_assembly])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[quality_check, firmware_flash])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[sensor_install, final_testing])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[brand_packaging, shipping_prep])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[delivery_schedule, client_training])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[diagnostics_setup, None])
+
+root = StrictPartialOrder(nodes=[xor, xor2, xor3, xor4, xor5, xor6, xor7, xor8])
+root.order.add_edge(xor, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor8)

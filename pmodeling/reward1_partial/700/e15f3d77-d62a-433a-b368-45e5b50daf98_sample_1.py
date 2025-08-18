@@ -1,0 +1,38 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+Gather_Specs = Transition(label='Gather Specs')
+Adapt_Design = Transition(label='Adapt Design')
+Source_Parts = Transition(label='Source Parts')
+Component_Test = Transition(label='Component Test')
+Assemble_Frame = Transition(label='Assemble Frame')
+Install_Firmware = Transition(label='Install Firmware')
+Calibrate_Sensors = Transition(label='Calibrate Sensors')
+Stress_Test = Transition(label='Stress Test')
+Flight_Simulate = Transition(label='Flight Simulate')
+Validate_Battery = Transition(label='Validate Battery')
+Check_Accuracy = Transition(label='Check Accuracy')
+Package_Units = Transition(label='Package Units')
+Create_Manuals = Transition(label='Create Manuals')
+Ship_Drones = Transition(label='Ship Drones')
+Collect_Feedback = Transition(label='Collect Feedback')
+
+skip = SilentTransition()
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[Gather_Specs, Adapt_Design])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[Source_Parts, Component_Test])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[Assemble_Frame, Install_Firmware])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[Calibrate_Sensors, Stress_Test])
+loop5 = OperatorPOWL(operator=Operator.LOOP, children=[Flight_Simulate, Validate_Battery])
+loop6 = OperatorPOWL(operator=Operator.LOOP, children=[Check_Accuracy, Package_Units])
+loop7 = OperatorPOWL(operator=Operator.LOOP, children=[Create_Manuals, Ship_Drones])
+loop8 = OperatorPOWL(operator=Operator.LOOP, children=[Collect_Feedback, skip])
+
+root = StrictPartialOrder(nodes=[loop1, loop2, loop3, loop4, loop5, loop6, loop7, loop8])
+root.order.add_edge(loop1, loop2)
+root.order.add_edge(loop2, loop3)
+root.order.add_edge(loop3, loop4)
+root.order.add_edge(loop4, loop5)
+root.order.add_edge(loop5, loop6)
+root.order.add_edge(loop6, loop7)
+root.order.add_edge(loop7, loop8)

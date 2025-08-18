@@ -1,0 +1,65 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL model
+Milk_Sourcing = Transition(label='Milk Sourcing')
+Quality_Testing = Transition(label='Quality Testing')
+Starter_Prep = Transition(label='Starter Prep')
+Curd_Cutting = Transition(label='Curd Cutting')
+Whey_Draining = Transition(label='Whey Draining')
+Molding_Press = Transition(label='Molding Press')
+Fermentation_Control = Transition(label='Fermentation Control')
+Aging_Setup = Transition(label='Aging Setup')
+Humidity_Check = Transition(label='Humidity Check')
+Packaging_Design = Transition(label='Packaging Design')
+Label_Approval = Transition(label='Label Approval')
+Inventory_Audit = Transition(label='Inventory Audit')
+Order_Scheduling = Transition(label='Order Scheduling')
+Market_Delivery = Transition(label='Market Delivery')
+Feedback_Review = Transition(label='Feedback Review')
+Compliance_Check = Transition(label='Compliance Check')
+Marketing_Sync = Transition(label='Marketing Sync')
+
+skip = SilentTransition()
+
+# Define the process structure
+milk_sourcing = OperatorPOWL(operator=Operator.SILENT, children=[Milk_Sourcing])
+quality_testing = OperatorPOWL(operator=Operator.SILENT, children=[Quality_Testing])
+starter_prep = OperatorPOWL(operator=Operator.SILENT, children=[Starter_Prep])
+curd_cutting = OperatorPOWL(operator=Operator.SILENT, children=[Curd_Cutting])
+whey_draining = OperatorPOWL(operator=Operator.SILENT, children=[Whey_Draining])
+molding_press = OperatorPOWL(operator=Operator.SILENT, children=[Molding_Press])
+fermentation_control = OperatorPOWL(operator=Operator.SILENT, children=[Fermentation_Control])
+aging_setup = OperatorPOWL(operator=Operator.SILENT, children=[Aging_Setup])
+humidity_check = OperatorPOWL(operator=Operator.SILENT, children=[Humidity_Check])
+packaging_design = OperatorPOWL(operator=Operator.SILENT, children=[Packaging_Design])
+label_approval = OperatorPOWL(operator=Operator.SILENT, children=[Label_Approval])
+inventory_audit = OperatorPOWL(operator=Operator.SILENT, children=[Inventory_Audit])
+order_scheduling = OperatorPOWL(operator=Operator.SILENT, children=[Order_Scheduling])
+market_delivery = OperatorPOWL(operator=Operator.SILENT, children=[Market_Delivery])
+feedback_review = OperatorPOWL(operator=Operator.SILENT, children=[Feedback_Review])
+compliance_check = OperatorPOWL(operator=Operator.SILENT, children=[Compliance_Check])
+marketing_sync = OperatorPOWL(operator=Operator.SILENT, children=[Marketing_Sync])
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[milk_sourcing, quality_testing, starter_prep, curd_cutting, whey_draining, molding_press, fermentation_control, aging_setup, humidity_check, packaging_design, label_approval, inventory_audit, order_scheduling, market_delivery, feedback_review, compliance_check, marketing_sync])
+root.order.add_edge(milk_sourcing, quality_testing)
+root.order.add_edge(quality_testing, starter_prep)
+root.order.add_edge(starter_prep, curd_cutting)
+root.order.add_edge(curd_cutting, whey_draining)
+root.order.add_edge(whey_draining, molding_press)
+root.order.add_edge(molding_press, fermentation_control)
+root.order.add_edge(fermentation_control, aging_setup)
+root.order.add_edge(aging_setup, humidity_check)
+root.order.add_edge(humidity_check, packaging_design)
+root.order.add_edge(packaging_design, label_approval)
+root.order.add_edge(label_approval, inventory_audit)
+root.order.add_edge(inventory_audit, order_scheduling)
+root.order.add_edge(order_scheduling, market_delivery)
+root.order.add_edge(market_delivery, feedback_review)
+root.order.add_edge(feedback_review, compliance_check)
+root.order.add_edge(compliance_check, marketing_sync)
+
+# Print the result
+print(root)

@@ -1,0 +1,56 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define the activities
+seed_select = Transition(label='Seed Select')
+climate_map = Transition(label='Climate Map')
+iot_setup = Transition(label='IoT Setup')
+nutrient_mix = Transition(label='Nutrient Mix')
+sensor_check = Transition(label='Sensor Check')
+light_adjust = Transition(label='Light Adjust')
+water_cycle = Transition(label='Water Cycle')
+pest_scan = Transition(label='Pest Scan')
+growth_audit = Transition(label='Growth Audit')
+harvest_plan = Transition(label='Harvest Plan')
+demand_sync = Transition(label='Demand Sync')
+quality_grade = Transition(label='Quality Grade')
+pack_items = Transition(label='Pack Items')
+waste_compost = Transition(label='Waste Compost')
+data_review = Transition(label='Data Review')
+cycle_reset = Transition(label='Cycle Reset')
+
+# Define the operators
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[pest_scan, sensor_check])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[nutrient_mix, light_adjust])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[water_cycle, growth_audit])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[harvest_plan, demand_sync])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[quality_grade, pack_items])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[waste_compost, data_review])
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[seed_select, climate_map, iot_setup, xor1, xor2, xor3, xor4, xor5, xor6, cycle_reset])
+
+# Add edges to the partial order
+root.order.add_edge(seed_select, climate_map)
+root.order.add_edge(climate_map, iot_setup)
+root.order.add_edge(iot_setup, xor1)
+root.order.add_edge(xor1, seed_select)
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor2, nutrient_mix)
+root.order.add_edge(xor2, light_adjust)
+root.order.add_edge(nutrient_mix, water_cycle)
+root.order.add_edge(light_adjust, growth_audit)
+root.order.add_edge(water_cycle, xor3)
+root.order.add_edge(growth_audit, xor3)
+root.order.add_edge(xor3, harvest_plan)
+root.order.add_edge(xor3, demand_sync)
+root.order.add_edge(harvest_plan, quality_grade)
+root.order.add_edge(demand_sync, pack_items)
+root.order.add_edge(quality_grade, xor4)
+root.order.add_edge(pack_items, xor4)
+root.order.add_edge(xor4, waste_compost)
+root.order.add_edge(xor4, data_review)
+root.order.add_edge(waste_compost, cycle_reset)
+root.order.add_edge(data_review, cycle_reset)
+root.order.add_edge(cycle_reset, seed_select)
+
+print(root)

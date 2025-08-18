@@ -1,0 +1,67 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions for each activity
+site_survey = Transition(label='Site Survey')
+soil_testing = Transition(label='Soil Testing')
+stakeholder_meet = Transition(label='Stakeholder Meet')
+resource_plan = Transition(label='Resource Plan')
+crop_selection = Transition(label='Crop Selection')
+volunteer_signup = Transition(label='Volunteer Sign-up')
+tech_setup = Transition(label='Tech Setup')
+irrigation_check = Transition(label='Irrigation Check')
+data_collection = Transition(label='Data Collection')
+growth_monitoring = Transition(label='Growth Monitoring')
+conflict_mediate = Transition(label='Conflict Mediate')
+workshop_prep = Transition(label='Workshop Prep')
+market_forecast = Transition(label='Market Forecast')
+yield_analysis = Transition(label='Yield Analysis')
+sustainability_audit = Transition(label='Sustainability Audit')
+community_feedback = Transition(label='Community Feedback')
+equipment_maintain = Transition(label='Equipment Maintain')
+waste_manage = Transition(label='Waste Manage')
+
+# Define the POWL model
+root = StrictPartialOrder()
+
+# Add activities to the root
+root.add_transition(site_survey)
+root.add_transition(soil_testing)
+root.add_transition(stakeholder_meet)
+root.add_transition(resource_plan)
+root.add_transition(crop_selection)
+root.add_transition(volunteer_signup)
+root.add_transition(tech_setup)
+root.add_transition(irrigation_check)
+root.add_transition(data_collection)
+root.add_transition(growth_monitoring)
+root.add_transition(conflict_mediate)
+root.add_transition(workshop_prep)
+root.add_transition(market_forecast)
+root.add_transition(yield_analysis)
+root.add_transition(sustainability_audit)
+root.add_transition(community_feedback)
+root.add_transition(equipment_maintain)
+root.add_transition(waste_manage)
+
+# Define the dependencies between activities
+root.add_edge(site_survey, soil_testing)
+root.add_edge(soil_testing, stakeholder_meet)
+root.add_edge(stakeholder_meet, resource_plan)
+root.add_edge(resource_plan, crop_selection)
+root.add_edge(crop_selection, volunteer_signup)
+root.add_edge(volunteer_signup, tech_setup)
+root.add_edge(tech_setup, irrigation_check)
+root.add_edge(irrigation_check, data_collection)
+root.add_edge(data_collection, growth_monitoring)
+root.add_edge(growth_monitoring, conflict_mediate)
+root.add_edge(conflict_mediate, workshop_prep)
+root.add_edge(workshop_prep, market_forecast)
+root.add_edge(market_forecast, yield_analysis)
+root.add_edge(yield_analysis, sustainability_audit)
+root.add_edge(sustainability_audit, community_feedback)
+root.add_edge(community_feedback, equipment_maintain)
+root.add_edge(equipment_maintain, waste_manage)
+
+print(root)

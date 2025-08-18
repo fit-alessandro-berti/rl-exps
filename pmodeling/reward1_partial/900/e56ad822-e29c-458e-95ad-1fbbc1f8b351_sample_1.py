@@ -1,0 +1,51 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions for each activity
+submit = Transition(label='Submit Artifact')
+initial_review = Transition(label='Initial Review')
+provenance_check = Transition(label='Provenance Check')
+material_scan = Transition(label='Material Scan')
+context_analysis = Transition(label='Context Analysis')
+expert_panel = Transition(label='Expert Panel')
+digital_fingerprint = Transition(label='Digital Fingerprint')
+ai_pattern = Transition(label='AI Pattern')
+legal_audit = Transition(label='Legal Audit')
+ethics_review = Transition(label='Ethics Review')
+fraud_detection = Transition(label='Fraud Detection')
+blockchain_log = Transition(label='Blockchain Log')
+certification = Transition(label='Certification')
+owner_notify = Transition(label='Owner Notify')
+archive_data = Transition(label='Archive Data')
+secure_storage = Transition(label='Secure Storage')
+
+# Define silent transitions
+skip = SilentTransition()
+
+# Define POWL model
+loop = OperatorPOWL(operator=Operator.LOOP, children=[provenance_check, material_scan, context_analysis])
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[expert_panel, skip])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[ai_pattern, skip])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[legal_audit, skip])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[ethics_review, skip])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[fraud_detection, skip])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[blockchain_log, skip])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[certification, skip])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[owner_notify, skip])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[archive_data, skip])
+xor10 = OperatorPOWL(operator=Operator.XOR, children=[secure_storage, skip])
+root = StrictPartialOrder(nodes=[submit, initial_review, loop, xor1, xor2, xor3, xor4, xor5, xor6, xor7, xor8, xor9, xor10])
+root.order.add_edge(submit, initial_review)
+root.order.add_edge(initial_review, loop)
+root.order.add_edge(loop, xor1)
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor8)
+root.order.add_edge(xor8, xor9)
+root.order.add_edge(xor9, xor10)
+root.order.add_edge(xor10, submit)

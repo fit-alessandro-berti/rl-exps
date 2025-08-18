@@ -1,0 +1,37 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+spec_review = Transition(label='Spec Review')
+component_pick = Transition(label='Component Pick')
+frame_build = Transition(label='Frame Build')
+motor_mount = Transition(label='Motor Mount')
+sensor_fit = Transition(label='Sensor Fit')
+wiring_setup = Transition(label='Wiring Setup')
+software_load = Transition(label='Software Load')
+calibration_test = Transition(label='Calibration Test')
+stress_check = Transition(label='Stress Check')
+firmware_flash = Transition(label='Firmware Flash')
+feedback_loop = Transition(label='Feedback Loop')
+package_prep = Transition(label='Package Prep')
+doc_compile = Transition(label='Doc Compile')
+ship_arrange = Transition(label='Ship Arrange')
+remote_setup = Transition(label='Remote Setup')
+
+spec_review_choice = OperatorPOWL(operator=Operator.XOR, children=[spec_review, component_pick])
+frame_build_choice = OperatorPOWL(operator=Operator.XOR, children=[frame_build, motor_mount])
+sensor_fit_choice = OperatorPOWL(operator=Operator.XOR, children=[sensor_fit, wiring_setup])
+software_load_choice = OperatorPOWL(operator=Operator.XOR, children=[software_load, calibration_test])
+stress_check_choice = OperatorPOWL(operator=Operator.XOR, children=[stress_check, firmware_flash])
+feedback_loop_choice = OperatorPOWL(operator=Operator.XOR, children=[feedback_loop, doc_compile])
+package_prep_choice = OperatorPOWL(operator=Operator.XOR, children=[package_prep, ship_arrange])
+remote_setup_choice = OperatorPOWL(operator=Operator.XOR, children=[remote_setup, ship_arrange])
+
+root = StrictPartialOrder(nodes=[spec_review_choice, frame_build_choice, sensor_fit_choice, software_load_choice, stress_check_choice, feedback_loop_choice, package_prep_choice, remote_setup_choice])
+root.order.add_edge(spec_review_choice, frame_build_choice)
+root.order.add_edge(frame_build_choice, sensor_fit_choice)
+root.order.add_edge(sensor_fit_choice, software_load_choice)
+root.order.add_edge(software_load_choice, stress_check_choice)
+root.order.add_edge(stress_check_choice, feedback_loop_choice)
+root.order.add_edge(feedback_loop_choice, package_prep_choice)
+root.order.add_edge(package_prep_choice, remote_setup_choice)

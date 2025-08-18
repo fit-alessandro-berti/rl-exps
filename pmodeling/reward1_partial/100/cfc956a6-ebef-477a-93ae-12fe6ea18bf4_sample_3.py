@@ -1,0 +1,37 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define the transitions (activities)
+artist_onboard = Transition(label='Artist Onboard')
+asset_verify = Transition(label='Asset Verify')
+identity_check = Transition(label='Identity Check')
+smart_deploy = Transition(label='Smart Deploy')
+bid_monitor = Transition(label='Bid Monitor')
+price_adjust = Transition(label='Price Adjust')
+wallet_link = Transition(label='Wallet Link')
+bid_submit = Transition(label='Bid Submit')
+auction_close = Transition(label='Auction Close')
+ownership_transfer = Transition(label='Ownership Transfer')
+fund_release = Transition(label='Fund Release')
+dispute_review = Transition(label='Dispute Review')
+reputation_update = Transition(label='Reputation Update')
+fractional_offer = Transition(label='Fractional Offer')
+secondary_sale = Transition(label='Secondary Sale')
+
+# Define the silent transitions (tau labels)
+skip = SilentTransition()
+
+# Define the exclusive choices (XOR)
+artist_onboard_identity_check = OperatorPOWL(operator=Operator.XOR, children=[artist_onboard, identity_check])
+smart_deploy_bid_monitor = OperatorPOWL(operator=Operator.XOR, children=[smart_deploy, bid_monitor])
+price_adjust_bid_submit = OperatorPOWL(operator=Operator.XOR, children=[price_adjust, bid_submit])
+auction_close_fund_release = OperatorPOWL(operator=Operator.XOR, children=[auction_close, fund_release])
+dispute_review_reputation_update = OperatorPOWL(operator=Operator.XOR, children=[dispute_review, reputation_update])
+fractional_offer_secondary_sale = OperatorPOWL(operator=Operator.XOR, children=[fractional_offer, secondary_sale])
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[artist_onboard_identity_check, smart_deploy_bid_monitor, price_adjust_bid_submit, auction_close_fund_release, dispute_review_reputation_update, fractional_offer_secondary_sale])
+root.order.add_edge(artist_onboard_identity_check, smart_deploy_bid_monitor)
+root.order.add_edge(smart_deploy_bid_monitor, price_adjust_bid_submit)
+root.order.add_edge(price_adjust_bid_submit, auction_close_fund_release)
+root.order.add_edge(auction_close_fund_release, dispute_review_reputation_update)
+root.order.add_edge(dispute_review_reputation_update, fractional_offer_secondary_sale)

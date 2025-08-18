@@ -1,0 +1,50 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+milk_sourcing = Transition(label='Milk Sourcing')
+farm_audit = Transition(label='Farm Audit')
+milk_testing = Transition(label='Milk Testing')
+batch_forming = Transition(label='Batch Forming')
+curd_cutting = Transition(label='Curd Cutting')
+molding_cheese = Transition(label='Molding Cheese')
+salting_process = Transition(label='Salting Process')
+aging_control = Transition(label='Aging Control')
+quality_check = Transition(label='Quality Check')
+packaging_design = Transition(label='Packaging Design')
+label_printing = Transition(label='Label Printing')
+inventory_update = Transition(label='Inventory Update')
+order_receiving = Transition(label='Order Receiving')
+retail_coordination = Transition(label='Retail Coordination')
+shipping_prep = Transition(label='Shipping Prep')
+customer_feedback = Transition(label='Customer Feedback')
+demand_forecast = Transition(label='Demand Forecast')
+limited_release = Transition(label='Limited Release')
+
+# Define the control-flow operators
+exclusive_choice_1 = OperatorPOWL(operator=Operator.XOR, children=[milk_testing, farm_audit])
+exclusive_choice_2 = OperatorPOWL(operator=Operator.XOR, children=[curd_cutting, aging_control])
+exclusive_choice_3 = OperatorPOWL(operator=Operator.XOR, children=[salting_process, quality_check])
+exclusive_choice_4 = OperatorPOWL(operator=Operator.XOR, children=[packaging_design, label_printing])
+exclusive_choice_5 = OperatorPOWL(operator=Operator.XOR, children=[inventory_update, order_receiving])
+exclusive_choice_6 = OperatorPOWL(operator=Operator.XOR, children=[retail_coordination, shipping_prep])
+exclusive_choice_7 = OperatorPOWL(operator=Operator.XOR, children=[customer_feedback, demand_forecast])
+exclusive_choice_8 = OperatorPOWL(operator=Operator.XOR, children=[limited_release, exclusive_choice_1])
+exclusive_choice_9 = OperatorPOWL(operator=Operator.XOR, children=[exclusive_choice_2, exclusive_choice_3])
+exclusive_choice_10 = OperatorPOWL(operator=Operator.XOR, children=[exclusive_choice_4, exclusive_choice_5])
+exclusive_choice_11 = OperatorPOWL(operator=Operator.XOR, children=[exclusive_choice_6, exclusive_choice_7])
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[milk_sourcing, exclusive_choice_1, exclusive_choice_2, exclusive_choice_3, exclusive_choice_4, exclusive_choice_5, exclusive_choice_6, exclusive_choice_7, exclusive_choice_8, exclusive_choice_9, exclusive_choice_10, exclusive_choice_11])
+root.order.add_edge(milk_sourcing, exclusive_choice_1)
+root.order.add_edge(exclusive_choice_1, exclusive_choice_2)
+root.order.add_edge(exclusive_choice_2, exclusive_choice_3)
+root.order.add_edge(exclusive_choice_3, exclusive_choice_4)
+root.order.add_edge(exclusive_choice_4, exclusive_choice_5)
+root.order.add_edge(exclusive_choice_5, exclusive_choice_6)
+root.order.add_edge(exclusive_choice_6, exclusive_choice_7)
+root.order.add_edge(exclusive_choice_7, exclusive_choice_8)
+root.order.add_edge(exclusive_choice_8, exclusive_choice_9)
+root.order.add_edge(exclusive_choice_9, exclusive_choice_10)
+root.order.add_edge(exclusive_choice_10, exclusive_choice_11)

@@ -1,0 +1,76 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+flora_mapping = Transition(label='Flora Mapping')
+hive_setup = Transition(label='Hive Setup')
+sensor_install = Transition(label='Sensor Install')
+health_check = Transition(label='Health Check')
+pest_control = Transition(label='Pest Control')
+data_logging = Transition(label='Data Logging')
+community_meet = Transition(label='Community Meet')
+workshop_plan = Transition(label='Workshop Plan')
+honey_extract = Transition(label='Honey Extract')
+quality_test = Transition(label='Quality Test')
+packaging = Transition(label='Packaging')
+market_setup = Transition(label='Market Setup')
+sales_report = Transition(label='Sales Report')
+regulation_check = Transition(label='Regulation Check')
+waste_manage = Transition(label='Waste Manage')
+seasonal_review = Transition(label='Seasonal Review')
+
+skip = SilentTransition()
+
+site_survey_to_flora_mapping = OperatorPOWL(operator=Operator.XOR, children=[site_survey, flora_mapping])
+flora_mapping_to_hive_setup = OperatorPOWL(operator=Operator.XOR, children=[flora_mapping, hive_setup])
+hive_setup_to_sensor_install = OperatorPOWL(operator=Operator.XOR, children=[hive_setup, sensor_install])
+sensor_install_to_health_check = OperatorPOWL(operator=Operator.XOR, children=[sensor_install, health_check])
+health_check_to_pest_control = OperatorPOWL(operator=Operator.XOR, children=[health_check, pest_control])
+pest_control_to_data_logging = OperatorPOWL(operator=Operator.XOR, children=[pest_control, data_logging])
+data_logging_to_community_meet = OperatorPOWL(operator=Operator.XOR, children=[data_logging, community_meet])
+community_meet_to_workshop_plan = OperatorPOWL(operator=Operator.XOR, children=[community_meet, workshop_plan])
+workshop_plan_to_honey_extract = OperatorPOWL(operator=Operator.XOR, children=[workshop_plan, honey_extract])
+honey_extract_to_quality_test = OperatorPOWL(operator=Operator.XOR, children=[honey_extract, quality_test])
+quality_test_to_packaging = OperatorPOWL(operator=Operator.XOR, children=[quality_test, packaging])
+packaging_to_market_setup = OperatorPOWL(operator=Operator.XOR, children=[packaging, market_setup])
+market_setup_to_sales_report = OperatorPOWL(operator=Operator.XOR, children=[market_setup, sales_report])
+sales_report_to_regulation_check = OperatorPOWL(operator=Operator.XOR, children=[sales_report, regulation_check])
+regulation_check_to_waste_manage = OperatorPOWL(operator=Operator.XOR, children=[regulation_check, waste_manage])
+waste_manage_to_seasonal_review = OperatorPOWL(operator=Operator.XOR, children=[waste_manage, seasonal_review])
+seasonal_review_to_site_survey = OperatorPOWL(operator=Operator.XOR, children=[seasonal_review, site_survey])
+
+root = StrictPartialOrder(nodes=[
+    site_survey_to_flora_mapping,
+    flora_mapping_to_hive_setup,
+    hive_setup_to_sensor_install,
+    sensor_install_to_health_check,
+    health_check_to_pest_control,
+    pest_control_to_data_logging,
+    data_logging_to_community_meet,
+    community_meet_to_workshop_plan,
+    workshop_plan_to_honey_extract,
+    honey_extract_to_quality_test,
+    quality_test_to_packaging,
+    packaging_to_market_setup,
+    market_setup_to_sales_report,
+    sales_report_to_regulation_check,
+    regulation_check_to_waste_manage,
+    waste_manage_to_seasonal_review,
+    seasonal_review_to_site_survey
+])
+root.order.add_edge(site_survey_to_flora_mapping, flora_mapping_to_hive_setup)
+root.order.add_edge(flora_mapping_to_hive_setup, hive_setup_to_sensor_install)
+root.order.add_edge(hive_setup_to_sensor_install, sensor_install_to_health_check)
+root.order.add_edge(sensor_install_to_health_check, health_check_to_pest_control)
+root.order.add_edge(health_check_to_pest_control, pest_control_to_data_logging)
+root.order.add_edge(pest_control_to_data_logging, data_logging_to_community_meet)
+root.order.add_edge(data_logging_to_community_meet, community_meet_to_workshop_plan)
+root.order.add_edge(community_meet_to_workshop_plan, workshop_plan_to_honey_extract)
+root.order.add_edge(workshop_plan_to_honey_extract, honey_extract_to_quality_test)
+root.order.add_edge(honey_extract_to_quality_test, quality_test_to_packaging)
+root.order.add_edge(quality_test_to_packaging, packaging_to_market_setup)
+root.order.add_edge(packaging_to_market_setup, market_setup_to_sales_report)
+root.order.add_edge(market_setup_to_sales_report, sales_report_to_regulation_check)
+root.order.add_edge(sales_report_to_regulation_check, regulation_check_to_waste_manage)
+root.order.add_edge(regulation_check_to_waste_manage, waste_manage_to_seasonal_review)
+root.order.add_edge(waste_manage_to_seasonal_review, seasonal_review_to_site_survey)

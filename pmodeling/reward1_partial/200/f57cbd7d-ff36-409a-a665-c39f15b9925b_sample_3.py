@@ -1,0 +1,35 @@
+root = StrictPartialOrder(
+    nodes=[
+        Transition(label='Trend Scan'),
+        Transition(label='Idea Sprint'),
+        Transition(label='Feasibility Check'),
+        Transition(label='Risk Review'),
+        Transition(label='Tech Prototype'),
+        Transition(label='Market Simulate'),
+        Transition(label='Stakeholder Align'),
+        Transition(label='Budget Adjust'),
+        Transition(label='Talent Source'),
+        Transition(label='Pilot Launch'),
+        Transition(label='Data Refine'),
+        Transition(label='Scale Analysis'),
+        Transition(label='Integration Plan'),
+        Transition(label='Change Manage'),
+        Transition(label='Knowledge Transfer'),
+    ],
+    order={
+        'Trend Scan': 'Idea Sprint',
+        'Idea Sprint': 'Feasibility Check',
+        'Feasibility Check': 'Risk Review',
+        'Risk Review': 'Tech Prototype',
+        'Tech Prototype': 'Market Simulate',
+        'Market Simulate': 'Stakeholder Align',
+        'Stakeholder Align': 'Budget Adjust',
+        'Budget Adjust': 'Talent Source',
+        'Talent Source': 'Pilot Launch',
+        'Pilot Launch': 'Data Refine',
+        'Data Refine': 'Scale Analysis',
+        'Scale Analysis': 'Integration Plan',
+        'Integration Plan': 'Change Manage',
+        'Change Manage': 'Knowledge Transfer'
+    }
+)

@@ -1,0 +1,62 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+requirements = Transition(label='Requirement Analysis')
+sourcing = Transition(label='Component Sourcing')
+quality = Transition(label='Quality Check')
+assembly = Transition(label='Frame Assembly')
+motors = Transition(label='Motor Installation')
+sensors = Transition(label='Sensor Setup')
+control = Transition(label='Control Unit')
+firmware = Transition(label='Firmware Upload')
+calibration = Transition(label='System Calibration')
+flight = Transition(label='Flight Testing')
+correction = Transition(label='Error Correction')
+finish = Transition(label='Cosmetic Finish')
+packaging = Transition(label='Packaging Prep')
+manual = Transition(label='User Manual')
+training = Transition(label='Client Training')
+scheduling = Transition(label='Support Scheduling')
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[
+    requirements, sourcing, quality, assembly, motors, sensors, control, firmware, calibration, flight, correction, finish, packaging, manual, training, scheduling
+])
+
+# Define the dependencies
+root.order.add_edge(requirements, sourcing)
+root.order.add_edge(requirements, quality)
+root.order.add_edge(sourcing, assembly)
+root.order.add_edge(sourcing, quality)
+root.order.add_edge(assembly, motors)
+root.order.add_edge(assembly, sensors)
+root.order.add_edge(assembly, control)
+root.order.add_edge(motors, firmware)
+root.order.add_edge(motors, calibration)
+root.order.add_edge(sensors, firmware)
+root.order.add_edge(sensors, calibration)
+root.order.add_edge(control, firmware)
+root.order.add_edge(control, calibration)
+root.order.add_edge(firmware, calibration)
+root.order.add_edge(firmware, flight)
+root.order.add_edge(calibration, flight)
+root.order.add_edge(flight, correction)
+root.order.add_edge(flight, finish)
+root.order.add_edge(flight, packaging)
+root.order.add_edge(flight, manual)
+root.order.add_edge(flight, training)
+root.order.add_edge(flight, scheduling)
+root.order.add_edge(correction, flight)
+root.order.add_edge(finish, packaging)
+root.order.add_edge(finish, manual)
+root.order.add_edge(finish, training)
+root.order.add_edge(finish, scheduling)
+root.order.add_edge(packaging, manual)
+root.order.add_edge(packaging, training)
+root.order.add_edge(packaging, scheduling)
+root.order.add_edge(manual, training)
+root.order.add_edge(manual, scheduling)
+root.order.add_edge(training, scheduling)
+
+print(root)

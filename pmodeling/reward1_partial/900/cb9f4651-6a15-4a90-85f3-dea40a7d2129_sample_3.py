@@ -1,0 +1,45 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions (activities)
+Milk_Sourcing = Transition(label='Milk Sourcing')
+Culture_Prep = Transition(label='Culture Prep')
+Milk_Pasteurize = Transition(label='Milk Pasteurize')
+Milk_Inoculate = Transition(label='Milk Inoculate')
+Curd_Formation = Transition(label='Curd Formation')
+Curd_Cut = Transition(label='Curd Cut')
+Whey_Drain = Transition(label='Whey Drain')
+Mold_Inoculate = Transition(label='Mold Inoculate')
+Press_Cheese = Transition(label='Press Cheese')
+Aging_Setup = Transition(label='Aging Setup')
+Humidity_Control = Transition(label='Humidity Control')
+Temperature_Monitor = Transition(label='Temperature Monitor')
+Quality_Test = Transition(label='Quality Test')
+Packaging = Transition(label='Packaging')
+Order_Fulfill = Transition(label='Order Fulfill')
+Retail_Deliver = Transition(label='Retail Deliver')
+Feedback_Collect = Transition(label='Feedback Collect')
+
+# Define loop and exclusive choice
+loop = OperatorPOWL(operator=Operator.LOOP, children=[Milk_Sourcing, Culture_Prep, Milk_Pasteurize, Milk_Inoculate, Curd_Formation, Curd_Cut, Whey_Drain, Mold_Inoculate, Press_Cheese, Aging_Setup, Humidity_Control, Temperature_Monitor, Quality_Test, Packaging, Order_Fulfill, Retail_Deliver, Feedback_Collect])
+
+# Define the root POWL model
+root = StrictPartialOrder(nodes=[loop])
+root.order.add_edge(loop, Milk_Sourcing)
+root.order.add_edge(loop, Culture_Prep)
+root.order.add_edge(loop, Milk_Pasteurize)
+root.order.add_edge(loop, Milk_Inoculate)
+root.order.add_edge(loop, Curd_Formation)
+root.order.add_edge(loop, Curd_Cut)
+root.order.add_edge(loop, Whey_Drain)
+root.order.add_edge(loop, Mold_Inoculate)
+root.order.add_edge(loop, Press_Cheese)
+root.order.add_edge(loop, Aging_Setup)
+root.order.add_edge(loop, Humidity_Control)
+root.order.add_edge(loop, Temperature_Monitor)
+root.order.add_edge(loop, Quality_Test)
+root.order.add_edge(loop, Packaging)
+root.order.add_edge(loop, Order_Fulfill)
+root.order.add_edge(loop, Retail_Deliver)
+root.order.add_edge(loop, Feedback_Collect)

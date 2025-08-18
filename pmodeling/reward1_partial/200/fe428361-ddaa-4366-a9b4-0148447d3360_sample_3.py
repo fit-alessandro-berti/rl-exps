@@ -1,0 +1,62 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions for each activity
+client_consult = Transition(label='Client Consult')
+payload_assess = Transition(label='Payload Assess')
+drone_configure = Transition(label='Drone Configure')
+regulation_check = Transition(label='Regulation Check')
+flight_simulate = Transition(label='Flight Simulate')
+route_optimize = Transition(label='Route Optimize')
+package_secure = Transition(label='Package Secure')
+pre_flight_inspect = Transition(label='Pre-Flight Inspect')
+weather_monitor = Transition(label='Weather Monitor')
+launch_drone = Transition(label='Launch Drone')
+flight_track = Transition(label='Flight Track')
+delivery_confirm = Transition(label='Delivery Confirm')
+data_analyze = Transition(label='Data Analyze')
+feedback_collect = Transition(label='Feedback Collect')
+warranty_register = Transition(label='Warranty Register')
+issue_resolve = Transition(label='Issue Resolve')
+package_return = Transition(label='Package Return')
+
+# Define silent transitions (if any)
+skip = SilentTransition()
+
+# Define operators for exclusive choices and loops
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[regulation_check, skip])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[flight_simulate, skip])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[route_optimize, skip])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[package_secure, skip])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[pre_flight_inspect, skip])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[weather_monitor, skip])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[launch_drone, skip])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[flight_track, skip])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[delivery_confirm, skip])
+xor10 = OperatorPOWL(operator=Operator.XOR, children=[data_analyze, skip])
+xor11 = OperatorPOWL(operator=Operator.XOR, children=[feedback_collect, skip])
+xor12 = OperatorPOWL(operator=Operator.XOR, children=[warranty_register, skip])
+xor13 = OperatorPOWL(operator=Operator.XOR, children=[issue_resolve, skip])
+xor14 = OperatorPOWL(operator=Operator.XOR, children=[package_return, skip])
+
+# Define the root POWL model with dependencies
+root = StrictPartialOrder(nodes=[client_consult, payload_assess, drone_configure, xor1, xor2, xor3, xor4, xor5, xor6, xor7, xor8, xor9, xor10, xor11, xor12, xor13, xor14])
+root.order.add_edge(client_consult, payload_assess)
+root.order.add_edge(payload_assess, drone_configure)
+root.order.add_edge(drone_configure, xor1)
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor8)
+root.order.add_edge(xor8, xor9)
+root.order.add_edge(xor9, xor10)
+root.order.add_edge(xor10, xor11)
+root.order.add_edge(xor11, xor12)
+root.order.add_edge(xor12, xor13)
+root.order.add_edge(xor13, xor14)
+
+print(root)

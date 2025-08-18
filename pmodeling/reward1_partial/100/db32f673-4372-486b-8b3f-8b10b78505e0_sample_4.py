@@ -1,0 +1,45 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define the activities
+receive_artifact = Transition(label='Receive Artifact')
+condition_log = Transition(label='Condition Log')
+radiocarbon_test = Transition(label='Radiocarbon Test')
+spectroscopy_scan = Transition(label='Spectroscopy Scan')
+expert_consult = Transition(label='Expert Consult')
+provenance_check = Transition(label='Provenance Check')
+archive_search = Transition(label='Archive Search')
+risk_assess = Transition(label='Risk Assess')
+three_d_scan = Transition(label='3D Scan')
+legal_review = Transition(label='Legal Review')
+insurance_setup = Transition(label='Insurance Setup')
+certificate_draft = Transition(label='Certificate Draft')
+certificate_approve = Transition(label='Certificate Approve')
+climate_pack = Transition(label='Climate Pack')
+conservation_plan = Transition(label='Conservation Plan')
+monitoring_schedule = Transition(label='Monitoring Schedule')
+
+# Define the POWL model
+root = StrictPartialOrder()
+
+# Define the dependencies between activities
+root.order.add_edge(receive_artifact, condition_log)
+root.order.add_edge(condition_log, radiocarbon_test)
+root.order.add_edge(condition_log, spectroscopy_scan)
+root.order.add_edge(radiocarbon_test, expert_consult)
+root.order.add_edge(radiocarbon_test, provenance_check)
+root.order.add_edge(spectroscopy_scan, provenance_check)
+root.order.add_edge(expert_consult, archive_search)
+root.order.add_edge(expert_consult, risk_assess)
+root.order.add_edge(provenance_check, archive_search)
+root.order.add_edge(provenance_check, risk_assess)
+root.order.add_edge(archive_search, legal_review)
+root.order.add_edge(risk_assess, legal_review)
+root.order.add_edge(legal_review, insurance_setup)
+root.order.add_edge(insurance_setup, certificate_draft)
+root.order.add_edge(insurance_setup, certificate_approve)
+root.order.add_edge(certificate_draft, certificate_approve)
+root.order.add_edge(certificate_approve, climate_pack)
+root.order.add_edge(climate_pack, conservation_plan)
+root.order.add_edge(conservation_plan, monitoring_schedule)
+
+print(root)

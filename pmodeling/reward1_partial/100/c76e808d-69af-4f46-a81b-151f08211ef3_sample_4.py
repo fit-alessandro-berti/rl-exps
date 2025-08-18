@@ -1,0 +1,42 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+MilkSourcing = Transition(label='Milk Sourcing')
+CultureSelection = Transition(label='Culture Selection')
+MilkTesting = Transition(label='Milk Testing')
+CurdFormation = Transition(label='Curd Formation')
+WheySeparation = Transition(label='Whey Separation')
+MoldingCheese = Transition(label='Molding Cheese')
+SaltingProcess = Transition(label='Salting Process')
+AgingSetup = Transition(label='Aging Setup')
+EnvMonitoring = Transition(label='Env Monitoring')
+FlavorProfiling = Transition(label='Flavor Profiling')
+PackagingDesign = Transition(label='Packaging Design')
+BlockchainEntry = Transition(label='Blockchain Entry')
+QualityAudit = Transition(label='Quality Audit')
+RetailSync = Transition(label='Retail Sync')
+TransportPrep = Transition(label='Transport Prep')
+DeliveryTracking = Transition(label='Delivery Tracking')
+CustomerFeedback = Transition(label='Customer Feedback')
+
+# Define the POWL model
+loopAging = OperatorPOWL(operator=Operator.LOOP, children=[EnvMonitoring, FlavorProfiling])
+xorRetail = OperatorPOWL(operator=Operator.XOR, children=[RetailSync, TransportPrep])
+xorBlockchain = OperatorPOWL(operator=Operator.XOR, children=[QualityAudit, BlockchainEntry])
+xorFeedback = OperatorPOWL(operator=Operator.XOR, children=[CustomerFeedback, SilentTransition()])
+root = StrictPartialOrder(nodes=[MilkSourcing, CultureSelection, MilkTesting, CurdFormation, WheySeparation, MoldingCheese, SaltingProcess, AgingSetup, loopAging, xorRetail, xorBlockchain, xorFeedback])
+root.order.add_edge(MilkSourcing, CultureSelection)
+root.order.add_edge(CultureSelection, MilkTesting)
+root.order.add_edge(MilkTesting, CurdFormation)
+root.order.add_edge(CurdFormation, WheySeparation)
+root.order.add_edge(WheySeparation, MoldingCheese)
+root.order.add_edge(MoldingCheese, SaltingProcess)
+root.order.add_edge(SaltingProcess, AgingSetup)
+root.order.add_edge(AgingSetup, loopAging)
+root.order.add_edge(loopAging, xorRetail)
+root.order.add_edge(xorRetail, xorBlockchain)
+root.order.add_edge(xorBlockchain, xorFeedback)
+root.order.add_edge(xorFeedback, SilentTransition())
+print(root)

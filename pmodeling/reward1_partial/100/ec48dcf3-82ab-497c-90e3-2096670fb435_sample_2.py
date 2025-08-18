@@ -1,0 +1,56 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define transitions for each activity
+site_survey = Transition(label='Site Survey')
+design_layout = Transition(label='Design Layout')
+structure_build = Transition(label='Structure Build')
+system_install = Transition(label='System Install')
+climate_setup = Transition(label='Climate Setup')
+nutrient_prep = Transition(label='Nutrient Prep')
+seed_germinate = Transition(label='Seed Germinate')
+planting_phase = Transition(label='Planting Phase')
+sensor_deploy = Transition(label='Sensor Deploy')
+pest_control = Transition(label='Pest Control')
+water_monitor = Transition(label='Water Monitor')
+data_analyze = Transition(label='Data Analyze')
+staff_train = Transition(label='Staff Train')
+yield_forecast = Transition(label='Yield Forecast')
+community_meet = Transition(label='Community Meet')
+
+# Define the partial order
+root = StrictPartialOrder()
+
+# Add transitions to the root
+root.add_node(site_survey)
+root.add_node(design_layout)
+root.add_node(structure_build)
+root.add_node(system_install)
+root.add_node(climate_setup)
+root.add_node(nutrient_prep)
+root.add_node(seed_germinate)
+root.add_node(planting_phase)
+root.add_node(sensor_deploy)
+root.add_node(pest_control)
+root.add_node(water_monitor)
+root.add_node(data_analyze)
+root.add_node(staff_train)
+root.add_node(yield_forecast)
+root.add_node(community_meet)
+
+# Define the dependencies between activities
+root.add_edge(site_survey, design_layout)
+root.add_edge(design_layout, structure_build)
+root.add_edge(structure_build, system_install)
+root.add_edge(system_install, climate_setup)
+root.add_edge(climate_setup, nutrient_prep)
+root.add_edge(nutrient_prep, seed_germinate)
+root.add_edge(seed_germinate, planting_phase)
+root.add_edge(planting_phase, sensor_deploy)
+root.add_edge(sensor_deploy, pest_control)
+root.add_edge(pest_control, water_monitor)
+root.add_edge(water_monitor, data_analyze)
+root.add_edge(data_analyze, staff_train)
+root.add_edge(staff_train, yield_forecast)
+root.add_edge(yield_forecast, community_meet)
+
+print(root)

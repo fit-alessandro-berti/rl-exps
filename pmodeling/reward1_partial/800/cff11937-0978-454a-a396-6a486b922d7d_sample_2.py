@@ -1,0 +1,45 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL model for each activity
+milk_sourcing = Transition(label='Milk Sourcing')
+quality_testing = Transition(label='Quality Testing')
+starter_culture = Transition(label='Starter Culture')
+milk_fermentation = Transition(label='Milk Fermentation')
+curd_cutting = Transition(label='Curd Cutting')
+whey_draining = Transition(label='Whey Draining')
+pressing_cheese = Transition(label='Pressing Cheese')
+cave_aging = Transition(label='Cave Aging')
+sample_tasting = Transition(label='Sample Tasting')
+flavor_profiling = Transition(label='Flavor Profiling')
+packaging_design = Transition(label='Packaging Design')
+cold_storage = Transition(label='Cold Storage')
+logistics_planning = Transition(label='Logistics Planning')
+pop_up_sales = Transition(label='Pop-up Sales')
+customer_feedback = Transition(label='Customer Feedback')
+recipe_adjusting = Transition(label='Recipe Adjusting')
+
+# Define the POWL model for each sub-process
+milk_fermentation_process = StrictPartialOrder(nodes=[milk_fermentation, curd_cutting, whey_draining, pressing_cheese])
+cave_aging_process = StrictPartialOrder(nodes=[cave_aging])
+sample_tasting_process = StrictPartialOrder(nodes=[sample_tasting, flavor_profiling])
+packaging_design_process = StrictPartialOrder(nodes=[packaging_design])
+cold_storage_process = StrictPartialOrder(nodes=[cold_storage])
+logistics_planning_process = StrictPartialOrder(nodes=[logistics_planning])
+pop_up_sales_process = StrictPartialOrder(nodes=[pop_up_sales])
+customer_feedback_process = StrictPartialOrder(nodes=[customer_feedback])
+recipe_adjusting_process = StrictPartialOrder(nodes=[recipe_adjusting])
+
+# Define the POWL model for the entire process
+root = StrictPartialOrder(nodes=[milk_sourcing, quality_testing, starter_culture, milk_fermentation_process, cave_aging_process, sample_tasting_process, packaging_design_process, cold_storage_process, logistics_planning_process, pop_up_sales_process, customer_feedback_process, recipe_adjusting_process])
+root.order.add_edge(milk_sourcing, quality_testing)
+root.order.add_edge(quality_testing, starter_culture)
+root.order.add_edge(starter_culture, milk_fermentation_process)
+root.order.add_edge(milk_fermentation_process, cave_aging_process)
+root.order.add_edge(cave_aging_process, sample_tasting_process)
+root.order.add_edge(sample_tasting_process, packaging_design_process)
+root.order.add_edge(packaging_design_process, cold_storage_process)
+root.order.add_edge(cold_storage_process, logistics_planning_process)
+root.order.add_edge(logistics_planning_process, pop_up_sales_process)
+root.order.add_edge(pop_up_sales_process, customer_feedback_process)
+root.order.add_edge(customer_feedback_process, recipe_adjusting_process)

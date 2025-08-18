@@ -1,0 +1,42 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+QM = Transition(label='Quantum Modeling')
+DE = Transition(label='Data Encoding')
+RS = Transition(label='Route Simulation')
+DF = Transition(label='Demand Forecast')
+SS = Transition(label='Supplier Sync')
+EN = Transition(label='Entangle Nodes')
+RA = Transition(label='Risk Analysis')
+IS = Transition(label='Inventory Scan')
+LC = Transition(label='Latency Check')
+TP = Transition(label='Transport Plan')
+QC = Transition(label='Quantum Compute')
+ST = Transition(label='Scenario Test')
+RAA = Transition(label='Resource Align')
+PU = Transition(label='Protocol Update')
+FL = Transition(label='Feedback Loop')
+CO = Transition(label='Cost Optimize')
+IR = Transition(label='Impact Review')
+
+# Define the POWL model
+root = StrictPartialOrder(nodes=[QM, DE, RS, DF, SS, EN, RA, IS, LC, TP, QC, ST, RAA, PU, FL, CO, IR])
+root.order.add_edge(QM, DE)
+root.order.add_edge(DE, RS)
+root.order.add_edge(RS, DF)
+root.order.add_edge(DF, SS)
+root.order.add_edge(SS, EN)
+root.order.add_edge(EN, RA)
+root.order.add_edge(RA, IS)
+root.order.add_edge(IS, LC)
+root.order.add_edge(LC, TP)
+root.order.add_edge(TP, QC)
+root.order.add_edge(QC, ST)
+root.order.add_edge(ST, RAA)
+root.order.add_edge(RAA, PU)
+root.order.add_edge(PU, FL)
+root.order.add_edge(FL, CO)
+root.order.add_edge(CO, IR)
+
+print(root)

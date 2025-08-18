@@ -1,0 +1,38 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+milk_sourcing = Transition(label='Milk Sourcing')
+quality_testing = Transition(label='Quality Testing')
+milk_pasteurize = Transition(label='Milk Pasteurize')
+curd_formation = Transition(label='Curd Formation')
+whey_separation = Transition(label='Whey Separation')
+press_cheese = Transition(label='Press Cheese')
+salt_application = Transition(label='Salt Application')
+controlled_aging = Transition(label='Controlled Aging')
+sensory_check = Transition(label='Sensory Check')
+batch_packaging = Transition(label='Batch Packaging')
+label_printing = Transition(label='Label Printing')
+cold_storage = Transition(label='Cold Storage')
+logistics_plan = Transition(label='Logistics Plan')
+retail_delivery = Transition(label='Retail Delivery')
+feedback_review = Transition(label='Feedback Review')
+demand_forecast = Transition(label='Demand Forecast')
+provenance_track = Transition(label='Provenance Track')
+
+skip = SilentTransition()
+
+milk_process = OperatorPOWL(operator=Operator.LOOP, children=[milk_sourcing, quality_testing, milk_pasteurize, curd_formation, whey_separation, press_cheese, salt_application, controlled_aging, sensory_check, batch_packaging, label_printing])
+logistics = OperatorPOWL(operator=Operator.XOR, children=[logistics_plan, skip])
+cold_storage_process = OperatorPOWL(operator=Operator.XOR, children=[cold_storage, skip])
+delivery = OperatorPOWL(operator=Operator.XOR, children=[retail_delivery, skip])
+feedback = OperatorPOWL(operator=Operator.XOR, children=[feedback_review, skip])
+demand = OperatorPOWL(operator=Operator.XOR, children=[demand_forecast, skip])
+provenance = OperatorPOWL(operator=Operator.XOR, children=[provenance_track, skip])
+
+root = StrictPartialOrder(nodes=[milk_process, logistics, cold_storage_process, delivery, feedback, demand, provenance])
+root.order.add_edge(milk_process, logistics)
+root.order.add_edge(milk_process, cold_storage_process)
+root.order.add_edge(milk_process, delivery)
+root.order.add_edge(milk_process, feedback)
+root.order.add_edge(milk_process, demand)
+root.order.add_edge(milk_process, provenance)

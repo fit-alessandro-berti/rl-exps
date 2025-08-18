@@ -1,0 +1,58 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the transitions (activities) with their labels
+discover_item = Transition(label='Discover Item')
+document_find = Transition(label='Document Find')
+initial_survey = Transition(label='Initial Survey')
+image_capture = Transition(label='Image Capture')
+material_testing = Transition(label='Material Testing')
+style_compare = Transition(label='Style Compare')
+expert_consult = Transition(label='Expert Consult')
+provenance_check = Transition(label='Provenance Check')
+ownership_verify = Transition(label='Ownership Verify')
+legal_review = Transition(label='Legal Review')
+risk_assess = Transition(label='Risk Assess')
+conservation_plan = Transition(label='Conservation Plan')
+certification = Transition(label='Certification')
+secure_transfer = Transition(label='Secure Transfer')
+dispute_resolve = Transition(label='Dispute Resolve')
+final_archive = Transition(label='Final Archive')
+
+# Define the silent transitions (e.g., skips)
+skip1 = SilentTransition()
+skip2 = SilentTransition()
+
+# Define the loops and XORs based on the given description
+initial_survey_loop = OperatorPOWL(operator=Operator.LOOP, children=[discover_item, document_find])
+image_capture_loop = OperatorPOWL(operator=Operator.LOOP, children=[initial_survey_loop, image_capture])
+material_testing_loop = OperatorPOWL(operator=Operator.LOOP, children=[image_capture_loop, material_testing])
+style_compare_loop = OperatorPOWL(operator=Operator.LOOP, children=[material_testing_loop, style_compare])
+expert_consult_loop = OperatorPOWL(operator=Operator.LOOP, children=[style_compare_loop, expert_consult])
+provenance_check_loop = OperatorPOWL(operator=Operator.LOOP, children=[expert_consult_loop, provenance_check])
+ownership_verify_loop = OperatorPOWL(operator=Operator.LOOP, children=[provenance_check_loop, ownership_verify])
+legal_review_loop = OperatorPOWL(operator=Operator.LOOP, children=[ownership_verify_loop, legal_review])
+risk_assess_loop = OperatorPOWL(operator=Operator.LOOP, children=[legal_review_loop, risk_assess])
+conservation_plan_loop = OperatorPOWL(operator=Operator.LOOP, children=[risk_assess_loop, conservation_plan])
+certification_loop = OperatorPOWL(operator=Operator.LOOP, children=[conservation_plan_loop, certification])
+secure_transfer_loop = OperatorPOWL(operator=Operator.LOOP, children=[certification_loop, secure_transfer])
+dispute_resolve_loop = OperatorPOWL(operator=Operator.LOOP, children=[secure_transfer_loop, dispute_resolve])
+final_archive_loop = OperatorPOWL(operator=Operator.LOOP, children=[dispute_resolve_loop, final_archive])
+
+# Construct the strict partial order
+root = StrictPartialOrder(nodes=[final_archive_loop])
+root.order.add_edge(final_archive_loop, dispute_resolve_loop)
+root.order.add_edge(dispute_resolve_loop, secure_transfer_loop)
+root.order.add_edge(secure_transfer_loop, certification_loop)
+root.order.add_edge(certification_loop, conservation_plan_loop)
+root.order.add_edge(conservation_plan_loop, risk_assess_loop)
+root.order.add_edge(risk_assess_loop, legal_review_loop)
+root.order.add_edge(legal_review_loop, ownership_verify_loop)
+root.order.add_edge(ownership_verify_loop, provenance_check_loop)
+root.order.add_edge(provenance_check_loop, expert_consult_loop)
+root.order.add_edge(expert_consult_loop, style_compare_loop)
+root.order.add_edge(style_compare_loop, material_testing_loop)
+root.order.add_edge(material_testing_loop, image_capture_loop)
+root.order.add_edge(image_capture_loop, initial_survey_loop)
+root.order.add_edge(initial_survey_loop, discover_item)

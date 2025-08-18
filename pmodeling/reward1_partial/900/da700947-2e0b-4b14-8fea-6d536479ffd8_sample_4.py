@@ -1,0 +1,42 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define the POWL model for the urban vertical farm process
+root = StrictPartialOrder(nodes=[
+    Transition(label='Site Survey'),
+    Transition(label='Structural Audit'),
+    Transition(label='Climate Design'),
+    Transition(label='Lighting Setup'),
+    Transition(label='Irrigation Plan'),
+    Transition(label='Nutrient Mix'),
+    Transition(label='Sensor Install'),
+    Transition(label='AI Calibration'),
+    Transition(label='Pest Scan'),
+    Transition(label='Energy Audit'),
+    Transition(label='Renewable Sync'),
+    Transition(label='Data Modeling'),
+    Transition(label='Staff Briefing'),
+    Transition(label='Compliance Check'),
+    Transition(label='Community Meet'),
+    Transition(label='Yield Review'),
+    Transition(label='Feedback Loop')
+])
+
+# Add dependencies between activities
+root.order.add_edge(root.nodes[0], root.nodes[1])
+root.order.add_edge(root.nodes[1], root.nodes[2])
+root.order.add_edge(root.nodes[2], root.nodes[3])
+root.order.add_edge(root.nodes[3], root.nodes[4])
+root.order.add_edge(root.nodes[4], root.nodes[5])
+root.order.add_edge(root.nodes[5], root.nodes[6])
+root.order.add_edge(root.nodes[6], root.nodes[7])
+root.order.add_edge(root.nodes[7], root.nodes[8])
+root.order.add_edge(root.nodes[8], root.nodes[9])
+root.order.add_edge(root.nodes[9], root.nodes[10])
+root.order.add_edge(root.nodes[10], root.nodes[11])
+root.order.add_edge(root.nodes[11], root.nodes[12])
+root.order.add_edge(root.nodes[12], root.nodes[13])
+root.order.add_edge(root.nodes[13], root.nodes[14])
+root.order.add_edge(root.nodes[14], root.nodes[15])
+
+# Print the POWL model
+print(root)

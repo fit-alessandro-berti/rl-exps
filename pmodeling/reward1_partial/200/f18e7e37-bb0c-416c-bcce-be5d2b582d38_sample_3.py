@@ -1,0 +1,36 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+user_signup = Transition(label='User Signup')
+set_preference = Transition(label='Preference Set')
+select_meal = Transition(label='Meal Select')
+set_schedule = Transition(label='Schedule Delivery')
+match_supplier = Transition(label='Supplier Match')
+check_inventory = Transition(label='Inventory Check')
+order_ingredient = Transition(label='Ingredient Order')
+inspect_quality = Transition(label='Quality Inspect')
+pack_meal = Transition(label='Meal Pack')
+plan_route = Transition(label='Route Plan')
+dispatch_kit = Transition(label='Dispatch Kit')
+track_delivery = Transition(label='Delivery Track')
+collect_feedback = Transition(label='Feedback Collect')
+analyze_data = Transition(label='Data Analyze')
+optimize_plan = Transition(label='Plan Optimize')
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[set_preference, set_schedule])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[match_supplier, check_inventory])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[order_ingredient, inspect_quality])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[pack_meal, plan_route])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[dispatch_kit, track_delivery])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[collect_feedback, analyze_data])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[optimize_plan, user_signup])
+
+root = StrictPartialOrder(nodes=[xor1, xor2, xor3, xor4, xor5, xor6, xor7])
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor1)

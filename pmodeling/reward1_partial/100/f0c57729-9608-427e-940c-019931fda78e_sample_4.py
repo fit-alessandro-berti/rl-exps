@@ -1,0 +1,50 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define each activity as a Transition
+inquiry_intake = Transition(label='Inquiry Intake')
+consultation_call = Transition(label='Consultation Call')
+concept_draft = Transition(label='Concept Draft')
+feedback_loop = Transition(label='Feedback Loop')
+contract_setup = Transition(label='Contract Setup')
+artist_match = Transition(label='Artist Match')
+material_sourcing = Transition(label='Material Sourcing')
+ethics_review = Transition(label='Ethics Review')
+progress_check = Transition(label='Progress Check')
+milestone_approve = Transition(label='Milestone Approve')
+quality_audit = Transition(label='Quality Audit')
+copyright_transfer = Transition(label='Copyright Transfer')
+packaging_plan = Transition(label='Packaging Plan')
+shipping_arrange = Transition(label='Shipping Arrange')
+post_delivery = Transition(label='Post Delivery')
+client_survey = Transition(label='Client Survey')
+
+# Define the POWL model
+loop_feedback = OperatorPOWL(operator=Operator.LOOP, children=[feedback_loop])
+xor_contracts = OperatorPOWL(operator=Operator.XOR, children=[contract_setup, SilentTransition()])
+xor_materials = OperatorPOWL(operator=Operator.XOR, children=[material_sourcing, ethics_review])
+xor_artist = OperatorPOWL(operator=Operator.XOR, children=[artist_match, SilentTransition()])
+xor_milestones = OperatorPOWL(operator=Operator.XOR, children=[progress_check, SilentTransition()])
+xor_quality = OperatorPOWL(operator=Operator.XOR, children=[quality_audit, SilentTransition()])
+xor_copyright = OperatorPOWL(operator=Operator.XOR, children=[copyright_transfer, SilentTransition()])
+xor_packaging = OperatorPOWL(operator=Operator.XOR, children=[packaging_plan, SilentTransition()])
+xor_shipping = OperatorPOWL(operator=Operator.XOR, children=[shipping_arrange, SilentTransition()])
+xor_post_delivery = OperatorPOWL(operator=Operator.XOR, children=[post_delivery, SilentTransition()])
+
+root = StrictPartialOrder(nodes=[inquiry_intake, consultation_call, concept_draft, loop_feedback, xor_contracts, xor_materials, xor_artist, xor_milestones, xor_quality, xor_copyright, xor_packaging, xor_shipping, xor_post_delivery, client_survey])
+root.order.add_edge(inquiry_intake, consultation_call)
+root.order.add_edge(consultation_call, concept_draft)
+root.order.add_edge(concept_draft, loop_feedback)
+root.order.add_edge(loop_feedback, xor_contracts)
+root.order.add_edge(xor_contracts, xor_materials)
+root.order.add_edge(xor_materials, xor_artist)
+root.order.add_edge(xor_artist, xor_milestones)
+root.order.add_edge(xor_milestones, xor_quality)
+root.order.add_edge(xor_quality, xor_copyright)
+root.order.add_edge(xor_copyright, xor_packaging)
+root.order.add_edge(xor_packaging, xor_shipping)
+root.order.add_edge(xor_shipping, xor_post_delivery)
+root.order.add_edge(xor_post_delivery, client_survey)
+
+print(root)

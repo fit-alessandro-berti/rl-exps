@@ -1,0 +1,43 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions
+intake = Transition(label='Intake Document')
+visual = Transition(label='Visual Inspect')
+imaging = Transition(label='Imaging Scan')
+material = Transition(label='Material Test')
+database = Transition(label='Database Cross')
+provenance = Transition(label='Provenance Check')
+consult = Transition(label='Expert Consult')
+dating = Transition(label='Carbon Dating')
+forensic = Transition(label='Forensic Analyze')
+anomaly = Transition(label='Anomaly Review')
+risk = Transition(label='Risk Assess')
+report = Transition(label='Report Draft')
+quote = Transition(label='Insurance Quote')
+storage = Transition(label='Storage Plan')
+final = Transition(label='Final Approval')
+
+# Define partial order
+root = StrictPartialOrder(nodes=[intake, visual, imaging, material, database, provenance, consult, dating, forensic, anomaly, risk, report, quote, storage, final])
+root.order.add_edge(intake, visual)
+root.order.add_edge(intake, imaging)
+root.order.add_edge(intake, material)
+root.order.add_edge(intake, database)
+root.order.add_edge(intake, provenance)
+root.order.add_edge(intake, consult)
+root.order.add_edge(intake, dating)
+root.order.add_edge(intake, forensic)
+root.order.add_edge(visual, report)
+root.order.add_edge(imaging, report)
+root.order.add_edge(material, report)
+root.order.add_edge(database, report)
+root.order.add_edge(provenance, report)
+root.order.add_edge(consult, report)
+root.order.add_edge(dating, report)
+root.order.add_edge(forensic, report)
+root.order.add_edge(anomaly, risk)
+root.order.add_edge(risk, quote)
+root.order.add_edge(quote, storage)
+root.order.add_edge(storage, final)

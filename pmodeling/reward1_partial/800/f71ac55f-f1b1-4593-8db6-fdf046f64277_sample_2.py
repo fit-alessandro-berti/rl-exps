@@ -1,0 +1,42 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+permit_review = Transition(label='Permit Review')
+design_layout = Transition(label='Design Layout')
+system_assembly = Transition(label='System Assembly')
+climate_setup = Transition(label='Climate Setup')
+nutrient_prep = Transition(label='Nutrient Prep')
+irrigation_test = Transition(label='Irrigation Test')
+lighting_config = Transition(label='Lighting Config')
+energy_install = Transition(label='Energy Install')
+sensor_setup = Transition(label='Sensor Setup')
+automation_deploy = Transition(label='Automation Deploy')
+crop_seeding = Transition(label='Crop Seeding')
+waste_plan = Transition(label='Waste Plan')
+staff_training = Transition(label='Staff Training')
+community_outreach = Transition(label='Community Outreach')
+yield_monitor = Transition(label='Yield Monitor')
+maintenance_check = Transition(label='Maintenance Check')
+
+skip = SilentTransition()
+
+site_survey_permit = OperatorPOWL(operator=Operator.XOR, children=[site_survey, permit_review])
+design_layout_system = OperatorPOWL(operator=Operator.XOR, children=[design_layout, system_assembly])
+climate_nutrient = OperatorPOWL(operator=Operator.XOR, children=[climate_setup, nutrient_prep])
+irrigation_lighting = OperatorPOWL(operator=Operator.XOR, children=[irrigation_test, lighting_config])
+energy_sensor = OperatorPOWL(operator=Operator.XOR, children=[energy_install, sensor_setup])
+automation_yield = OperatorPOWL(operator=Operator.XOR, children=[automation_deploy, yield_monitor])
+waste_staff = OperatorPOWL(operator=Operator.XOR, children=[waste_plan, staff_training])
+community_maintenance = OperatorPOWL(operator=Operator.XOR, children=[community_outreach, maintenance_check])
+
+root = StrictPartialOrder(nodes=[site_survey_permit, design_layout_system, climate_nutrient, irrigation_lighting, energy_sensor, automation_yield, waste_staff, community_maintenance])
+root.order.add_edge(site_survey_permit, design_layout_system)
+root.order.add_edge(design_layout_system, climate_nutrient)
+root.order.add_edge(climate_nutrient, irrigation_lighting)
+root.order.add_edge(irrigation_lighting, energy_sensor)
+root.order.add_edge(energy_sensor, automation_yield)
+root.order.add_edge(automation_yield, waste_staff)
+root.order.add_edge(waste_staff, community_maintenance)
+
+print(root)

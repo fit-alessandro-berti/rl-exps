@@ -1,0 +1,35 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+provenance_check = Transition(label='Provenance Check')
+material_test = Transition(label='Material Test')
+archive_search = Transition(label='Archive Search')
+expert_review = Transition(label='Expert Review')
+three_d_scanning = Transition(label='3D Scanning')
+wear_analysis = Transition(label='Wear Analysis')
+database_cross = Transition(label='Database Cross')
+law_consult = Transition(label='Law Consult')
+forgeries_detect = Transition(label='Forgery Detect')
+certification = Transition(label='Certification')
+document_prep = Transition(label='Document Prep')
+client_brief = Transition(label='Client Brief')
+secure_storage = Transition(label='Secure Storage')
+risk_assessment = Transition(label='Risk Assessment')
+final_approval = Transition(label='Final Approval')
+
+skip = SilentTransition()
+parallel = OperatorPOWL(operator=Operator.PARALLEL, children=[archive_search, expert_review])
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[database_cross, law_consult])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[forgeries_detect, risk_assessment])
+loop = OperatorPOWL(operator=Operator.LOOP, children=[three_d_scanning, wear_analysis])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[certification, document_prep, client_brief, secure_storage])
+
+root = StrictPartialOrder(nodes=[provenance_check, material_test, parallel, xor1, xor2, loop, xor3])
+root.order.add_edge(provenance_check, material_test)
+root.order.add_edge(material_test, parallel)
+root.order.add_edge(parallel, xor1)
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor2, loop)
+root.order.add_edge(loop, xor3)
+root.order.add_edge(xor3, final_approval)

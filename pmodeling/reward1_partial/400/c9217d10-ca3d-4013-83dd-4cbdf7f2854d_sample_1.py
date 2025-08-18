@@ -1,0 +1,37 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+climate_study = Transition(label='Climate Study')
+design_layout = Transition(label='Design Layout')
+system_install = Transition(label='System Install')
+crop_select = Transition(label='Crop Select')
+nutrient_plan = Transition(label='Nutrient Plan')
+sensor_setup = Transition(label='Sensor Setup')
+automation_test = Transition(label='Automation Test')
+staff_train = Transition(label='Staff Train')
+compliance_check = Transition(label='Compliance Check')
+marketing_sync = Transition(label='Marketing Sync')
+data_monitor = Transition(label='Data Monitor')
+yield_analyze = Transition(label='Yield Analyze')
+supply_chain = Transition(label='Supply Chain')
+customer_engage = Transition(label='Customer Engage')
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[site_survey, climate_study])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[design_layout, system_install])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[crop_select, nutrient_plan])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[sensor_setup, automation_test])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[staff_train, compliance_check])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[marketing_sync, data_monitor])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[yield_analyze, supply_chain])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[customer_engage, None])
+
+root = StrictPartialOrder(nodes=[xor1, xor2, xor3, xor4, xor5, xor6, xor7, xor8])
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor8)

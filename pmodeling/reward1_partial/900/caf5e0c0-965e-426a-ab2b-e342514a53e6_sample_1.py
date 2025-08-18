@@ -1,0 +1,45 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+site_survey = Transition(label='Site Survey')
+system_design = Transition(label='System Design')
+climate_sim = Transition(label='Climate Sim')
+seed_select = Transition(label='Seed Select')
+module_setup = Transition(label='Module Setup')
+nutrient_mix = Transition(label='Nutrient Mix')
+water_cycle = Transition(label='Water Cycle')
+energy_link = Transition(label='Energy Link')
+sensor_install = Transition(label='Sensor Install')
+pest_detect = Transition(label='Pest Detect')
+growth_scan = Transition(label='Growth Scan')
+data_sync = Transition(label='Data Sync')
+community_meet = Transition(label='Community Meet')
+reg_compliance = Transition(label='Reg Compliance')
+system_test = Transition(label='System Test')
+maintenance_plan = Transition(label='Maintenance Plan')
+
+# Define the control flow structure
+xor = OperatorPOWL(operator=Operator.XOR, children=[reg_compliance, system_test])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[data_sync, community_meet])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[maintenance_plan, system_test])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[pest_detect, data_sync])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[water_cycle, nutrient_mix])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[energy_link, sensor_install])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[module_setup, system_design])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[climate_sim, seed_select])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[site_survey, system_design])
+xor10 = OperatorPOWL(operator=Operator.XOR, children=[site_survey, climate_sim])
+
+root = StrictPartialOrder(nodes=[site_survey, xor9, xor8, xor7, xor6, xor5, xor4, xor3, xor2, xor, reg_compliance])
+root.order.add_edge(site_survey, xor9)
+root.order.add_edge(xor9, xor8)
+root.order.add_edge(xor8, xor7)
+root.order.add_edge(xor7, xor6)
+root.order.add_edge(xor6, xor5)
+root.order.add_edge(xor5, xor4)
+root.order.add_edge(xor4, xor3)
+root.order.add_edge(xor3, xor2)
+root.order.add_edge(xor2, xor)
+root.order.add_edge(xor, reg_compliance)

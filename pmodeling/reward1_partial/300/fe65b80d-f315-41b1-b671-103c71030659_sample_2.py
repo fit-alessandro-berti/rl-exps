@@ -1,0 +1,42 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities as Transition objects
+A = Transition(label='Ingredient Sourcing')
+B = Transition(label='Quality Testing')
+C = Transition(label='Scent Blending')
+D = Transition(label='Micro Batch')
+E = Transition(label='Sensory Panel')
+F = Transition(label='Formula Adjust')
+G = Transition(label='Safety Review')
+H = Transition(label='Sustainability Check')
+I = Transition(label='Packaging Design')
+J = Transition(label='Prototype Creation')
+K = Transition(label='Client Feedback')
+L = Transition(label='Label Approval')
+M = Transition(label='Final Production')
+N = Transition(label='Marketing Plan')
+O = Transition(label='Distribution Prep')
+P = Transition(label='Sales Launch')
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P])
+
+# Define the dependencies between the activities
+root.order.add_edge(A, B)
+root.order.add_edge(B, C)
+root.order.add_edge(C, D)
+root.order.add_edge(D, E)
+root.order.add_edge(E, F)
+root.order.add_edge(F, G)
+root.order.add_edge(G, H)
+root.order.add_edge(H, I)
+root.order.add_edge(I, J)
+root.order.add_edge(J, K)
+root.order.add_edge(K, L)
+root.order.add_edge(L, M)
+root.order.add_edge(M, N)
+root.order.add_edge(N, O)
+root.order.add_edge(O, P)
+
+print(root)

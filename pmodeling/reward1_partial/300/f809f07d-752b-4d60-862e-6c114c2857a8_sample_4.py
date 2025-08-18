@@ -1,0 +1,55 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL model
+provenance_check = Transition(label='Provenance Check')
+material_test = Transition(label='Material Test')
+archive_search = Transition(label='Archive Search')
+expert_review = Transition(label='Expert Review')
+three_d_scanning = Transition(label='3D Scanning')
+wear_analysis = Transition(label='Wear Analysis')
+database_cross = Transition(label='Database Cross')
+law_consult = Transition(label='Law Consult')
+forgery_detect = Transition(label='Forgery Detect')
+certification = Transition(label='Certification')
+document_prep = Transition(label='Document Prep')
+client_brief = Transition(label='Client Brief')
+secure_storage = Transition(label='Secure Storage')
+risk_assessment = Transition(label='Risk Assessment')
+final_approval = Transition(label='Final Approval')
+
+skip = SilentTransition()
+
+# Define the partial order
+provenance_check_to_material_test = OperatorPOWL(operator=Operator.LOOP, children=[provenance_check, material_test])
+material_test_to_archive_search = OperatorPOWL(operator=Operator.LOOP, children=[material_test, archive_search])
+archive_search_to_expert_review = OperatorPOWL(operator=Operator.LOOP, children=[archive_search, expert_review])
+expert_review_to_three_d_scanning = OperatorPOWL(operator=Operator.LOOP, children=[expert_review, three_d_scanning])
+three_d_scanning_to_wear_analysis = OperatorPOWL(operator=Operator.LOOP, children=[three_d_scanning, wear_analysis])
+wear_analysis_to_database_cross = OperatorPOWL(operator=Operator.LOOP, children=[wear_analysis, database_cross])
+database_cross_to_law_consult = OperatorPOWL(operator=Operator.LOOP, children=[database_cross, law_consult])
+law_consult_to_forgery_detect = OperatorPOWL(operator=Operator.LOOP, children=[law_consult, forgery_detect])
+forgery_detect_to_certification = OperatorPOWL(operator=Operator.LOOP, children=[forgery_detect, certification])
+certification_to_document_prep = OperatorPOWL(operator=Operator.LOOP, children=[certification, document_prep])
+document_prep_to_client_brief = OperatorPOWL(operator=Operator.LOOP, children=[document_prep, client_brief])
+client_brief_to_secure_storage = OperatorPOWL(operator=Operator.LOOP, children=[client_brief, secure_storage])
+secure_storage_to_risk_assessment = OperatorPOWL(operator=Operator.LOOP, children=[secure_storage, risk_assessment])
+risk_assessment_to_final_approval = OperatorPOWL(operator=Operator.LOOP, children=[risk_assessment, final_approval])
+
+root = StrictPartialOrder(nodes=[provenance_check_to_material_test, material_test_to_archive_search, archive_search_to_expert_review, expert_review_to_three_d_scanning, three_d_scanning_to_wear_analysis, wear_analysis_to_database_cross, database_cross_to_law_consult, law_consult_to_forgery_detect, forgery_detect_to_certification, certification_to_document_prep, document_prep_to_client_brief, client_brief_to_secure_storage, secure_storage_to_risk_assessment, risk_assessment_to_final_approval])
+root.order.add_edge(provenance_check_to_material_test, material_test_to_archive_search)
+root.order.add_edge(material_test_to_archive_search, archive_search_to_expert_review)
+root.order.add_edge(archive_search_to_expert_review, expert_review_to_three_d_scanning)
+root.order.add_edge(expert_review_to_three_d_scanning, three_d_scanning_to_wear_analysis)
+root.order.add_edge(three_d_scanning_to_wear_analysis, wear_analysis_to_database_cross)
+root.order.add_edge(wear_analysis_to_database_cross, database_cross_to_law_consult)
+root.order.add_edge(database_cross_to_law_consult, law_consult_to_forgery_detect)
+root.order.add_edge(law_consult_to_forgery_detect, forgery_detect_to_certification)
+root.order.add_edge(forgery_detect_to_certification, certification_to_document_prep)
+root.order.add_edge(certification_to_document_prep, document_prep_to_client_brief)
+root.order.add_edge(document_prep_to_client_brief, client_brief_to_secure_storage)
+root.order.add_edge(client_brief_to_secure_storage, secure_storage_to_risk_assessment)
+root.order.add_edge(secure_storage_to_risk_assessment, risk_assessment_to_final_approval)
+
+# Print the root of the POWL model
+print(root)

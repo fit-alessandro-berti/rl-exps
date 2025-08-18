@@ -1,0 +1,37 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+system_design = Transition(label='System Design')
+climate_sim = Transition(label='Climate Sim')
+seed_select = Transition(label='Seed Select')
+module_setup = Transition(label='Module Setup')
+nutrient_mix = Transition(label='Nutrient Mix')
+water_cycle = Transition(label='Water Cycle')
+energy_link = Transition(label='Energy Link')
+sensor_install = Transition(label='Sensor Install')
+pest_detect = Transition(label='Pest Detect')
+growth_scan = Transition(label='Growth Scan')
+data_sync = Transition(label='Data Sync')
+community_meet = Transition(label='Community Meet')
+reg_compliance = Transition(label='Reg Compliance')
+system_test = Transition(label='System Test')
+maintenance_plan = Transition(label='Maintenance Plan')
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[climate_sim, seed_select])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[module_setup, nutrient_mix])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[water_cycle, energy_link])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[sensor_install, pest_detect])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[growth_scan, data_sync])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[community_meet, reg_compliance])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[system_test, maintenance_plan])
+
+root = StrictPartialOrder(nodes=[site_survey, xor1, xor2, xor3, xor4, xor5, xor6, xor7])
+root.order.add_edge(site_survey, xor1)
+root.order.add_edge(site_survey, xor2)
+root.order.add_edge(site_survey, xor3)
+root.order.add_edge(site_survey, xor4)
+root.order.add_edge(site_survey, xor5)
+root.order.add_edge(site_survey, xor6)
+root.order.add_edge(site_survey, xor7)

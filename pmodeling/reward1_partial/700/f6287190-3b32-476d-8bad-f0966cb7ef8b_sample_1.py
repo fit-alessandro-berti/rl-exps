@@ -1,0 +1,46 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL model for the process
+seed_select = Transition(label='Seed Select')
+climate_map = Transition(label='Climate Map')
+iot_setup = Transition(label='IoT Setup')
+nutrient_mix = Transition(label='Nutrient Mix')
+sensor_check = Transition(label='Sensor Check')
+light_adjust = Transition(label='Light Adjust')
+water_cycle = Transition(label='Water Cycle')
+pest_scan = Transition(label='Pest Scan')
+growth_audit = Transition(label='Growth Audit')
+harvest_plan = Transition(label='Harvest Plan')
+demand_sync = Transition(label='Demand Sync')
+quality_grade = Transition(label='Quality Grade')
+pack_items = Transition(label='Pack Items')
+waste_compost = Transition(label='Waste Compost')
+data_review = Transition(label='Data Review')
+cycle_reset = Transition(label='Cycle Reset')
+
+# Define the process flow
+iot_setup_node = OperatorPOWL(operator=Operator.LOOP, children=[climate_map, iot_setup])
+nutrient_mix_node = OperatorPOWL(operator=Operator.LOOP, children=[nutrient_mix, sensor_check])
+light_adjust_node = OperatorPOWL(operator=Operator.LOOP, children=[light_adjust, water_cycle])
+pest_scan_node = OperatorPOWL(operator=Operator.LOOP, children=[pest_scan, growth_audit])
+harvest_plan_node = OperatorPOWL(operator=Operator.LOOP, children=[harvest_plan, demand_sync])
+quality_grade_node = OperatorPOWL(operator=Operator.LOOP, children=[quality_grade, pack_items])
+waste_compost_node = OperatorPOWL(operator=Operator.LOOP, children=[waste_compost, data_review])
+cycle_reset_node = OperatorPOWL(operator=Operator.LOOP, children=[cycle_reset, seed_select])
+
+# Connect the nodes in the process flow
+root = StrictPartialOrder(nodes=[iot_setup_node, nutrient_mix_node, light_adjust_node, pest_scan_node, harvest_plan_node, quality_grade_node, waste_compost_node, cycle_reset_node])
+root.order.add_edge(iot_setup_node, nutrient_mix_node)
+root.order.add_edge(nutrient_mix_node, sensor_check_node)
+root.order.add_edge(sensor_check_node, water_cycle_node)
+root.order.add_edge(water_cycle_node, pest_scan_node)
+root.order.add_edge(pest_scan_node, growth_audit_node)
+root.order.add_edge(growth_audit_node, harvest_plan_node)
+root.order.add_edge(harvest_plan_node, demand_sync_node)
+root.order.add_edge(demand_sync_node, quality_grade_node)
+root.order.add_edge(quality_grade_node, pack_items_node)
+root.order.add_edge(pack_items_node, waste_compost_node)
+root.order.add_edge(waste_compost_node, data_review_node)
+root.order.add_edge(data_review_node, cycle_reset_node)
+root.order.add_edge(cycle_reset_node, seed_select_node)

@@ -1,0 +1,42 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the transitions for each activity
+provenance_check = Transition(label='Provenance Check')
+material_scan = Transition(label='Material Scan')
+radiocarbon_test = Transition(label='Radiocarbon Test')
+style_compare = Transition(label='Style Compare')
+database_query = Transition(label='Database Query')
+blockchain_prep = Transition(label='Blockchain Prep')
+legal_review = Transition(label='Legal Review')
+ownership_audit = Transition(label='Ownership Audit')
+conservation_plan = Transition(label='Conservation Plan')
+expert_panel = Transition(label='Expert Panel')
+report_draft = Transition(label='Report Draft')
+client_review = Transition(label='Client Review')
+authority_submit = Transition(label='Authority Submit')
+exhibit_setup = Transition(label='Exhibit Setup')
+final_approval = Transition(label='Final Approval')
+
+# Define the operators for the POWL model
+xor = OperatorPOWL(operator=Operator.XOR, children=[provenance_check, material_scan])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[radiocarbon_test, style_compare])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[database_query, blockchain_prep])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[legal_review, ownership_audit])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[conservation_plan, expert_panel])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[report_draft, client_review])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[authority_submit, exhibit_setup])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[final_approval, authority_submit])
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[xor, xor2, xor3, xor4, xor5, xor6, xor7, xor8])
+root.order.add_edge(xor, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor8)
+
+# Return the root of the POWL model
+return root

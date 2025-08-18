@@ -1,0 +1,56 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+artifact_intake = Transition(label='Artifact Intake')
+condition_check = Transition(label='Condition Check')
+provenance_research = Transition(label='Provenance Research')
+scientific_testing = Transition(label='Scientific Testing')
+radiocarbon_dating = Transition(label='Radiocarbon Dating')
+spectroscopy_scan = Transition(label='Spectroscopy Scan')
+legal_clearance = Transition(label='Legal Clearance')
+heritage_compliance = Transition(label='Heritage Compliance')
+digital_archiving = Transition(label='Digital Archiving')
+expert_review = Transition(label='Expert Review')
+committee_vote = Transition(label='Committee Vote')
+acquisition_approval = Transition(label='Acquisition Approval')
+conservation_plan = Transition(label='Conservation Plan')
+storage_setup = Transition(label='Storage Setup')
+stakeholder_update = Transition(label='Stakeholder Update')
+
+# Define the process model
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[provenance_research, scientific_testing])
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[legal_clearance, heritage_compliance])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[digital_archiving, expert_review])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[committee_vote, acquisition_approval])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[conservation_plan, storage_setup])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[stakeholder_update])
+
+# Create the root node
+root = StrictPartialOrder(nodes=[artifact_intake, condition_check, loop1, xor1, xor2, xor3, xor4, xor5])
+root.order.add_edge(artifact_intake, condition_check)
+root.order.add_edge(condition_check, loop1)
+root.order.add_edge(loop1, provenance_research)
+root.order.add_edge(provenance_research, scientific_testing)
+root.order.add_edge(scientific_testing, loop1)
+root.order.add_edge(loop1, legal_clearance)
+root.order.add_edge(legal_clearance, xor1)
+root.order.add_edge(xor1, heritage_compliance)
+root.order.add_edge(heritage_compliance, xor1)
+root.order.add_edge(xor1, digital_archiving)
+root.order.add_edge(digital_archiving, xor2)
+root.order.add_edge(xor2, expert_review)
+root.order.add_edge(expert_review, xor2)
+root.order.add_edge(xor2, committee_vote)
+root.order.add_edge(committee_vote, xor3)
+root.order.add_edge(xor3, acquisition_approval)
+root.order.add_edge(acquisition_approval, xor3)
+root.order.add_edge(xor3, conservation_plan)
+root.order.add_edge(conservation_plan, xor4)
+root.order.add_edge(xor4, storage_setup)
+root.order.add_edge(storage_setup, xor4)
+root.order.add_edge(xor4, stakeholder_update)
+root.order.add_edge(stakeholder_update, xor5)
+
+print(root)

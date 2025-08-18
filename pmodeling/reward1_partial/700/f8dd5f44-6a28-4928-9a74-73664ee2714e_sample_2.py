@@ -1,0 +1,60 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define each activity as a Transition
+seed_selection = Transition(label='Seed Selection')
+nutrient_mix = Transition(label='Nutrient Mix')
+environment_setup = Transition(label='Environment Setup')
+sensor_deployment = Transition(label='Sensor Deployment')
+growth_monitoring = Transition(label='Growth Monitoring')
+pest_detection = Transition(label='Pest Detection')
+automated_harvest = Transition(label='Automated Harvest')
+quality_check = Transition(label='Quality Check')
+packaging_prep = Transition(label='Packaging Prep')
+biodegradable_pack = Transition(label='Biodegradable Pack')
+inventory_sync = Transition(label='Inventory Sync')
+demand_forecast = Transition(label='Demand Forecast')
+micro_fulfillment = Transition(label='Micro Fulfillment')
+local_dispatch = Transition(label='Local Dispatch')
+consumer_feedback = Transition(label='Consumer Feedback')
+crop_adjustment = Transition(label='Crop Adjustment')
+
+# Define the partial order
+root = StrictPartialOrder()
+
+# Add nodes to the root
+root.add_node(seed_selection)
+root.add_node(nutrient_mix)
+root.add_node(environment_setup)
+root.add_node(sensor_deployment)
+root.add_node(growth_monitoring)
+root.add_node(pest_detection)
+root.add_node(automated_harvest)
+root.add_node(quality_check)
+root.add_node(packaging_prep)
+root.add_node(biodegradable_pack)
+root.add_node(inventory_sync)
+root.add_node(demand_forecast)
+root.add_node(micro_fulfillment)
+root.add_node(local_dispatch)
+root.add_node(consumer_feedback)
+root.add_node(crop_adjustment)
+
+# Define the dependencies between nodes
+root.add_edge(seed_selection, nutrient_mix)
+root.add_edge(nutrient_mix, environment_setup)
+root.add_edge(environment_setup, sensor_deployment)
+root.add_edge(sensor_deployment, growth_monitoring)
+root.add_edge(growth_monitoring, pest_detection)
+root.add_edge(pest_detection, automated_harvest)
+root.add_edge(automated_harvest, quality_check)
+root.add_edge(quality_check, packaging_prep)
+root.add_edge(packaging_prep, biodegradable_pack)
+root.add_edge(biodegradable_pack, inventory_sync)
+root.add_edge(inventory_sync, demand_forecast)
+root.add_edge(demand_forecast, micro_fulfillment)
+root.add_edge(micro_fulfillment, local_dispatch)
+root.add_edge(local_dispatch, consumer_feedback)
+root.add_edge(consumer_feedback, crop_adjustment)
+
+print(root)

@@ -1,0 +1,50 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the transitions (activities) with their labels
+seed_selection = Transition(label='Seed Selection')
+nutrient_mix = Transition(label='Nutrient Mix')
+environment_setup = Transition(label='Environment Setup')
+pest_scan = Transition(label='Pest Scan')
+light_control = Transition(label='Light Control')
+growth_monitor = Transition(label='Growth Monitor')
+water_cycle = Transition(label='Water Cycle')
+air_quality = Transition(label='Air Quality')
+robotic_harvest = Transition(label='Robotic Harvest')
+quality_check = Transition(label='Quality Check')
+data_logging = Transition(label='Data Logging')
+packaging = Transition(label='Packaging')
+waste_sort = Transition(label='Waste Sort')
+energy_audit = Transition(label='Energy Audit')
+retail_sync = Transition(label='Retail Sync')
+
+# Define the POWL model
+loop_seed_selection = OperatorPOWL(operator=Operator.LOOP, children=[seed_selection, nutrient_mix, environment_setup, pest_scan, light_control, growth_monitor, water_cycle, air_quality])
+xor_environment_setup = OperatorPOWL(operator=Operator.XOR, children=[environment_setup, water_cycle, air_quality])
+xor_light_control = OperatorPOWL(operator=Operator.XOR, children=[light_control, growth_monitor])
+xor_growth_monitor = OperatorPOWL(operator=Operator.XOR, children=[growth_monitor, water_cycle, air_quality])
+xor_water_cycle = OperatorPOWL(operator=Operator.XOR, children=[water_cycle, air_quality])
+xor_air_quality = OperatorPOWL(operator=Operator.XOR, children=[air_quality, robotic_harvest])
+xor_robotic_harvest = OperatorPOWL(operator=Operator.XOR, children=[robotic_harvest, quality_check])
+xor_quality_check = OperatorPOWL(operator=Operator.XOR, children=[quality_check, data_logging])
+xor_data_logging = OperatorPOWL(operator=Operator.XOR, children=[data_logging, packaging])
+xor_packaging = OperatorPOWL(operator=Operator.XOR, children=[packaging, waste_sort])
+xor_waste_sort = OperatorPOWL(operator=Operator.XOR, children=[waste_sort, energy_audit])
+xor_energy_audit = OperatorPOWL(operator=Operator.XOR, children=[energy_audit, retail_sync])
+
+root = StrictPartialOrder(nodes=[loop_seed_selection, xor_environment_setup, xor_light_control, xor_growth_monitor, xor_water_cycle, xor_air_quality, xor_robotic_harvest, xor_quality_check, xor_data_logging, xor_packaging, xor_waste_sort, xor_energy_audit, retail_sync])
+root.order.add_edge(loop_seed_selection, xor_environment_setup)
+root.order.add_edge(xor_environment_setup, xor_light_control)
+root.order.add_edge(xor_light_control, xor_growth_monitor)
+root.order.add_edge(xor_growth_monitor, xor_water_cycle)
+root.order.add_edge(xor_water_cycle, xor_air_quality)
+root.order.add_edge(xor_air_quality, xor_robotic_harvest)
+root.order.add_edge(xor_robotic_harvest, xor_quality_check)
+root.order.add_edge(xor_quality_check, xor_data_logging)
+root.order.add_edge(xor_data_logging, xor_packaging)
+root.order.add_edge(xor_packaging, xor_waste_sort)
+root.order.add_edge(xor_waste_sort, xor_energy_audit)
+root.order.add_edge(xor_energy_audit, retail_sync)
+
+print(root)

@@ -1,0 +1,72 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions for each activity
+SiteAssess = Transition(label='Site Assess')
+StructureCheck = Transition(label='Structure Check')
+SoilTest = Transition(label='Soil Test')
+ClimateEval = Transition(label='Climate Eval')
+PermitObtain = Transition(label='Permit Obtain')
+DesignLayout = Transition(label='Design Layout')
+SeedSourcing = Transition(label='Seed Sourcing')
+IrrigationSet = Transition(label='Irrigation Set')
+NutrientMix = Transition(label='Nutrient Mix')
+PestControl = Transition(label='Pest Control')
+SensorInstall = Transition(label='Sensor Install')
+StaffTrain = Transition(label='Staff Train')
+CropPlanting = Transition(label='Crop Planting')
+YieldMonitor = Transition(label='Yield Monitor')
+MarketSetup = Transition(label='Market Setup')
+Maintenance = Transition(label='Maintenance')
+WasteManage = Transition(label='Waste Manage')
+
+# Define the structure of the POWL model
+root = StrictPartialOrder(nodes=[
+    SiteAssess,
+    StructureCheck,
+    SoilTest,
+    ClimateEval,
+    PermitObtain,
+    DesignLayout,
+    SeedSourcing,
+    IrrigationSet,
+    NutrientMix,
+    PestControl,
+    SensorInstall,
+    StaffTrain,
+    CropPlanting,
+    YieldMonitor,
+    MarketSetup,
+    Maintenance,
+    WasteManage
+])
+
+# Define dependencies between activities (POWL model)
+root.order.add_edge(SiteAssess, StructureCheck)
+root.order.add_edge(SiteAssess, SoilTest)
+root.order.add_edge(SiteAssess, ClimateEval)
+root.order.add_edge(SiteAssess, PermitObtain)
+root.order.add_edge(StructureCheck, DesignLayout)
+root.order.add_edge(SoilTest, DesignLayout)
+root.order.add_edge(ClimateEval, DesignLayout)
+root.order.add_edge(PermitObtain, DesignLayout)
+root.order.add_edge(DesignLayout, SeedSourcing)
+root.order.add_edge(DesignLayout, IrrigationSet)
+root.order.add_edge(DesignLayout, NutrientMix)
+root.order.add_edge(DesignLayout, PestControl)
+root.order.add_edge(DesignLayout, SensorInstall)
+root.order.add_edge(DesignLayout, StaffTrain)
+root.order.add_edge(SeedSourcing, CropPlanting)
+root.order.add_edge(IrrigationSet, CropPlanting)
+root.order.add_edge(NutrientMix, CropPlanting)
+root.order.add_edge(PestControl, CropPlanting)
+root.order.add_edge(SensorInstall, CropPlanting)
+root.order.add_edge(StaffTrain, CropPlanting)
+root.order.add_edge(CropPlanting, YieldMonitor)
+root.order.add_edge(CropPlanting, MarketSetup)
+root.order.add_edge(CropPlanting, Maintenance)
+root.order.add_edge(CropPlanting, WasteManage)
+
+# Print the root POWL model
+print(root)

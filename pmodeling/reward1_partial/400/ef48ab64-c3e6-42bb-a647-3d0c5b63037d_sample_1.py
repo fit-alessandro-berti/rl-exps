@@ -1,0 +1,41 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_select = Transition(label='Site Select')
+env_assess = Transition(label='Env Assess')
+design_modules = Transition(label='Design Modules')
+hydroponics_setup = Transition(label='Hydroponics Setup')
+software_dev = Transition(label='Software Dev')
+seed_choose = Transition(label='Seed Choose')
+led_install = Transition(label='LED Install')
+train_staff = Transition(label='Train Staff')
+compliance_check = Transition(label='Compliance Check')
+engage_community = Transition(label='Engage Community')
+plant_crops = Transition(label='Plant Crops')
+monitor_growth = Transition(label='Monitor Growth')
+optimize_yields = Transition(label='Optimize Yields')
+waste_manage = Transition(label='Waste Manage')
+energy_audit = Transition(label='Energy Audit')
+water_recycle = Transition(label='Water Recycle')
+
+skip = SilentTransition()
+
+site_assess_choice = OperatorPOWL(operator=Operator.XOR, children=[site_select, env_assess])
+design_setup_choice = OperatorPOWL(operator=Operator.XOR, children=[design_modules, hydroponics_setup])
+software_seed_choice = OperatorPOWL(operator=Operator.XOR, children=[software_dev, seed_choose])
+led_staff_choice = OperatorPOWL(operator=Operator.XOR, children=[led_install, train_staff])
+compliance_community_choice = OperatorPOWL(operator=Operator.XOR, children=[compliance_check, engage_community])
+plant_growth_choice = OperatorPOWL(operator=Operator.XOR, children=[plant_crops, monitor_growth])
+yields_waste_choice = OperatorPOWL(operator=Operator.XOR, children=[optimize_yields, waste_manage])
+energy_water_choice = OperatorPOWL(operator=Operator.XOR, children=[energy_audit, water_recycle])
+
+root = StrictPartialOrder(nodes=[site_assess_choice, design_setup_choice, software_seed_choice, led_staff_choice, compliance_community_choice, plant_growth_choice, yields_waste_choice, energy_water_choice])
+root.order.add_edge(site_assess_choice, design_setup_choice)
+root.order.add_edge(site_assess_choice, software_seed_choice)
+root.order.add_edge(design_setup_choice, led_staff_choice)
+root.order.add_edge(software_seed_choice, compliance_community_choice)
+root.order.add_edge(led_staff_choice, plant_growth_choice)
+root.order.add_edge(compliance_community_choice, yields_waste_choice)
+root.order.add_edge(plant_growth_choice, energy_water_choice)
+root.order.add_edge(yields_waste_choice, energy_water_choice)

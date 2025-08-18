@@ -1,0 +1,78 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions for each activity
+data_capture = Transition(label='Data Capture')
+quantum_calc = Transition(label='Quantum Calc')
+demand_forecast = Transition(label='Demand Forecast')
+inventory_check = Transition(label='Inventory Check')
+route_update = Transition(label='Route Update')
+shipment_plan = Transition(label='Shipment Plan')
+supplier_sync = Transition(label='Supplier Sync')
+contract_mod = Transition(label='Contract Mod')
+blockchain_verify = Transition(label='Blockchain Verify')
+risk_assess = Transition(label='Risk Assess')
+scenario_sim = Transition(label='Scenario Sim')
+feedback_loop = Transition(label='Feedback Loop')
+ai_adjust = Transition(label='AI Adjust')
+waste_audit = Transition(label='Waste Audit')
+report_generate = Transition(label='Report Generate')
+stakeholder_alert = Transition(label='Stakeholder Alert')
+compliance_review = Transition(label='Compliance Review')
+
+# Define silent transitions
+skip = SilentTransition()
+
+# Define partial order nodes
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[inventory_check, skip])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[route_update, skip])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[shipment_plan, skip])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[supplier_sync, skip])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[contract_mod, skip])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[blockchain_verify, skip])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[risk_assess, skip])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[scenario_sim, skip])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[feedback_loop, skip])
+xor10 = OperatorPOWL(operator=Operator.XOR, children=[ai_adjust, skip])
+xor11 = OperatorPOWL(operator=Operator.XOR, children=[waste_audit, skip])
+xor12 = OperatorPOWL(operator=Operator.XOR, children=[report_generate, skip])
+xor13 = OperatorPOWL(operator=Operator.XOR, children=[stakeholder_alert, skip])
+xor14 = OperatorPOWL(operator=Operator.XOR, children=[compliance_review, skip])
+
+# Define loop nodes
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[data_capture, quantum_calc, demand_forecast])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[xor1, xor2, xor3, xor4, xor5, xor6, xor7, xor8, xor9, xor10, xor11, xor12, xor13, xor14])
+
+# Define root partial order
+root = StrictPartialOrder(nodes=[loop1, loop2])
+root.order.add_edge(loop1, xor1)
+root.order.add_edge(loop1, xor2)
+root.order.add_edge(loop1, xor3)
+root.order.add_edge(loop1, xor4)
+root.order.add_edge(loop1, xor5)
+root.order.add_edge(loop1, xor6)
+root.order.add_edge(loop1, xor7)
+root.order.add_edge(loop1, xor8)
+root.order.add_edge(loop1, xor9)
+root.order.add_edge(loop1, xor10)
+root.order.add_edge(loop1, xor11)
+root.order.add_edge(loop1, xor12)
+root.order.add_edge(loop1, xor13)
+root.order.add_edge(loop1, xor14)
+root.order.add_edge(loop2, xor1)
+root.order.add_edge(loop2, xor2)
+root.order.add_edge(loop2, xor3)
+root.order.add_edge(loop2, xor4)
+root.order.add_edge(loop2, xor5)
+root.order.add_edge(loop2, xor6)
+root.order.add_edge(loop2, xor7)
+root.order.add_edge(loop2, xor8)
+root.order.add_edge(loop2, xor9)
+root.order.add_edge(loop2, xor10)
+root.order.add_edge(loop2, xor11)
+root.order.add_edge(loop2, xor12)
+root.order.add_edge(loop2, xor13)
+root.order.add_edge(loop2, xor14)
+
+print(root)

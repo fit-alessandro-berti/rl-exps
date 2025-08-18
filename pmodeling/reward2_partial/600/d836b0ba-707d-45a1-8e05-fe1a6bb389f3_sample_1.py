@@ -1,0 +1,46 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities as transitions
+SiteSelect = Transition(label='Site Select')
+DesignLayout = Transition(label='Design Layout')
+SensorIntegrate = Transition(label='Sensor Integrate')
+CropChoose = Transition(label='Crop Choose')
+SoilPrepare = Transition(label='Soil Prepare')
+IrrigationSetup = Transition(label='Irrigation Setup')
+PestControl = Transition(label='Pest Control')
+LightingInstall = Transition(label='Lighting Install')
+StaffTrain = Transition(label='Staff Train')
+ComplianceCheck = Transition(label='Compliance Check')
+MarketAnalyze = Transition(label='Market Analyze')
+PackageDesign = Transition(label='Package Design')
+LogisticsPlan = Transition(label='Logistics Plan')
+DataAnalyze = Transition(label='Data Analyze')
+FeedbackLoop = Transition(label='Feedback Loop')
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[
+    SiteSelect, DesignLayout, SensorIntegrate, CropChoose, SoilPrepare,
+    IrrigationSetup, PestControl, LightingInstall, StaffTrain, ComplianceCheck,
+    MarketAnalyze, PackageDesign, LogisticsPlan, DataAnalyze, FeedbackLoop
+])
+
+# Define the dependencies
+root.order.add_edge(SiteSelect, DesignLayout)
+root.order.add_edge(DesignLayout, SensorIntegrate)
+root.order.add_edge(SensorIntegrate, CropChoose)
+root.order.add_edge(CropChoose, SoilPrepare)
+root.order.add_edge(SoilPrepare, IrrigationSetup)
+root.order.add_edge(IrrigationSetup, PestControl)
+root.order.add_edge(PestControl, LightingInstall)
+root.order.add_edge(LightingInstall, StaffTrain)
+root.order.add_edge(StaffTrain, ComplianceCheck)
+root.order.add_edge(ComplianceCheck, MarketAnalyze)
+root.order.add_edge(MarketAnalyze, PackageDesign)
+root.order.add_edge(PackageDesign, LogisticsPlan)
+root.order.add_edge(LogisticsPlan, DataAnalyze)
+root.order.add_edge(DataAnalyze, FeedbackLoop)
+
+# Print the root
+print(root)

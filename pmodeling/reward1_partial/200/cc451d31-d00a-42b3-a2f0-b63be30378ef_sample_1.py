@@ -1,0 +1,30 @@
+root = StrictPartialOrder(nodes=[
+    Transition(label='Idea Solicitation'),
+    Transition(label='AI Filtering'),
+    Transition(label='Community Voting'),
+    Transition(label='Expert Review'),
+    Transition(label='Prototype Build'),
+    Transition(label='User Testing'),
+    Transition(label='Iterate Feedback'),
+    Transition(label='Risk Assess'),
+    Transition(label='Compliance Check'),
+    Transition(label='Pilot Launch'),
+    Transition(label='Performance Track'),
+    Transition(label='Impact Analyze'),
+    Transition(label='Insight Gather'),
+    Transition(label='Cycle Adjust'),
+    Transition(label='Final Report')
+])
+root.order.add_edge(root.nodes[0], root.nodes[1])
+root.order.add_edge(root.nodes[1], root.nodes[2])
+root.order.add_edge(root.nodes[2], root.nodes[3])
+root.order.add_edge(root.nodes[3], root.nodes[4])
+root.order.add_edge(root.nodes[4], root.nodes[5])
+root.order.add_edge(root.nodes[5], root.nodes[6])
+root.order.add_edge(root.nodes[6], root.nodes[7])
+root.order.add_edge(root.nodes[7], root.nodes[8])
+root.order.add_edge(root.nodes[8], root.nodes[9])
+root.order.add_edge(root.nodes[9], root.nodes[10])
+root.order.add_edge(root.nodes[10], root.nodes[11])
+root.order.add_edge(root.nodes[11], root.nodes[12])
+root.order.add_edge(root.nodes[12], root.nodes[13])

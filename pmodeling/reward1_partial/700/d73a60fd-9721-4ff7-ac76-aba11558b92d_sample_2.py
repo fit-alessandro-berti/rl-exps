@@ -1,0 +1,41 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+structural_audit = Transition(label='Structural Audit')
+system_design = Transition(label='System Design')
+permit_filing = Transition(label='Permit Filing')
+foundation_prep = Transition(label='Foundation Prep')
+frame_build = Transition(label='Frame Build')
+irrigation_setup = Transition(label='Irrigation Setup')
+lighting_install = Transition(label='Lighting Install')
+climate_control = Transition(label='Climate Control')
+nutrient_mix = Transition(label='Nutrient Mix')
+crop_planting = Transition(label='Crop Planting')
+pest_scouting = Transition(label='Pest Scouting')
+data_monitoring = Transition(label='Data Monitoring')
+waste_sorting = Transition(label='Waste Sorting')
+energy_audit = Transition(label='Energy Audit')
+community_meet = Transition(label='Community Meet')
+yield_analysis = Transition(label='Yield Analysis')
+
+skip = SilentTransition()
+
+site_audit = OperatorPOWL(operator=Operator.XOR, children=[site_survey, structural_audit])
+system_design_permits = OperatorPOWL(operator=Operator.XOR, children=[system_design, permit_filing])
+foundation_prep_frame = OperatorPOWL(operator=Operator.XOR, children=[foundation_prep, frame_build])
+irrigation_lighting = OperatorPOWL(operator=Operator.XOR, children=[irrigation_setup, lighting_install])
+climate_control_nutrient = OperatorPOWL(operator=Operator.XOR, children=[climate_control, nutrient_mix])
+pest_scouting_data = OperatorPOWL(operator=Operator.XOR, children=[pest_scouting, data_monitoring])
+waste_sorting_energy = OperatorPOWL(operator=Operator.XOR, children=[waste_sorting, energy_audit])
+community_meet_yield = OperatorPOWL(operator=Operator.XOR, children=[community_meet, yield_analysis])
+
+root = StrictPartialOrder(nodes=[site_audit, system_design_permits, foundation_prep_frame, irrigation_lighting, climate_control_nutrient, pest_scouting_data, waste_sorting_energy, community_meet_yield])
+root.order.add_edge(site_audit, system_design_permits)
+root.order.add_edge(system_design_permits, foundation_prep_frame)
+root.order.add_edge(foundation_prep_frame, irrigation_lighting)
+root.order.add_edge(irrigation_lighting, climate_control_nutrient)
+root.order.add_edge(climate_control_nutrient, pest_scouting_data)
+root.order.add_edge(pest_scouting_data, waste_sorting_energy)
+root.order.add_edge(waste_sorting_energy, community_meet_yield)

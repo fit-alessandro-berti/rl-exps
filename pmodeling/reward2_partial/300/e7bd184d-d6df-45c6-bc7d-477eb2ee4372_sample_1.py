@@ -1,0 +1,38 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL model for the process
+Site_Analysis = Transition(label='Site Analysis')
+Structure_Check = Transition(label='Structure Check')
+Enviro_Design = Transition(label='Enviro Design')
+Hydro_Setup = Transition(label='Hydro Setup')
+Aeroponics_Add = Transition(label='Aeroponics Add')
+Lighting_Procure = Transition(label='Lighting Procure')
+Water_Recycle = Transition(label='Water Recycle')
+Rack_Install = Transition(label='Rack Install')
+Seed_Select = Transition(label='Seed Select')
+Germinate_Seeds = Transition(label='Germinate Seeds')
+Nutrient_Mix = Transition(label='Nutrient Mix')
+Staff_Train = Transition(label='Staff Train')
+Pest_Control = Transition(label='Pest Control')
+Pilot_Crop = Transition(label='Pilot Crop')
+Data_Gather = Transition(label='Data Gather')
+Yield_Optimize = Transition(label='Yield Optimize')
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[Site_Analysis, Structure_Check, Enviro_Design, Hydro_Setup, Aeroponics_Add, Lighting_Procure, Water_Recycle, Rack_Install, Seed_Select, Germinate_Seeds, Nutrient_Mix, Staff_Train, Pest_Control, Pilot_Crop, Data_Gather, Yield_Optimize])
+root.order.add_edge(Site_Analysis, Structure_Check)
+root.order.add_edge(Structure_Check, Enviro_Design)
+root.order.add_edge(Enviro_Design, Hydro_Setup)
+root.order.add_edge(Hydro_Setup, Aeroponics_Add)
+root.order.add_edge(Aeroponics_Add, Lighting_Procure)
+root.order.add_edge(Lighting_Procure, Water_Recycle)
+root.order.add_edge(Water_Recycle, Rack_Install)
+root.order.add_edge(Rack_Install, Seed_Select)
+root.order.add_edge(Seed_Select, Germinate_Seeds)
+root.order.add_edge(Germinate_Seeds, Nutrient_Mix)
+root.order.add_edge(Nutrient_Mix, Staff_Train)
+root.order.add_edge(Staff_Train, Pest_Control)
+root.order.add_edge(Pest_Control, Pilot_Crop)
+root.order.add_edge(Pilot_Crop, Data_Gather)
+root.order.add_edge(Data_Gather, Yield_Optimize)

@@ -1,0 +1,42 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define the activities
+ingredient_sourcing = Transition(label='Ingredient Sourcing')
+botanical_extraction = Transition(label='Botanical Extraction')
+initial_blending = Transition(label='Initial Blending')
+sensory_testing = Transition(label='Sensory Testing')
+chemical_analysis = Transition(label='Chemical Analysis')
+recipe_refinement = Transition(label='Recipe Refinement')
+stability_check = Transition(label='Stability Check')
+client_sampling = Transition(label='Client Sampling')
+feedback_review = Transition(label='Feedback Review')
+final_adjustment = Transition(label='Final Adjustment')
+custom_packaging = Transition(label='Custom Packaging')
+label_design = Transition(label='Label Design')
+hand_labeling = Transition(label='Hand Labeling')
+regulatory_audit = Transition(label='Regulatory Audit')
+batch_documentation = Transition(label='Batch Documentation')
+limited_release = Transition(label='Limited Release')
+market_launch = Transition(label='Market Launch')
+
+# Define the process
+ingredient_sourcing_to_botanical_extraction = OperatorPOWL(operator=Operator.AND, children=[ingredient_sourcing, botanical_extraction])
+botanical_extraction_to_initial_blending = OperatorPOWL(operator=Operator.AND, children=[botanical_extraction, initial_blending])
+initial_blending_to_sensory_testing = OperatorPOWL(operator=Operator.AND, children=[initial_blending, sensory_testing])
+sensory_testing_to_chemical_analysis = OperatorPOWL(operator=Operator.AND, children=[sensory_testing, chemical_analysis])
+chemical_analysis_to_recipe_refinement = OperatorPOWL(operator=Operator.AND, children=[chemical_analysis, recipe_refinement])
+recipe_refinement_to_stability_check = OperatorPOWL(operator=Operator.AND, children=[recipe_refinement, stability_check])
+stability_check_to_client_sampling = OperatorPOWL(operator=Operator.AND, children=[stability_check, client_sampling])
+client_sampling_to_feedback_review = OperatorPOWL(operator=Operator.AND, children=[client_sampling, feedback_review])
+feedback_review_to_final_adjustment = OperatorPOWL(operator=Operator.AND, children=[feedback_review, final_adjustment])
+final_adjustment_to_custom_packaging = OperatorPOWL(operator=Operator.AND, children=[final_adjustment, custom_packaging])
+custom_packaging_to_label_design = OperatorPOWL(operator=Operator.AND, children=[custom_packaging, label_design])
+label_design_to_hand_labeling = OperatorPOWL(operator=Operator.AND, children=[label_design, hand_labeling])
+hand_labeling_to_regulatory_audit = OperatorPOWL(operator=Operator.AND, children=[hand_labeling, regulatory_audit])
+regulatory_audit_to_batch_documentation = OperatorPOWL(operator=Operator.AND, children=[regulatory_audit, batch_documentation])
+batch_documentation_to_limited_release = OperatorPOWL(operator=Operator.AND, children=[batch_documentation, limited_release])
+limited_release_to_market_launch = OperatorPOWL(operator=Operator.AND, children=[limited_release, market_launch])
+
+root = StrictPartialOrder(nodes=[ingredient_sourcing_to_botanical_extraction, botanical_extraction_to_initial_blending, initial_blending_to_sensory_testing, sensory_testing_to_chemical_analysis, chemical_analysis_to_recipe_refinement, recipe_refinement_to_stability_check, stability_check_to_client_sampling, client_sampling_to_feedback_review, feedback_review_to_final_adjustment, final_adjustment_to_custom_packaging, custom_packaging_to_label_design, label_design_to_hand_labeling, hand_labeling_to_regulatory_audit, regulatory_audit_to_batch_documentation, batch_documentation_to_limited_release, limited_release_to_market_launch])
+
+print(root)

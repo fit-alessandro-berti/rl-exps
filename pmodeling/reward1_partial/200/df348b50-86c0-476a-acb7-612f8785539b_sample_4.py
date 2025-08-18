@@ -1,0 +1,32 @@
+root = StrictPartialOrder(nodes=[
+    Transition(label='Material Sourcing'),
+    Transition(label='Botanical Harvest'),
+    Transition(label='Extraction Phase'),
+    Transition(label='Accord Blending'),
+    Transition(label='Olfactory Testing'),
+    Transition(label='Aging Process'),
+    Transition(label='Stability Check'),
+    Transition(label='Sensory Panel'),
+    Transition(label='Label Design'),
+    Transition(label='Bottle Crafting'),
+    Transition(label='Batch Mixing'),
+    Transition(label='Quality Review'),
+    Transition(label='Packaging Final'),
+    Transition(label='Inventory Update'),
+    Transition(label='Market Launch')
+])
+root.order.add_edge(root.nodes[0], root.nodes[1])
+root.order.add_edge(root.nodes[1], root.nodes[2])
+root.order.add_edge(root.nodes[2], root.nodes[3])
+root.order.add_edge(root.nodes[3], root.nodes[4])
+root.order.add_edge(root.nodes[4], root.nodes[5])
+root.order.add_edge(root.nodes[5], root.nodes[6])
+root.order.add_edge(root.nodes[6], root.nodes[7])
+root.order.add_edge(root.nodes[7], root.nodes[8])
+root.order.add_edge(root.nodes[8], root.nodes[9])
+root.order.add_edge(root.nodes[9], root.nodes[10])
+root.order.add_edge(root.nodes[10], root.nodes[11])
+root.order.add_edge(root.nodes[11], root.nodes[12])
+root.order.add_edge(root.nodes[12], root.nodes[13])
+root.order.add_edge(root.nodes[13], root.nodes[14])
+root.order.add_edge(root.nodes[14], root.nodes[15])

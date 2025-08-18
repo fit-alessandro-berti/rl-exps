@@ -1,0 +1,61 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+SiteSurvey = Transition(label='Site Survey')
+StructureReinforce = Transition(label='Structure Reinforce')
+HydroponicSetup = Transition(label='Hydroponic Setup')
+ClimateInstall = Transition(label='Climate Install')
+AIIntegration = Transition(label='AI Integration')
+SeedSourcing = Transition(label='Seed Sourcing')
+NutrientPrep = Transition(label='Nutrient Prep')
+SystemTesting = Transition(label='System Testing')
+StaffTraining = Transition(label='Staff Training')
+CropPlanting = Transition(label='Crop Planting')
+GrowthMonitor = Transition(label='Growth Monitor')
+PestControl = Transition(label='Pest Control')
+HarvestSchedule = Transition(label='Harvest Schedule')
+QualityCheck = Transition(label='Quality Check')
+MarketDispatch = Transition(label='Market Dispatch')
+WasteRecycle = Transition(label='Waste Recycle')
+DataAnalysis = Transition(label='Data Analysis')
+
+# Define the structure of the process
+SiteSurveyNode = OperatorPOWL(operator=Operator.CONCURRENT, children=[SiteSurvey, StructureReinforce])
+StructureReinforceNode = OperatorPOWL(operator=Operator.CONCURRENT, children=[StructureReinforce, HydroponicSetup])
+HydroponicSetupNode = OperatorPOWL(operator=Operator.CONCURRENT, children=[HydroponicSetup, ClimateInstall])
+ClimateInstallNode = OperatorPOWL(operator=Operator.CONCURRENT, children=[ClimateInstall, AIIntegration])
+AIIntegrationNode = OperatorPOWL(operator=Operator.CONCURRENT, children=[AIIntegration, SeedSourcing])
+SeedSourcingNode = OperatorPOWL(operator=Operator.CONCURRENT, children=[SeedSourcing, NutrientPrep])
+NutrientPrepNode = OperatorPOWL(operator=Operator.CONCURRENT, children=[NutrientPrep, SystemTesting])
+SystemTestingNode = OperatorPOWL(operator=Operator.CONCURRENT, children=[SystemTesting, StaffTraining])
+StaffTrainingNode = OperatorPOWL(operator=Operator.CONCURRENT, children=[StaffTraining, CropPlanting])
+CropPlantingNode = OperatorPOWL(operator=Operator.CONCURRENT, children=[CropPlanting, GrowthMonitor])
+GrowthMonitorNode = OperatorPOWL(operator=Operator.CONCURRENT, children=[GrowthMonitor, PestControl])
+PestControlNode = OperatorPOWL(operator=Operator.CONCURRENT, children=[PestControl, HarvestSchedule])
+HarvestScheduleNode = OperatorPOWL(operator=Operator.CONCURRENT, children=[HarvestSchedule, QualityCheck])
+QualityCheckNode = OperatorPOWL(operator=Operator.CONCURRENT, children=[QualityCheck, MarketDispatch])
+MarketDispatchNode = OperatorPOWL(operator=Operator.CONCURRENT, children=[MarketDispatch, WasteRecycle])
+WasteRecycleNode = OperatorPOWL(operator=Operator.CONCURRENT, children=[WasteRecycle, DataAnalysis])
+
+# Define the root node
+root = StrictPartialOrder(nodes=[SiteSurveyNode, StructureReinforceNode, HydroponicSetupNode, ClimateInstallNode, AIIntegrationNode, SeedSourcingNode, NutrientPrepNode, SystemTestingNode, StaffTrainingNode, CropPlantingNode, GrowthMonitorNode, PestControlNode, HarvestScheduleNode, QualityCheckNode, MarketDispatchNode, WasteRecycleNode, DataAnalysis])
+
+# Add edges to connect the nodes
+root.order.add_edge(SiteSurveyNode, StructureReinforceNode)
+root.order.add_edge(StructureReinforceNode, HydroponicSetupNode)
+root.order.add_edge(HydroponicSetupNode, ClimateInstallNode)
+root.order.add_edge(ClimateInstallNode, AIIntegrationNode)
+root.order.add_edge(AIIntegrationNode, SeedSourcingNode)
+root.order.add_edge(SeedSourcingNode, NutrientPrepNode)
+root.order.add_edge(NutrientPrepNode, SystemTestingNode)
+root.order.add_edge(SystemTestingNode, StaffTrainingNode)
+root.order.add_edge(StaffTrainingNode, CropPlantingNode)
+root.order.add_edge(CropPlantingNode, GrowthMonitorNode)
+root.order.add_edge(GrowthMonitorNode, PestControlNode)
+root.order.add_edge(PestControlNode, HarvestScheduleNode)
+root.order.add_edge(HarvestScheduleNode, QualityCheckNode)
+root.order.add_edge(QualityCheckNode, MarketDispatchNode)
+root.order.add_edge(MarketDispatchNode, WasteRecycleNode)
+root.order.add_edge(WasteRecycleNode, DataAnalysis)

@@ -1,0 +1,134 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define activities as Transition objects
+SiteAssess = Transition(label='Site Assess')
+StructureCheck = Transition(label='Structure Check')
+SoilTest = Transition(label='Soil Test')
+ClimateEval = Transition(label='Climate Eval')
+PermitObtain = Transition(label='Permit Obtain')
+DesignLayout = Transition(label='Design Layout')
+SeedSourcing = Transition(label='Seed Sourcing')
+IrrigationSet = Transition(label='Irrigation Set')
+NutrientMix = Transition(label='Nutrient Mix')
+PestControl = Transition(label='Pest Control')
+SensorInstall = Transition(label='Sensor Install')
+StaffTrain = Transition(label='Staff Train')
+CropPlanting = Transition(label='Crop Planting')
+YieldMonitor = Transition(label='Yield Monitor')
+MarketSetup = Transition(label='Market Setup')
+Maintenance = Transition(label='Maintenance')
+WasteManage = Transition(label='Waste Manage')
+
+# Create the POWL model
+root = StrictPartialOrder(nodes=[
+    SiteAssess, StructureCheck, SoilTest, ClimateEval, PermitObtain,
+    DesignLayout, SeedSourcing, IrrigationSet, NutrientMix, PestControl,
+    SensorInstall, StaffTrain, CropPlanting, YieldMonitor, MarketSetup,
+    Maintenance, WasteManage
+])
+
+# Define the dependencies between activities
+root.order.add_edge(SiteAssess, StructureCheck)
+root.order.add_edge(SiteAssess, SoilTest)
+root.order.add_edge(SiteAssess, ClimateEval)
+root.order.add_edge(SiteAssess, PermitObtain)
+
+root.order.add_edge(StructureCheck, SoilTest)
+root.order.add_edge(StructureCheck, ClimateEval)
+root.order.add_edge(StructureCheck, PermitObtain)
+
+root.order.add_edge(SoilTest, ClimateEval)
+root.order.add_edge(SoilTest, PermitObtain)
+
+root.order.add_edge(ClimateEval, PermitObtain)
+
+root.order.add_edge(PermitObtain, DesignLayout)
+root.order.add_edge(PermitObtain, SeedSourcing)
+root.order.add_edge(PermitObtain, IrrigationSet)
+root.order.add_edge(PermitObtain, NutrientMix)
+root.order.add_edge(PermitObtain, PestControl)
+root.order.add_edge(PermitObtain, SensorInstall)
+root.order.add_edge(PermitObtain, StaffTrain)
+root.order.add_edge(PermitObtain, CropPlanting)
+root.order.add_edge(PermitObtain, YieldMonitor)
+root.order.add_edge(PermitObtain, MarketSetup)
+root.order.add_edge(PermitObtain, Maintenance)
+root.order.add_edge(PermitObtain, WasteManage)
+
+root.order.add_edge(DesignLayout, SeedSourcing)
+root.order.add_edge(DesignLayout, IrrigationSet)
+root.order.add_edge(DesignLayout, NutrientMix)
+root.order.add_edge(DesignLayout, PestControl)
+root.order.add_edge(DesignLayout, SensorInstall)
+root.order.add_edge(DesignLayout, StaffTrain)
+root.order.add_edge(DesignLayout, CropPlanting)
+root.order.add_edge(DesignLayout, YieldMonitor)
+root.order.add_edge(DesignLayout, MarketSetup)
+root.order.add_edge(DesignLayout, Maintenance)
+root.order.add_edge(DesignLayout, WasteManage)
+
+root.order.add_edge(SeedSourcing, IrrigationSet)
+root.order.add_edge(SeedSourcing, NutrientMix)
+root.order.add_edge(SeedSourcing, PestControl)
+root.order.add_edge(SeedSourcing, SensorInstall)
+root.order.add_edge(SeedSourcing, StaffTrain)
+root.order.add_edge(SeedSourcing, CropPlanting)
+root.order.add_edge(SeedSourcing, YieldMonitor)
+root.order.add_edge(SeedSourcing, MarketSetup)
+root.order.add_edge(SeedSourcing, Maintenance)
+root.order.add_edge(SeedSourcing, WasteManage)
+
+root.order.add_edge(IrrigationSet, NutrientMix)
+root.order.add_edge(IrrigationSet, PestControl)
+root.order.add_edge(IrrigationSet, SensorInstall)
+root.order.add_edge(IrrigationSet, StaffTrain)
+root.order.add_edge(IrrigationSet, CropPlanting)
+root.order.add_edge(IrrigationSet, YieldMonitor)
+root.order.add_edge(IrrigationSet, MarketSetup)
+root.order.add_edge(IrrigationSet, Maintenance)
+root.order.add_edge(IrrigationSet, WasteManage)
+
+root.order.add_edge(NutrientMix, PestControl)
+root.order.add_edge(NutrientMix, SensorInstall)
+root.order.add_edge(NutrientMix, StaffTrain)
+root.order.add_edge(NutrientMix, CropPlanting)
+root.order.add_edge(NutrientMix, YieldMonitor)
+root.order.add_edge(NutrientMix, MarketSetup)
+root.order.add_edge(NutrientMix, Maintenance)
+root.order.add_edge(NutrientMix, WasteManage)
+
+root.order.add_edge(PestControl, SensorInstall)
+root.order.add_edge(PestControl, StaffTrain)
+root.order.add_edge(PestControl, CropPlanting)
+root.order.add_edge(PestControl, YieldMonitor)
+root.order.add_edge(PestControl, MarketSetup)
+root.order.add_edge(PestControl, Maintenance)
+root.order.add_edge(PestControl, WasteManage)
+
+root.order.add_edge(SensorInstall, StaffTrain)
+root.order.add_edge(SensorInstall, CropPlanting)
+root.order.add_edge(SensorInstall, YieldMonitor)
+root.order.add_edge(SensorInstall, MarketSetup)
+root.order.add_edge(SensorInstall, Maintenance)
+root.order.add_edge(SensorInstall, WasteManage)
+
+root.order.add_edge(StaffTrain, CropPlanting)
+root.order.add_edge(StaffTrain, YieldMonitor)
+root.order.add_edge(StaffTrain, MarketSetup)
+root.order.add_edge(StaffTrain, Maintenance)
+root.order.add_edge(StaffTrain, WasteManage)
+
+root.order.add_edge(CropPlanting, YieldMonitor)
+root.order.add_edge(CropPlanting, MarketSetup)
+root.order.add_edge(CropPlanting, Maintenance)
+root.order.add_edge(CropPlanting, WasteManage)
+
+root.order.add_edge(YieldMonitor, MarketSetup)
+root.order.add_edge(YieldMonitor, Maintenance)
+root.order.add_edge(YieldMonitor, WasteManage)
+
+root.order.add_edge(MarketSetup, Maintenance)
+root.order.add_edge(MarketSetup, WasteManage)
+
+root.order.add_edge(Maintenance, WasteManage)

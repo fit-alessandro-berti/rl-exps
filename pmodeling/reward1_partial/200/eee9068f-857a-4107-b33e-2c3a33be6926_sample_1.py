@@ -1,0 +1,46 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+artifact_intake = Transition(label='Artifact Intake')
+provenance_check = Transition(label='Provenance Check')
+archive_search = Transition(label='Archive Search')
+expert_interview = Transition(label='Expert Interview')
+material_scan = Transition(label='Material Scan')
+age_analysis = Transition(label='Age Analysis')
+stylistic_review = Transition(label='Stylistic Review')
+context_mapping = Transition(label='Context Mapping')
+legal_clearance = Transition(label='Legal Clearance')
+data_compilation = Transition(label='Data Compilation')
+report_drafting = Transition(label='Report Drafting')
+peer_review = Transition(label='Peer Review')
+final_assessment = Transition(label='Final Assessment')
+acquisition_plan = Transition(label='Acquisition Plan')
+restoration_prep = Transition(label='Restoration Prep')
+documentation = Transition(label='Documentation')
+data_backup = Transition(label='Data Backup')
+
+skip = SilentTransition()
+
+provenance_check_choice = OperatorPOWL(operator=Operator.XOR, children=[archive_search, expert_interview])
+age_analysis_choice = OperatorPOWL(operator=Operator.XOR, children=[material_scan, age_analysis])
+stylistic_review_choice = OperatorPOWL(operator=Operator.XOR, children=[stylistic_review, context_mapping])
+legal_clearance_choice = OperatorPOWL(operator=Operator.XOR, children=[legal_clearance, data_compilation])
+data_compilation_choice = OperatorPOWL(operator=Operator.XOR, children=[report_drafting, peer_review])
+
+final_assessment_loop = OperatorPOWL(operator=Operator.LOOP, children=[final_assessment])
+acquisition_plan_loop = OperatorPOWL(operator=Operator.LOOP, children=[acquisition_plan])
+
+root = StrictPartialOrder(nodes=[artifact_intake, provenance_check_choice, age_analysis_choice, stylistic_review_choice, legal_clearance_choice, data_compilation_choice, final_assessment_loop, acquisition_plan_loop])
+root.order.add_edge(artifact_intake, provenance_check_choice)
+root.order.add_edge(artifact_intake, age_analysis_choice)
+root.order.add_edge(artifact_intake, stylistic_review_choice)
+root.order.add_edge(artifact_intake, legal_clearance_choice)
+root.order.add_edge(artifact_intake, data_compilation_choice)
+root.order.add_edge(provenance_check_choice, final_assessment_loop)
+root.order.add_edge(age_analysis_choice, final_assessment_loop)
+root.order.add_edge(stylistic_review_choice, final_assessment_loop)
+root.order.add_edge(legal_clearance_choice, final_assessment_loop)
+root.order.add_edge(data_compilation_choice, final_assessment_loop)
+root.order.add_edge(final_assessment_loop, acquisition_plan_loop)
+root.order.add_edge(acquisition_plan_loop, final_assessment_loop)

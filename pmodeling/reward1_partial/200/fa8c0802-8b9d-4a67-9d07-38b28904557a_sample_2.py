@@ -1,0 +1,37 @@
+root = StrictPartialOrder(
+    nodes=[
+        Transition(label='Data Aggregation'),
+        Transition(label='Anomaly Detect'),
+        Transition(label='Risk Assess'),
+        Transition(label='Demand Model'),
+        Transition(label='Stakeholder Sync'),
+        Transition(label='Auto Negotiate'),
+        Transition(label='Inventory Optimize'),
+        Transition(label='Contingency Plan'),
+        Transition(label='Resource Allocate'),
+        Transition(label='Sustainability Check'),
+        Transition(label='Compliance Verify'),
+        Transition(label='Impact Score'),
+        Transition(label='Distribution Plan'),
+        Transition(label='Feedback Loop'),
+        Transition(label='Performance Audit'),
+        Transition(label='Schedule Execute'),
+    ],
+    order={
+        'Data Aggregation': 'Anomaly Detect',
+        'Anomaly Detect': 'Risk Assess',
+        'Risk Assess': 'Demand Model',
+        'Demand Model': 'Stakeholder Sync',
+        'Stakeholder Sync': 'Auto Negotiate',
+        'Auto Negotiate': 'Inventory Optimize',
+        'Inventory Optimize': 'Contingency Plan',
+        'Contingency Plan': 'Resource Allocate',
+        'Resource Allocate': 'Sustainability Check',
+        'Sustainability Check': 'Compliance Verify',
+        'Compliance Verify': 'Impact Score',
+        'Impact Score': 'Distribution Plan',
+        'Distribution Plan': 'Feedback Loop',
+        'Feedback Loop': 'Performance Audit',
+        'Performance Audit': 'Schedule Execute'
+    }
+)

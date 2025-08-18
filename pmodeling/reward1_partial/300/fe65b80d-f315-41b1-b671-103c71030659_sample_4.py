@@ -1,0 +1,57 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL model
+ingredient_sourcing = Transition(label='Ingredient Sourcing')
+quality_testing = Transition(label='Quality Testing')
+scent_blending = Transition(label='Scent Blending')
+micro_batch = Transition(label='Micro Batch')
+sensory_panel = Transition(label='Sensory Panel')
+formula_adjust = Transition(label='Formula Adjust')
+safety_review = Transition(label='Safety Review')
+sustainability_check = Transition(label='Sustainability Check')
+packaging_design = Transition(label='Packaging Design')
+prototype_creation = Transition(label='Prototype Creation')
+client_feedback = Transition(label='Client Feedback')
+label_approval = Transition(label='Label Approval')
+final_production = Transition(label='Final Production')
+marketing_plan = Transition(label='Marketing Plan')
+distribution_prep = Transition(label='Distribution Prep')
+sales_launch = Transition(label='Sales Launch')
+
+# Define the process
+ingredient_sourcing_to_quality_testing = OperatorPOWL(operator=Operator.AND, children=[ingredient_sourcing, quality_testing])
+quality_testing_to_scent_blending = OperatorPOWL(operator=Operator.AND, children=[quality_testing, scent_blending])
+scent_blending_to_micro_batch = OperatorPOWL(operator=Operator.AND, children=[scent_blending, micro_batch])
+micro_batch_to_sensory_panel = OperatorPOWL(operator=Operator.AND, children=[micro_batch, sensory_panel])
+sensory_panel_to_formula_adjust = OperatorPOWL(operator=Operator.AND, children=[sensory_panel, formula_adjust])
+formula_adjust_to_safety_review = OperatorPOWL(operator=Operator.AND, children=[formula_adjust, safety_review])
+safety_review_to_sustainability_check = OperatorPOWL(operator=Operator.AND, children=[safety_review, sustainability_check])
+sustainability_check_to_packaging_design = OperatorPOWL(operator=Operator.AND, children=[sustainability_check, packaging_design])
+packaging_design_to_prototype_creation = OperatorPOWL(operator=Operator.AND, children=[packaging_design, prototype_creation])
+prototype_creation_to_client_feedback = OperatorPOWL(operator=Operator.AND, children=[prototype_creation, client_feedback])
+client_feedback_to_label_approval = OperatorPOWL(operator=Operator.AND, children=[client_feedback, label_approval])
+label_approval_to_final_production = OperatorPOWL(operator=Operator.AND, children=[label_approval, final_production])
+final_production_to_marketing_plan = OperatorPOWL(operator=Operator.AND, children=[final_production, marketing_plan])
+marketing_plan_to_distribution_prep = OperatorPOWL(operator=Operator.AND, children=[marketing_plan, distribution_prep])
+distribution_prep_to_sales_launch = OperatorPOWL(operator=Operator.AND, children=[distribution_prep, sales_launch])
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[ingredient_sourcing_to_quality_testing, quality_testing_to_scent_blending, scent_blending_to_micro_batch, micro_batch_to_sensory_panel, sensory_panel_to_formula_adjust, formula_adjust_to_safety_review, safety_review_to_sustainability_check, sustainability_check_to_packaging_design, packaging_design_to_prototype_creation, prototype_creation_to_client_feedback, client_feedback_to_label_approval, label_approval_to_final_production, final_production_to_marketing_plan, marketing_plan_to_distribution_prep, distribution_prep_to_sales_launch])
+root.order.add_edge(ingredient_sourcing_to_quality_testing, quality_testing_to_scent_blending)
+root.order.add_edge(quality_testing_to_scent_blending, scent_blending_to_micro_batch)
+root.order.add_edge(scent_blending_to_micro_batch, micro_batch_to_sensory_panel)
+root.order.add_edge(micro_batch_to_sensory_panel, sensory_panel_to_formula_adjust)
+root.order.add_edge(sensory_panel_to_formula_adjust, formula_adjust_to_safety_review)
+root.order.add_edge(formula_adjust_to_safety_review, safety_review_to_sustainability_check)
+root.order.add_edge(safety_review_to_sustainability_check, sustainability_check_to_packaging_design)
+root.order.add_edge(sustainability_check_to_packaging_design, packaging_design_to_prototype_creation)
+root.order.add_edge(packaging_design_to_prototype_creation, prototype_creation_to_client_feedback)
+root.order.add_edge(prototype_creation_to_client_feedback, client_feedback_to_label_approval)
+root.order.add_edge(client_feedback_to_label_approval, label_approval_to_final_production)
+root.order.add_edge(label_approval_to_final_production, final_production_to_marketing_plan)
+root.order.add_edge(final_production_to_marketing_plan, marketing_plan_to_distribution_prep)
+root.order.add_edge(marketing_plan_to_distribution_prep, distribution_prep_to_sales_launch)
+
+print(root)

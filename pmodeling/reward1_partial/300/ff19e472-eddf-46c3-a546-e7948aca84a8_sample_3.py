@@ -1,0 +1,43 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+design_layout = Transition(label='Design Layout')
+install_modules = Transition(label='Install Modules')
+calibrate_climate = Transition(label='Calibrate Climate')
+prepare_nutrients = Transition(label='Prepare Nutrients')
+select_seeds = Transition(label='Select Seeds')
+start_germination = Transition(label='Start Germination')
+deploy_sensors = Transition(label='Deploy Sensors')
+monitor_growth = Transition(label='Monitor Growth')
+manage_pests = Transition(label='Manage Pests')
+schedule_harvest = Transition(label='Schedule Harvest')
+process_waste = Transition(label='Process Waste')
+optimize_energy = Transition(label='Optimize Energy')
+conduct_training = Transition(label='Conduct Training')
+update_records = Transition(label='Update Records')
+review_performance = Transition(label='Review Performance')
+
+skip = SilentTransition()
+
+site_survey_and_design_layout = OperatorPOWL(operator=Operator.XOR, children=[site_survey, design_layout])
+install_modules_and_calibrate_climate = OperatorPOWL(operator=Operator.XOR, children=[install_modules, calibrate_climate])
+prepare_nutrients_and_select_seeds = OperatorPOWL(operator=Operator.XOR, children=[prepare_nutrients, select_seeds])
+start_germination_and_deploy_sensors = OperatorPOWL(operator=Operator.XOR, children=[start_germination, deploy_sensors])
+monitor_growth_and_manage_pests = OperatorPOWL(operator=Operator.XOR, children=[monitor_growth, manage_pests])
+schedule_harvest_and_process_waste = OperatorPOWL(operator=Operator.XOR, children=[schedule_harvest, process_waste])
+optimize_energy_and_conduct_training = OperatorPOWL(operator=Operator.XOR, children=[optimize_energy, conduct_training])
+update_records_and_review_performance = OperatorPOWL(operator=Operator.XOR, children=[update_records, review_performance])
+
+root = StrictPartialOrder(nodes=[site_survey_and_design_layout, install_modules_and_calibrate_climate, prepare_nutrients_and_select_seeds, start_germination_and_deploy_sensors, monitor_growth_and_manage_pests, schedule_harvest_and_process_waste, optimize_energy_and_conduct_training, update_records_and_review_performance])
+root.order.add_edge(site_survey_and_design_layout, install_modules_and_calibrate_climate)
+root.order.add_edge(site_survey_and_design_layout, prepare_nutrients_and_select_seeds)
+root.order.add_edge(install_modules_and_calibrate_climate, start_germination_and_deploy_sensors)
+root.order.add_edge(install_modules_and_calibrate_climate, monitor_growth_and_manage_pests)
+root.order.add_edge(prepare_nutrients_and_select_seeds, schedule_harvest_and_process_waste)
+root.order.add_edge(prepare_nutrients_and_select_seeds, optimize_energy_and_conduct_training)
+root.order.add_edge(start_germination_and_deploy_sensors, update_records_and_review_performance)
+root.order.add_edge(monitor_growth_and_manage_pests, update_records_and_review_performance)
+root.order.add_edge(schedule_harvest_and_process_waste, update_records_and_review_performance)
+root.order.add_edge(optimize_energy_and_conduct_training, update_records_and_review_performance)

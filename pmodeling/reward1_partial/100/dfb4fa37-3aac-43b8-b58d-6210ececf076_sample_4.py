@@ -1,0 +1,72 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define transitions for each activity
+site_analysis = Transition(label='Site Analysis')
+permit_securing = Transition(label='Permit Securing')
+unit_designing = Transition(label='Unit Designing')
+led_sourcing = Transition(label='LED Sourcing')
+hydroponic_setup = Transition(label='Hydroponic Setup')
+staff_hiring = Transition(label='Staff Hiring')
+pilot_cultivation = Transition(label='Pilot Cultivation')
+data_integration = Transition(label='Data Integration')
+waste_recycling = Transition(label='Waste Recycling')
+local_distribution = Transition(label='Local Distribution')
+subscription_setup = Transition(label='Subscription Setup')
+iot_deployment = Transition(label='IoT Deployment')
+sustainability_audit = Transition(label='Sustainability Audit')
+market_testing = Transition(label='Market Testing')
+process_refinement = Transition(label='Process Refinement')
+
+# Define silent transitions (e.g., for loops or other non-executable nodes)
+skip = SilentTransition()
+
+# Define exclusive choice nodes
+exclusive_choice1 = OperatorPOWL(operator=Operator.XOR, children=[staff_hiring, skip])
+exclusive_choice2 = OperatorPOWL(operator=Operator.XOR, children=[pilot_cultivation, skip])
+exclusive_choice3 = OperatorPOWL(operator=Operator.XOR, children=[data_integration, skip])
+exclusive_choice4 = OperatorPOWL(operator=Operator.XOR, children=[waste_recycling, skip])
+exclusive_choice5 = OperatorPOWL(operator=Operator.XOR, children=[local_distribution, skip])
+exclusive_choice6 = OperatorPOWL(operator=Operator.XOR, children=[subscription_setup, skip])
+exclusive_choice7 = OperatorPOWL(operator=Operator.XOR, children=[iot_deployment, skip])
+exclusive_choice8 = OperatorPOWL(operator=Operator.XOR, children=[sustainability_audit, skip])
+exclusive_choice9 = OperatorPOWL(operator=Operator.XOR, children=[market_testing, skip])
+exclusive_choice10 = OperatorPOWL(operator=Operator.XOR, children=[process_refinement, skip])
+
+# Define loop nodes
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[site_analysis, permit_securing])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[unit_designing, led_sourcing])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[hydroponic_setup, exclusive_choice1])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[exclusive_choice2, exclusive_choice3])
+loop5 = OperatorPOWL(operator=Operator.LOOP, children=[exclusive_choice4, exclusive_choice5])
+loop6 = OperatorPOWL(operator=Operator.LOOP, children=[exclusive_choice6, exclusive_choice7])
+loop7 = OperatorPOWL(operator=Operator.LOOP, children=[exclusive_choice8, exclusive_choice9])
+loop8 = OperatorPOWL(operator=Operator.LOOP, children=[exclusive_choice10, skip])
+
+# Define the root POWL model
+root = StrictPartialOrder(nodes=[loop1, loop2, loop3, loop4, loop5, loop6, loop7, loop8])
+
+# Add dependencies between nodes
+root.order.add_edge(loop1, loop2)
+root.order.add_edge(loop2, loop3)
+root.order.add_edge(loop3, exclusive_choice1)
+root.order.add_edge(exclusive_choice1, loop4)
+root.order.add_edge(loop4, exclusive_choice2)
+root.order.add_edge(exclusive_choice2, loop5)
+root.order.add_edge(loop5, exclusive_choice3)
+root.order.add_edge(exclusive_choice3, loop6)
+root.order.add_edge(loop6, exclusive_choice4)
+root.order.add_edge(exclusive_choice4, loop7)
+root.order.add_edge(loop7, exclusive_choice5)
+root.order.add_edge(exclusive_choice5, loop8)
+root.order.add_edge(loop8, exclusive_choice6)
+root.order.add_edge(exclusive_choice6, loop8)
+root.order.add_edge(loop8, exclusive_choice7)
+root.order.add_edge(exclusive_choice7, loop8)
+root.order.add_edge(loop8, exclusive_choice8)
+root.order.add_edge(exclusive_choice8, loop8)
+root.order.add_edge(loop8, exclusive_choice9)
+root.order.add_edge(exclusive_choice9, loop8)
+root.order.add_edge(loop8, exclusive_choice10)
+root.order.add_edge(exclusive_choice10, loop8)
+root.order.add_edge(loop8, skip)

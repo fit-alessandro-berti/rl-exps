@@ -1,0 +1,203 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+artifact_intake = Transition(label='Artifact Intake')
+provenance_check = Transition(label='Provenance Check')
+archive_search = Transition(label='Archive Search')
+expert_interview = Transition(label='Expert Interview')
+material_scan = Transition(label='Material Scan')
+age_analysis = Transition(label='Age Analysis')
+stylistic_review = Transition(label='Stylistic Review')
+context_mapping = Transition(label='Context Mapping')
+legal_clearance = Transition(label='Legal Clearance')
+data_compilation = Transition(label='Data Compilation')
+report_drafting = Transition(label='Report Drafting')
+peer_review = Transition(label='Peer Review')
+final_assessment = Transition(label='Final Assessment')
+acquisition_plan = Transition(label='Acquisition Plan')
+restoration_prep = Transition(label='Restoration Prep')
+documentation = Transition(label='Documentation')
+data_backup = Transition(label='Data Backup')
+
+# Define the partial order and its dependencies
+root = StrictPartialOrder(nodes=[
+    artifact_intake,
+    provenance_check,
+    archive_search,
+    expert_interview,
+    material_scan,
+    age_analysis,
+    stylistic_review,
+    context_mapping,
+    legal_clearance,
+    data_compilation,
+    report_drafting,
+    peer_review,
+    final_assessment,
+    acquisition_plan,
+    restoration_prep,
+    documentation,
+    data_backup
+])
+
+# Define the dependencies between activities
+root.order.add_edge(artifact_intake, provenance_check)
+root.order.add_edge(artifact_intake, archive_search)
+root.order.add_edge(artifact_intake, expert_interview)
+root.order.add_edge(artifact_intake, material_scan)
+root.order.add_edge(artifact_intake, age_analysis)
+root.order.add_edge(artifact_intake, stylistic_review)
+root.order.add_edge(artifact_intake, context_mapping)
+root.order.add_edge(artifact_intake, legal_clearance)
+root.order.add_edge(artifact_intake, data_compilation)
+root.order.add_edge(artifact_intake, report_drafting)
+root.order.add_edge(artifact_intake, peer_review)
+root.order.add_edge(artifact_intake, final_assessment)
+root.order.add_edge(artifact_intake, acquisition_plan)
+root.order.add_edge(artifact_intake, restoration_prep)
+root.order.add_edge(artifact_intake, documentation)
+root.order.add_edge(artifact_intake, data_backup)
+
+# Define the dependencies within provenance check
+root.order.add_edge(provenance_check, archive_search)
+root.order.add_edge(provenance_check, expert_interview)
+root.order.add_edge(provenance_check, legal_clearance)
+root.order.add_edge(provenance_check, data_compilation)
+root.order.add_edge(provenance_check, report_drafting)
+root.order.add_edge(provenance_check, peer_review)
+root.order.add_edge(provenance_check, final_assessment)
+root.order.add_edge(provenance_check, acquisition_plan)
+root.order.add_edge(provenance_check, restoration_prep)
+root.order.add_edge(provenance_check, documentation)
+root.order.add_edge(provenance_check, data_backup)
+
+# Define the dependencies within archive search
+root.order.add_edge(archive_search, expert_interview)
+root.order.add_edge(archive_search, legal_clearance)
+root.order.add_edge(archive_search, data_compilation)
+root.order.add_edge(archive_search, report_drafting)
+root.order.add_edge(archive_search, peer_review)
+root.order.add_edge(archive_search, final_assessment)
+root.order.add_edge(archive_search, acquisition_plan)
+root.order.add_edge(archive_search, restoration_prep)
+root.order.add_edge(archive_search, documentation)
+root.order.add_edge(archive_search, data_backup)
+
+# Define the dependencies within expert interview
+root.order.add_edge(expert_interview, legal_clearance)
+root.order.add_edge(expert_interview, data_compilation)
+root.order.add_edge(expert_interview, report_drafting)
+root.order.add_edge(expert_interview, peer_review)
+root.order.add_edge(expert_interview, final_assessment)
+root.order.add_edge(expert_interview, acquisition_plan)
+root.order.add_edge(expert_interview, restoration_prep)
+root.order.add_edge(expert_interview, documentation)
+root.order.add_edge(expert_interview, data_backup)
+
+# Define the dependencies within material scan
+root.order.add_edge(material_scan, age_analysis)
+root.order.add_edge(material_scan, stylistic_review)
+root.order.add_edge(material_scan, context_mapping)
+root.order.add_edge(material_scan, legal_clearance)
+root.order.add_edge(material_scan, data_compilation)
+root.order.add_edge(material_scan, report_drafting)
+root.order.add_edge(material_scan, peer_review)
+root.order.add_edge(material_scan, final_assessment)
+root.order.add_edge(material_scan, acquisition_plan)
+root.order.add_edge(material_scan, restoration_prep)
+root.order.add_edge(material_scan, documentation)
+root.order.add_edge(material_scan, data_backup)
+
+# Define the dependencies within age analysis
+root.order.add_edge(age_analysis, stylistic_review)
+root.order.add_edge(age_analysis, context_mapping)
+root.order.add_edge(age_analysis, legal_clearance)
+root.order.add_edge(age_analysis, data_compilation)
+root.order.add_edge(age_analysis, report_drafting)
+root.order.add_edge(age_analysis, peer_review)
+root.order.add_edge(age_analysis, final_assessment)
+root.order.add_edge(age_analysis, acquisition_plan)
+root.order.add_edge(age_analysis, restoration_prep)
+root.order.add_edge(age_analysis, documentation)
+root.order.add_edge(age_analysis, data_backup)
+
+# Define the dependencies within stylistic review
+root.order.add_edge(stylistic_review, context_mapping)
+root.order.add_edge(stylistic_review, legal_clearance)
+root.order.add_edge(stylistic_review, data_compilation)
+root.order.add_edge(stylistic_review, report_drafting)
+root.order.add_edge(stylistic_review, peer_review)
+root.order.add_edge(stylistic_review, final_assessment)
+root.order.add_edge(stylistic_review, acquisition_plan)
+root.order.add_edge(stylistic_review, restoration_prep)
+root.order.add_edge(stylistic_review, documentation)
+root.order.add_edge(stylistic_review, data_backup)
+
+# Define the dependencies within context mapping
+root.order.add_edge(context_mapping, legal_clearance)
+root.order.add_edge(context_mapping, data_compilation)
+root.order.add_edge(context_mapping, report_drafting)
+root.order.add_edge(context_mapping, peer_review)
+root.order.add_edge(context_mapping, final_assessment)
+root.order.add_edge(context_mapping, acquisition_plan)
+root.order.add_edge(context_mapping, restoration_prep)
+root.order.add_edge(context_mapping, documentation)
+root.order.add_edge(context_mapping, data_backup)
+
+# Define the dependencies within legal clearance
+root.order.add_edge(legal_clearance, data_compilation)
+root.order.add_edge(legal_clearance, report_drafting)
+root.order.add_edge(legal_clearance, peer_review)
+root.order.add_edge(legal_clearance, final_assessment)
+root.order.add_edge(legal_clearance, acquisition_plan)
+root.order.add_edge(legal_clearance, restoration_prep)
+root.order.add_edge(legal_clearance, documentation)
+root.order.add_edge(legal_clearance, data_backup)
+
+# Define the dependencies within data compilation
+root.order.add_edge(data_compilation, report_drafting)
+root.order.add_edge(data_compilation, peer_review)
+root.order.add_edge(data_compilation, final_assessment)
+root.order.add_edge(data_compilation, acquisition_plan)
+root.order.add_edge(data_compilation, restoration_prep)
+root.order.add_edge(data_compilation, documentation)
+root.order.add_edge(data_compilation, data_backup)
+
+# Define the dependencies within report drafting
+root.order.add_edge(report_drafting, peer_review)
+root.order.add_edge(report_drafting, final_assessment)
+root.order.add_edge(report_drafting, acquisition_plan)
+root.order.add_edge(report_drafting, restoration_prep)
+root.order.add_edge(report_drafting, documentation)
+root.order.add_edge(report_drafting, data_backup)
+
+# Define the dependencies within peer review
+root.order.add_edge(peer_review, final_assessment)
+root.order.add_edge(peer_review, acquisition_plan)
+root.order.add_edge(peer_review, restoration_prep)
+root.order.add_edge(peer_review, documentation)
+root.order.add_edge(peer_review, data_backup)
+
+# Define the dependencies within final assessment
+root.order.add_edge(final_assessment, acquisition_plan)
+root.order.add_edge(final_assessment, restoration_prep)
+root.order.add_edge(final_assessment, documentation)
+root.order.add_edge(final_assessment, data_backup)
+
+# Define the dependencies within acquisition plan
+root.order.add_edge(acquisition_plan, restoration_prep)
+root.order.add_edge(acquisition_plan, documentation)
+root.order.add_edge(acquisition_plan, data_backup)
+
+# Define the dependencies within restoration prep
+root.order.add_edge(restoration_prep, documentation)
+root.order.add_edge(restoration_prep, data_backup)
+
+# Define the dependencies within documentation
+root.order.add_edge(documentation, data_backup)
+
+# Define the dependencies within data backup
+root.order.add_edge(data_backup, None)  # No further dependencies
+
+print(root)

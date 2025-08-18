@@ -1,0 +1,43 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+design_layout = Transition(label='Design Layout')
+legal_review = Transition(label='Legal Review')
+tech_sourcing = Transition(label='Tech Sourcing')
+structural_build = Transition(label='Structural Build')
+climate_setup = Transition(label='Climate Setup')
+irrigation_install = Transition(label='Irrigation Install')
+sensor_deploy = Transition(label='Sensor Deploy')
+crop_select = Transition(label='Crop Select')
+nutrient_prep = Transition(label='Nutrient Prep')
+waste_system = Transition(label='Waste System')
+automation_config = Transition(label='Automation Config')
+trial_growth = Transition(label='Trial Growth')
+data_analysis = Transition(label='Data Analysis')
+quality_audit = Transition(label='Quality Audit')
+stakeholder_meet = Transition(label='Stakeholder Meet')
+compliance_check = Transition(label='Compliance Check')
+
+skip = SilentTransition()
+
+site_survey_xor = OperatorPOWL(operator=Operator.XOR, children=[site_survey, legal_review])
+design_layout_xor = OperatorPOWL(operator=Operator.XOR, children=[design_layout, tech_sourcing])
+structural_build_xor = OperatorPOWL(operator=Operator.XOR, children=[structural_build, climate_setup])
+irrigation_install_xor = OperatorPOWL(operator=Operator.XOR, children=[irrigation_install, sensor_deploy])
+crop_select_xor = OperatorPOWL(operator=Operator.XOR, children=[crop_select, nutrient_prep])
+waste_system_xor = OperatorPOWL(operator=Operator.XOR, children=[waste_system, automation_config])
+trial_growth_xor = OperatorPOWL(operator=Operator.XOR, children=[trial_growth, data_analysis])
+quality_audit_xor = OperatorPOWL(operator=Operator.XOR, children=[quality_audit, stakeholder_meet])
+compliance_check_xor = OperatorPOWL(operator=Operator.XOR, children=[compliance_check, skip])
+
+root = StrictPartialOrder(nodes=[site_survey_xor, design_layout_xor, structural_build_xor, irrigation_install_xor, crop_select_xor, waste_system_xor, trial_growth_xor, quality_audit_xor, compliance_check_xor])
+root.order.add_edge(site_survey_xor, design_layout_xor)
+root.order.add_edge(design_layout_xor, structural_build_xor)
+root.order.add_edge(structural_build_xor, irrigation_install_xor)
+root.order.add_edge(irrigation_install_xor, crop_select_xor)
+root.order.add_edge(crop_select_xor, waste_system_xor)
+root.order.add_edge(waste_system_xor, trial_growth_xor)
+root.order.add_edge(trial_growth_xor, quality_audit_xor)
+root.order.add_edge(quality_audit_xor, compliance_check_xor)

@@ -1,0 +1,36 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+gather_specs = Transition(label='Gather Specs')
+adapt_design = Transition(label='Adapt Design')
+source_parts = Transition(label='Source Parts')
+component_test = Transition(label='Component Test')
+assemble_frame = Transition(label='Assemble Frame')
+install_firmware = Transition(label='Install Firmware')
+calibrate_sensors = Transition(label='Calibrate Sensors')
+stress_test = Transition(label='Stress Test')
+flight_simulate = Transition(label='Flight Simulate')
+validate_battery = Transition(label='Validate Battery')
+check_accuracy = Transition(label='Check Accuracy')
+package_units = Transition(label='Package Units')
+create_manuals = Transition(label='Create Manuals')
+ship_drones = Transition(label='Ship Drones')
+collect_feedback = Transition(label='Collect Feedback')
+
+skip = SilentTransition()
+
+gather_spec_loop = OperatorPOWL(operator=Operator.LOOP, children=[gather_specs, adapt_design])
+source_part_loop = OperatorPOWL(operator=Operator.LOOP, children=[source_parts, component_test])
+assemble_frame_loop = OperatorPOWL(operator=Operator.LOOP, children=[assemble_frame, install_firmware, calibrate_sensors])
+stress_test_loop = OperatorPOWL(operator=Operator.LOOP, children=[stress_test, flight_simulate])
+validate_battery_loop = OperatorPOWL(operator=Operator.LOOP, children=[validate_battery, check_accuracy])
+package_unit_loop = OperatorPOWL(operator=Operator.LOOP, children=[package_units, create_manuals])
+ship_drone_loop = OperatorPOWL(operator=Operator.LOOP, children=[ship_drones, collect_feedback])
+
+root = StrictPartialOrder(nodes=[gather_spec_loop, source_part_loop, assemble_frame_loop, stress_test_loop, validate_battery_loop, package_unit_loop, ship_drone_loop])
+root.order.add_edge(gather_spec_loop, source_part_loop)
+root.order.add_edge(source_part_loop, assemble_frame_loop)
+root.order.add_edge(assemble_frame_loop, stress_test_loop)
+root.order.add_edge(stress_test_loop, validate_battery_loop)
+root.order.add_edge(validate_battery_loop, package_unit_loop)
+root.order.add_edge(package_unit_loop, ship_drone_loop)

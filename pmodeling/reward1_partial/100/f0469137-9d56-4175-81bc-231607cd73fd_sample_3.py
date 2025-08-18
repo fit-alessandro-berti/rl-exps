@@ -1,0 +1,34 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_analysis = Transition(label='Site Analysis')
+climate_setup = Transition(label='Climate Setup')
+nutrient_mix = Transition(label='Nutrient Mix')
+seed_germinate = Transition(label='Seed Germinate')
+auto_planting = Transition(label='Auto Planting')
+irrigation_setup = Transition(label='Irrigation Setup')
+iot_monitoring = Transition(label='IoT Monitoring')
+pest_detection = Transition(label='Pest Detection')
+drone_pollinate = Transition(label='Drone Pollinate')
+pesticide_spray = Transition(label='Pesticide Spray')
+robotic_harvest = Transition(label='Robotic Harvest')
+quality_check = Transition(label='Quality Check')
+package_product = Transition(label='Package Product')
+waste_recycle = Transition(label='Waste Recycle')
+energy_optimize = Transition(label='Energy Optimize')
+data_logging = Transition(label='Data Logging')
+
+skip = SilentTransition()
+
+site_analysis_loop = OperatorPOWL(operator=Operator.LOOP, children=[site_analysis, climate_setup])
+nutrient_mix_loop = OperatorPOWL(operator=Operator.LOOP, children=[nutrient_mix, seed_germinate, auto_planting])
+irrigation_loop = OperatorPOWL(operator=Operator.LOOP, children=[irrigation_setup, iot_monitoring, pest_detection, drone_pollinate, pesticide_spray])
+harvest_loop = OperatorPOWL(operator=Operator.LOOP, children=[robotic_harvest, quality_check, package_product])
+waste_recycle_loop = OperatorPOWL(operator=Operator.LOOP, children=[waste_recycle, energy_optimize, data_logging])
+
+root = StrictPartialOrder(nodes=[site_analysis_loop, nutrient_mix_loop, irrigation_loop, harvest_loop, waste_recycle_loop])
+root.order.add_edge(site_analysis_loop, nutrient_mix_loop)
+root.order.add_edge(nutrient_mix_loop, irrigation_loop)
+root.order.add_edge(irrigation_loop, harvest_loop)
+root.order.add_edge(harvest_loop, waste_recycle_loop)

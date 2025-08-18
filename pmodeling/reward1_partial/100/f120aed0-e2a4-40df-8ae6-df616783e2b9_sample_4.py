@@ -1,0 +1,56 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define each activity as a transition
+site_survey = Transition(label='Site Survey')
+rack_design = Transition(label='Rack Design')
+system_setup = Transition(label='System Setup')
+climate_calibrate = Transition(label='Climate Calibrate')
+nutrient_prep = Transition(label='Nutrient Prep')
+crop_select = Transition(label='Crop Select')
+seed_germinate = Transition(label='Seed Germinate')
+sensor_deploy = Transition(label='Sensor Deploy')
+pest_control = Transition(label='Pest Control')
+harvest_automate = Transition(label='Harvest Automate')
+quality_check = Transition(label='Quality Check')
+pack_produce = Transition(label='Pack Produce')
+data_analyze = Transition(label='Data Analyze')
+engage_community = Transition(label='Engage Community')
+logistics_plan = Transition(label='Logistics Plan')
+
+# Define the partial order
+root = StrictPartialOrder()
+
+# Define the dependencies between activities
+root.add_transition(site_survey)
+root.add_transition(rack_design)
+root.add_transition(system_setup)
+root.add_transition(climate_calibrate)
+root.add_transition(nutrient_prep)
+root.add_transition(crop_select)
+root.add_transition(seed_germinate)
+root.add_transition(sensor_deploy)
+root.add_transition(pest_control)
+root.add_transition(harvest_automate)
+root.add_transition(quality_check)
+root.add_transition(pack_produce)
+root.add_transition(data_analyze)
+root.add_transition(engage_community)
+root.add_transition(logistics_plan)
+
+# Define the dependencies explicitly
+root.add_edge(site_survey, rack_design)
+root.add_edge(rack_design, system_setup)
+root.add_edge(system_setup, climate_calibrate)
+root.add_edge(climate_calibrate, nutrient_prep)
+root.add_edge(nutrient_prep, crop_select)
+root.add_edge(crop_select, seed_germinate)
+root.add_edge(seed_germinate, sensor_deploy)
+root.add_edge(sensor_deploy, pest_control)
+root.add_edge(pest_control, harvest_automate)
+root.add_edge(harvest_automate, quality_check)
+root.add_edge(quality_check, pack_produce)
+root.add_edge(pack_produce, data_analyze)
+root.add_edge(data_analyze, engage_community)
+root.add_edge(engage_community, logistics_plan)
+
+print(root)

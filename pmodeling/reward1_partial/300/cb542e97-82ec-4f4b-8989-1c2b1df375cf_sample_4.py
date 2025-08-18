@@ -1,0 +1,46 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the POWL model
+artifact_intake = Transition(label='Artifact Intake')
+condition_check = Transition(label='Condition Check')
+material_test = Transition(label='Material Test')
+archival_search = Transition(label='Archival Search')
+style_compare = Transition(label='Style Compare')
+expert_review = Transition(label='Expert Review')
+restoration_check = Transition(label='Restoration Check')
+provenance_trace = Transition(label='Provenance Trace')
+legal_verify = Transition(label='Legal Verify')
+value_appraise = Transition(label='Value Appraise')
+catalog_entry = Transition(label='Catalog Entry')
+marketing_plan = Transition(label='Marketing Plan')
+auction_setup = Transition(label='Auction Setup')
+certify_final = Transition(label='Certify Final')
+sales_report = Transition(label='Sales Report')
+
+skip = SilentTransition()
+
+# Define the workflow
+artifact_intake_loop = OperatorPOWL(operator=Operator.LOOP, children=[artifact_intake, condition_check, material_test])
+archival_search_xor = OperatorPOWL(operator=Operator.XOR, children=[archival_search, skip])
+expert_review_xor = OperatorPOWL(operator=Operator.XOR, children=[expert_review, skip])
+restoration_check_xor = OperatorPOWL(operator=Operator.XOR, children=[restoration_check, skip])
+legal_verify_xor = OperatorPOWL(operator=Operator.XOR, children=[legal_verify, skip])
+value_appraise_xor = OperatorPOWL(operator=Operator.XOR, children=[value_appraise, skip])
+catalog_entry_xor = OperatorPOWL(operator=Operator.XOR, children=[catalog_entry, skip])
+marketing_plan_xor = OperatorPOWL(operator=Operator.XOR, children=[marketing_plan, skip])
+auction_setup_xor = OperatorPOWL(operator=Operator.XOR, children=[auction_setup, skip])
+certify_final_xor = OperatorPOWL(operator=Operator.XOR, children=[certify_final, skip])
+sales_report_xor = OperatorPOWL(operator=Operator.XOR, children=[sales_report, skip])
+
+root = StrictPartialOrder(nodes=[artifact_intake_loop, archival_search_xor, expert_review_xor, restoration_check_xor, legal_verify_xor, value_appraise_xor, catalog_entry_xor, marketing_plan_xor, auction_setup_xor, certify_final_xor, sales_report_xor])
+root.order.add_edge(artifact_intake_loop, archival_search_xor)
+root.order.add_edge(archival_search_xor, expert_review_xor)
+root.order.add_edge(expert_review_xor, restoration_check_xor)
+root.order.add_edge(restoration_check_xor, legal_verify_xor)
+root.order.add_edge(legal_verify_xor, value_appraise_xor)
+root.order.add_edge(value_appraise_xor, catalog_entry_xor)
+root.order.add_edge(catalog_entry_xor, marketing_plan_xor)
+root.order.add_edge(marketing_plan_xor, auction_setup_xor)
+root.order.add_edge(auction_setup_xor, certify_final_xor)
+root.order.add_edge(certify_final_xor, sales_report_xor)

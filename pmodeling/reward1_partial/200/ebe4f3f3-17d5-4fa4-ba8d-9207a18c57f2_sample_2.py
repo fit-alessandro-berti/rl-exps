@@ -1,0 +1,41 @@
+root = StrictPartialOrder(
+    nodes=[
+        Transition(label='Milk Sourcing'),
+        Transition(label='Farm Audit'),
+        Transition(label='Milk Testing'),
+        Transition(label='Batch Forming'),
+        Transition(label='Curd Cutting'),
+        Transition(label='Molding Cheese'),
+        Transition(label='Salting Process'),
+        Transition(label='Aging Control'),
+        Transition(label='Quality Check'),
+        Transition(label='Packaging Design'),
+        Transition(label='Label Printing'),
+        Transition(label='Inventory Update'),
+        Transition(label='Order Receiving'),
+        Transition(label='Retail Coordination'),
+        Transition(label='Shipping Prep'),
+        Transition(label='Customer Feedback'),
+        Transition(label='Demand Forecast'),
+        Transition(label='Limited Release')
+    ],
+    order={
+        ('Milk Sourcing', 'Farm Audit'),
+        ('Farm Audit', 'Milk Testing'),
+        ('Milk Testing', 'Batch Forming'),
+        ('Batch Forming', 'Curd Cutting'),
+        ('Curd Cutting', 'Molding Cheese'),
+        ('Molding Cheese', 'Salting Process'),
+        ('Salting Process', 'Aging Control'),
+        ('Aging Control', 'Quality Check'),
+        ('Quality Check', 'Packaging Design'),
+        ('Packaging Design', 'Label Printing'),
+        ('Label Printing', 'Inventory Update'),
+        ('Inventory Update', 'Order Receiving'),
+        ('Order Receiving', 'Retail Coordination'),
+        ('Retail Coordination', 'Shipping Prep'),
+        ('Shipping Prep', 'Customer Feedback'),
+        ('Customer Feedback', 'Demand Forecast'),
+        ('Demand Forecast', 'Limited Release')
+    }
+)

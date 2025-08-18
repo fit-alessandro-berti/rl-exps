@@ -1,0 +1,38 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+artifact_intake = Transition(label='Artifact Intake')
+visual_inspection = Transition(label='Visual Inspection')
+material_testing = Transition(label='Material Testing')
+radiocarbon_dating = Transition(label='Radiocarbon Dating')
+provenance_check = Transition(label='Provenance Check')
+archive_research = Transition(label='Archive Research')
+expert_review = Transition(label='Expert Review')
+style_analysis = Transition(label='Style Analysis')
+craftsmanship_eval = Transition(label='Craftsmanship Eval')
+condition_check = Transition(label='Condition Check')
+restoration_plan = Transition(label='Restoration Plan')
+forger_risk = Transition(label='Forgery Risk')
+legal_review = Transition(label='Legal Review')
+report_drafting = Transition(label='Report Drafting')
+catalog_entry = Transition(label='Catalog Entry')
+
+artifact_intake_next = OperatorPOWL(operator=Operator.XOR, children=[material_testing, radiocarbon_dating])
+artifact_intake_next_next = OperatorPOWL(operator=Operator.XOR, children=[provenance_check, archive_research])
+expert_review_next = OperatorPOWL(operator=Operator.XOR, children=[style_analysis, craftsmanship_eval])
+condition_check_next = OperatorPOWL(operator=Operator.XOR, children=[restoration_plan, forger_risk])
+legal_review_next = OperatorPOWL(operator=Operator.XOR, children=[legal_review, report_drafting])
+catalog_entry_next = OperatorPOWL(operator=Operator.XOR, children=[catalog_entry, SilentTransition()])
+
+root = StrictPartialOrder(nodes=[artifact_intake, artifact_intake_next, artifact_intake_next_next, expert_review, expert_review_next, condition_check, condition_check_next, legal_review_next, report_drafting, catalog_entry_next])
+root.order.add_edge(artifact_intake, artifact_intake_next)
+root.order.add_edge(artifact_intake_next, artifact_intake_next_next)
+root.order.add_edge(artifact_intake_next_next, expert_review)
+root.order.add_edge(expert_review, expert_review_next)
+root.order.add_edge(expert_review_next, condition_check)
+root.order.add_edge(condition_check, condition_check_next)
+root.order.add_edge(condition_check_next, legal_review_next)
+root.order.add_edge(legal_review_next, report_drafting)
+root.order.add_edge(report_drafting, catalog_entry_next)
+root.order.add_edge(catalog_entry_next, catalog_entry)

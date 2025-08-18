@@ -1,0 +1,41 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the transitions
+sourcing = Transition(label='Colony Sourcing')
+design = Transition(label='Hive Design')
+survey = Transition(label='Site Survey')
+prep = Transition(label='Installation Prep')
+setup = Transition(label='Hive Setup')
+sensor = Transition(label='Sensor Install')
+monitor = Transition(label='Health Monitor')
+control = Transition(label='Pest Control')
+harvest = Transition(label='Honey Harvest')
+wax = Transition(label='Wax Processing')
+package = Transition(label='Product Packaging')
+dispatch = Transition(label='Order Dispatch')
+workshop = Transition(label='Workshop Setup')
+outreach = Transition(label='Community Outreach')
+check = Transition(label='Regulation Check')
+data_analysis = Transition(label='Data Analysis')
+maintenance = Transition(label='Maintenance Plan')
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[sourcing, design, survey, prep, setup, sensor, monitor, control, harvest, wax, package, dispatch, workshop, outreach, check, data_analysis, maintenance])
+root.order.add_edge(sourcing, design)
+root.order.add_edge(design, survey)
+root.order.add_edge(survey, prep)
+root.order.add_edge(prep, setup)
+root.order.add_edge(setup, sensor)
+root.order.add_edge(sensor, monitor)
+root.order.add_edge(monitor, control)
+root.order.add_edge(control, harvest)
+root.order.add_edge(harvest, wax)
+root.order.add_edge(wax, package)
+root.order.add_edge(package, dispatch)
+root.order.add_edge(dispatch, workshop)
+root.order.add_edge(workshop, outreach)
+root.order.add_edge(outreach, check)
+root.order.add_edge(check, data_analysis)
+root.order.add_edge(data_analysis, maintenance)

@@ -1,0 +1,65 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the transitions (activities)
+order_validate = Transition(label='Order Validate')
+route_optimize = Transition(label='Route Optimize')
+drone_assign = Transition(label='Drone Assign')
+preflight_check = Transition(label='Preflight Check')
+load_package = Transition(label='Load Package')
+flight_launch = Transition(label='Flight Launch')
+traffic_monitor = Transition(label='Traffic Monitor')
+weather_assess = Transition(label='Weather Assess')
+obstacle_avoid = Transition(label='Obstacle Avoid')
+battery_check = Transition(label='Battery Check')
+delivery_verify = Transition(label='Delivery Verify')
+biometric_scan = Transition(label='Biometric Scan')
+package_release = Transition(label='Package Release')
+return_flight = Transition(label='Return Flight')
+post_flight = Transition(label='Post Flight')
+data_analyze = Transition(label='Data Analyze')
+feedback_collect = Transition(label='Feedback Collect')
+
+# Define the partial order
+root = StrictPartialOrder()
+
+# Add transitions to the partial order
+root.nodes.append(order_validate)
+root.nodes.append(route_optimize)
+root.nodes.append(drone_assign)
+root.nodes.append(preflight_check)
+root.nodes.append(load_package)
+root.nodes.append(flight_launch)
+root.nodes.append(traffic_monitor)
+root.nodes.append(weather_assess)
+root.nodes.append(obstacle_avoid)
+root.nodes.append(battery_check)
+root.nodes.append(delivery_verify)
+root.nodes.append(biometric_scan)
+root.nodes.append(package_release)
+root.nodes.append(return_flight)
+root.nodes.append(post_flight)
+root.nodes.append(data_analyze)
+root.nodes.append(feedback_collect)
+
+# Define dependencies between transitions
+root.order.add_edge(order_validate, route_optimize)
+root.order.add_edge(route_optimize, drone_assign)
+root.order.add_edge(drone_assign, preflight_check)
+root.order.add_edge(preflight_check, load_package)
+root.order.add_edge(load_package, flight_launch)
+root.order.add_edge(flight_launch, traffic_monitor)
+root.order.add_edge(traffic_monitor, weather_assess)
+root.order.add_edge(weather_assess, obstacle_avoid)
+root.order.add_edge(obstacle_avoid, battery_check)
+root.order.add_edge(battery_check, delivery_verify)
+root.order.add_edge(delivery_verify, biometric_scan)
+root.order.add_edge(biometric_scan, package_release)
+root.order.add_edge(package_release, return_flight)
+root.order.add_edge(return_flight, post_flight)
+root.order.add_edge(post_flight, data_analyze)
+root.order.add_edge(data_analyze, feedback_collect)
+
+# Print the POWL model
+print(root)

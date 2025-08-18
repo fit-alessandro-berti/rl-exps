@@ -1,0 +1,52 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions (activities)
+site_analysis = Transition(label='Site Analysis')
+climate_setup = Transition(label='Climate Setup')
+nutrient_mix = Transition(label='Nutrient Mix')
+seed_germinate = Transition(label='Seed Germinate')
+auto_planting = Transition(label='Auto Planting')
+irrigation_setup = Transition(label='Irrigation Setup')
+iot_monitoring = Transition(label='IoT Monitoring')
+pest_detection = Transition(label='Pest Detection')
+drone_pollinate = Transition(label='Drone Pollinate')
+pesticide_spray = Transition(label='Pesticide Spray')
+robotic_harvest = Transition(label='Robotic Harvest')
+quality_check = Transition(label='Quality Check')
+package_product = Transition(label='Package Product')
+waste_recycle = Transition(label='Waste Recycle')
+energy_optimize = Transition(label='Energy Optimize')
+data_logging = Transition(label='Data Logging')
+
+# Define silent transition
+skip = SilentTransition()
+
+# Define loops and choices
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[pest_detection, pesticide_spray])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[drone_pollinate, auto_planting])
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[irrigation_setup, skip])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[quality_check, skip])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[waste_recycle, skip])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[energy_optimize, skip])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[data_logging, skip])
+
+# Define root POWL
+root = StrictPartialOrder(nodes=[site_analysis, climate_setup, nutrient_mix, seed_germinate, auto_planting, loop2, loop1, xor2, xor1, xor3, xor4, xor5])
+root.order.add_edge(site_analysis, climate_setup)
+root.order.add_edge(climate_setup, nutrient_mix)
+root.order.add_edge(nutrient_mix, seed_germinate)
+root.order.add_edge(seed_germinate, auto_planting)
+root.order.add_edge(auto_planting, loop2)
+root.order.add_edge(loop2, drone_pollinate)
+root.order.add_edge(drone_pollinate, pesticide_spray)
+root.order.add_edge(pesticide_spray, loop1)
+root.order.add_edge(loop1, auto_planting)
+root.order.add_edge(auto_planting, xor2)
+root.order.add_edge(xor2, quality_check)
+root.order.add_edge(quality_check, xor3)
+root.order.add_edge(xor3, waste_recycle)
+root.order.add_edge(waste_recycle, xor4)
+root.order.add_edge(xor4, energy_optimize)
+root.order.add_edge(energy_optimize, xor5)
+root.order.add_edge(xor5, data_logging)

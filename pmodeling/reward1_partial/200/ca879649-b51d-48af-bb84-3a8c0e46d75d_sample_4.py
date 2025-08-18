@@ -1,0 +1,61 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+Milk_Sourcing = Transition(label='Milk Sourcing')
+Quality_Testing = Transition(label='Quality Testing')
+Batch_Selection = Transition(label='Batch Selection')
+Curd_Preparation = Transition(label='Curd Preparation')
+Pressing_Cheese = Transition(label='Pressing Cheese')
+Aging_Control = Transition(label='Aging Control')
+Flavor_Profiling = Transition(label='Flavor Profiling')
+Packaging_Prep = Transition(label='Packaging Prep')
+Climate_Packing = Transition(label='Climate Packing')
+Export_Licensing = Transition(label='Export Licensing')
+Customs_Filing = Transition(label='Customs Filing')
+Freight_Booking = Transition(label='Freight Booking')
+Cold_Storage = Transition(label='Cold Storage')
+Transport_Tracking = Transition(label='Transport Tracking')
+Retail_Delivery = Transition(label='Retail Delivery')
+Feedback_Collection = Transition(label='Feedback Collection')
+
+skip = SilentTransition()
+
+# Define the steps in the workflow
+milk_sourcing = OperatorPOWL(operator=Operator.SILENT, children=[Milk_Sourcing])
+quality_testing = OperatorPOWL(operator=Operator.SILENT, children=[Quality_Testing])
+batch_selection = OperatorPOWL(operator=Operator.SILENT, children=[Batch_Selection])
+curd_preparation = OperatorPOWL(operator=Operator.SILENT, children=[Curd_Preparation])
+pressing_cheese = OperatorPOWL(operator=Operator.SILENT, children=[Pressing_Cheese])
+aging_control = OperatorPOWL(operator=Operator.SILENT, children=[Aging_Control])
+flavor_profiling = OperatorPOWL(operator=Operator.SILENT, children=[Flavor_Profiling])
+packaging_prep = OperatorPOWL(operator=Operator.SILENT, children=[Packaging_Prep])
+climate_packing = OperatorPOWL(operator=Operator.SILENT, children=[Climate_Packing])
+export_licensing = OperatorPOWL(operator=Operator.SILENT, children=[Export_Licensing])
+customs_filing = OperatorPOWL(operator=Operator.SILENT, children=[Customs_Filing])
+freight_booking = OperatorPOWL(operator=Operator.SILENT, children=[Freight_Booking])
+cold_storage = OperatorPOWL(operator=Operator.SILENT, children=[Cold_Storage])
+transport_tracking = OperatorPOWL(operator=Operator.SILENT, children=[Transport_Tracking])
+retail_delivery = OperatorPOWL(operator=Operator.SILENT, children=[Retail_Delivery])
+feedback_collection = OperatorPOWL(operator=Operator.SILENT, children=[Feedback_Collection])
+
+# Define the loop for aging control
+aging_control_loop = OperatorPOWL(operator=Operator.LOOP, children=[aging_control])
+
+# Define the partial order for the workflow
+root = StrictPartialOrder(nodes=[milk_sourcing, quality_testing, batch_selection, curd_preparation, pressing_cheese, aging_control_loop, flavor_profiling, packaging_prep, climate_packing, export_licensing, customs_filing, freight_booking, cold_storage, transport_tracking, retail_delivery, feedback_collection])
+root.order.add_edge(milk_sourcing, quality_testing)
+root.order.add_edge(quality_testing, batch_selection)
+root.order.add_edge(batch_selection, curd_preparation)
+root.order.add_edge(curd_preparation, pressing_cheese)
+root.order.add_edge(pressing_cheese, aging_control_loop)
+root.order.add_edge(aging_control_loop, flavor_profiling)
+root.order.add_edge(flavor_profiling, packaging_prep)
+root.order.add_edge(packaging_prep, climate_packing)
+root.order.add_edge(climate_packing, export_licensing)
+root.order.add_edge(export_licensing, customs_filing)
+root.order.add_edge(customs_filing, freight_booking)
+root.order.add_edge(freight_booking, cold_storage)
+root.order.add_edge(cold_storage, transport_tracking)
+root.order.add_edge(transport_tracking, retail_delivery)
+root.order.add_edge(retail_delivery, feedback_collection)

@@ -1,0 +1,51 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the transitions for each activity
+site_survey = Transition(label='Site Survey')
+climate_scan = Transition(label='Climate Scan')
+module_setup = Transition(label='Module Setup')
+crop_choice = Transition(label='Crop Choice')
+nutrient_feed = Transition(label='Nutrient Feed')
+pest_control = Transition(label='Pest Control')
+energy_audit = Transition(label='Energy Audit')
+waste_cycle = Transition(label='Waste Cycle')
+growth_track = Transition(label='Growth Track')
+demand_plan = Transition(label='Demand Plan')
+community_link = Transition(label='Community Link')
+regulation_check = Transition(label='Regulation Check')
+supply_sync = Transition(label='Supply Sync')
+system_upgrade = Transition(label='System Upgrade')
+data_backup = Transition(label='Data Backup')
+
+# Define the operators for the POWL model
+xor = OperatorPOWL(operator=Operator.XOR, children=[supply_sync, system_upgrade])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[regulation_check, data_backup])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[community_link, data_backup])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[pest_control, data_backup])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[energy_audit, data_backup])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[waste_cycle, data_backup])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[growth_track, data_backup])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[demand_plan, data_backup])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[crop_choice, data_backup])
+xor10 = OperatorPOWL(operator=Operator.XOR, children=[nutrient_feed, data_backup])
+xor11 = OperatorPOWL(operator=Operator.XOR, children=[module_setup, data_backup])
+xor12 = OperatorPOWL(operator=Operator.XOR, children=[climate_scan, data_backup])
+xor13 = OperatorPOWL(operator=Operator.XOR, children=[site_survey, data_backup])
+
+# Define the partial order
+root = StrictPartialOrder(nodes=[xor13, xor12, xor11, xor10, xor9, xor8, xor7, xor6, xor5, xor4, xor3, xor2, xor])
+root.order.add_edge(xor13, xor12)
+root.order.add_edge(xor12, xor11)
+root.order.add_edge(xor11, xor10)
+root.order.add_edge(xor10, xor9)
+root.order.add_edge(xor9, xor8)
+root.order.add_edge(xor8, xor7)
+root.order.add_edge(xor7, xor6)
+root.order.add_edge(xor6, xor5)
+root.order.add_edge(xor5, xor4)
+root.order.add_edge(xor4, xor3)
+root.order.add_edge(xor3, xor2)
+root.order.add_edge(xor2, xor)
+root.order.add_edge(xor, xor13)

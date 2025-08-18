@@ -1,0 +1,53 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions
+setup = Transition(label='Scenario Setup')
+resource_map = Transition(label='Resource Mapping')
+briefing = Transition(label='Team Briefing')
+tech_deploy = Transition(label='Tech Deployment')
+data_sync = Transition(label='Data Sync')
+comm_setup = Transition(label='Comm Setup')
+live_monitor = Transition(label='Live Monitoring')
+variable_adjust = Transition(label='Variable Adjust')
+incident_inject = Transition(label='Incident Injection')
+response_track = Transition(label='Response Tracking')
+interlock_check = Transition(label='Interlock Check')
+real_time_feedback = Transition(label='Real-time Feedback')
+debrief = Transition(label='Debrief Session')
+outcome_analysis = Transition(label='Outcome Analysis')
+report_gen = Transition(label='Report Generation')
+improvement_plan = Transition(label='Improvement Plan')
+
+# Define partial order
+root = StrictPartialOrder(nodes=[setup, resource_map, briefing, tech_deploy, data_sync, comm_setup, live_monitor, variable_adjust, incident_inject, response_track, interlock_check, real_time_feedback, debrief, outcome_analysis, report_gen, improvement_plan])
+
+# Define edges (dependencies)
+root.order.add_edge(setup, resource_map)
+root.order.add_edge(setup, briefing)
+root.order.add_edge(setup, tech_deploy)
+root.order.add_edge(setup, data_sync)
+root.order.add_edge(setup, comm_setup)
+root.order.add_edge(resource_map, briefing)
+root.order.add_edge(resource_map, tech_deploy)
+root.order.add_edge(resource_map, data_sync)
+root.order.add_edge(resource_map, comm_setup)
+root.order.add_edge(briefing, tech_deploy)
+root.order.add_edge(briefing, data_sync)
+root.order.add_edge(briefing, comm_setup)
+root.order.add_edge(tech_deploy, data_sync)
+root.order.add_edge(tech_deploy, comm_setup)
+root.order.add_edge(data_sync, comm_setup)
+root.order.add_edge(comm_setup, live_monitor)
+root.order.add_edge(live_monitor, variable_adjust)
+root.order.add_edge(variable_adjust, incident_inject)
+root.order.add_edge(incident_inject, response_track)
+root.order.add_edge(response_track, interlock_check)
+root.order.add_edge(interlock_check, real_time_feedback)
+root.order.add_edge(real_time_feedback, debrief)
+root.order.add_edge(debrief, outcome_analysis)
+root.order.add_edge(outcome_analysis, report_gen)
+root.order.add_edge(report_gen, improvement_plan)
+
+print(root)

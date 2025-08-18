@@ -1,0 +1,43 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define the activities
+site_survey = Transition(label='Site Survey')
+design_layout = Transition(label='Design Layout')
+permit_filing = Transition(label='Permit Filing')
+module_build = Transition(label='Module Build')
+system_install = Transition(label='System Install')
+climate_setup = Transition(label='Climate Setup')
+lighting_configure = Transition(label='Lighting Configure')
+irrigation_setup = Transition(label='Irrigation Setup')
+nutrient_mix = Transition(label='Nutrient Mix')
+pest_check = Transition(label='Pest Check')
+sensor_calibrate = Transition(label='Sensor Calibrate')
+data_integration = Transition(label='Data Integration')
+crop_planting = Transition(label='Crop Planting')
+growth_monitor = Transition(label='Growth Monitor')
+yield_analyze = Transition(label='Yield Analyze')
+waste_manage = Transition(label='Waste Manage')
+energy_audit = Transition(label='Energy Audit')
+
+# Define the control-flow operators
+xor = OperatorPOWL(operator=Operator.XOR, children=[pest_check, sensor_calibrate])
+loop = OperatorPOWL(operator=Operator.LOOP, children=[climate_setup, lighting_configure, irrigation_setup, nutrient_mix, data_integration, growth_monitor, yield_analyze, waste_manage, energy_audit])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[module_build, system_install, loop])
+
+# Define the root
+root = StrictPartialOrder(nodes=[site_survey, design_layout, permit_filing, xor2])
+root.order.add_edge(site_survey, design_layout)
+root.order.add_edge(design_layout, permit_filing)
+root.order.add_edge(permit_filing, xor2)
+root.order.add_edge(xor2, module_build)
+root.order.add_edge(module_build, system_install)
+root.order.add_edge(system_install, loop)
+root.order.add_edge(loop, climate_setup)
+root.order.add_edge(climate_setup, lighting_configure)
+root.order.add_edge(lighting_configure, irrigation_setup)
+root.order.add_edge(irrigation_setup, nutrient_mix)
+root.order.add_edge(nutrient_mix, data_integration)
+root.order.add_edge(data_integration, growth_monitor)
+root.order.add_edge(growth_monitor, yield_analyze)
+root.order.add_edge(yield_analyze, waste_manage)
+root.order.add_edge(waste_manage, energy_audit)

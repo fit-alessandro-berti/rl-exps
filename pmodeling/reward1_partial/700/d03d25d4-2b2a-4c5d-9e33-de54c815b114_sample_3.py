@@ -1,0 +1,60 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+farm_registration = Transition(label='Farm Registration')
+lot_tagging = Transition(label='Lot Tagging')
+soil_testing = Transition(label='Soil Testing')
+harvest_logging = Transition(label='Harvest Logging')
+coffee_sorting = Transition(label='Coffee Sorting')
+sensory_profiling = Transition(label='Sensory Profiling')
+quality_scoring = Transition(label='Quality Scoring')
+blockchain_entry = Transition(label='Blockchain Entry')
+environmental_audit = Transition(label='Environmental Audit')
+farmer_feedback = Transition(label='Farmer Feedback')
+dynamic_pricing = Transition(label='Dynamic Pricing')
+roast_scheduling = Transition(label='Roast Scheduling')
+batch_testing = Transition(label='Batch Testing')
+certification_review = Transition(label='Certification Review')
+distribution_prep = Transition(label='Distribution Prep')
+consumer_feedback = Transition(label='Consumer Feedback')
+
+skip = SilentTransition()
+
+# Create POWL models for each activity
+farm_registration_model = StrictPartialOrder(nodes=[farm_registration])
+lot_tagging_model = StrictPartialOrder(nodes=[lot_tagging])
+soil_testing_model = StrictPartialOrder(nodes=[soil_testing])
+harvest_logging_model = StrictPartialOrder(nodes=[harvest_logging])
+coffee_sorting_model = StrictPartialOrder(nodes=[coffee_sorting])
+sensory_profiling_model = StrictPartialOrder(nodes=[sensory_profiling])
+quality_scoring_model = StrictPartialOrder(nodes=[quality_scoring])
+blockchain_entry_model = StrictPartialOrder(nodes=[blockchain_entry])
+environmental_audit_model = StrictPartialOrder(nodes=[environmental_audit])
+farmer_feedback_model = StrictPartialOrder(nodes=[farmer_feedback])
+dynamic_pricing_model = StrictPartialOrder(nodes=[dynamic_pricing])
+roast_scheduling_model = StrictPartialOrder(nodes=[roast_scheduling])
+batch_testing_model = StrictPartialOrder(nodes=[batch_testing])
+certification_review_model = StrictPartialOrder(nodes=[certification_review])
+distribution_prep_model = StrictPartialOrder(nodes=[distribution_prep])
+consumer_feedback_model = StrictPartialOrder(nodes=[consumer_feedback])
+
+# Create exclusive choice nodes for each step
+exclusive_choice1 = OperatorPOWL(operator=Operator.XOR, children=[farm_registration_model, lot_tagging_model])
+exclusive_choice2 = OperatorPOWL(operator=Operator.XOR, children=[soil_testing_model, harvest_logging_model])
+exclusive_choice3 = OperatorPOWL(operator=Operator.XOR, children=[coffee_sorting_model, sensory_profiling_model])
+exclusive_choice4 = OperatorPOWL(operator=Operator.XOR, children=[quality_scoring_model, blockchain_entry_model])
+exclusive_choice5 = OperatorPOWL(operator=Operator.XOR, children=[environmental_audit_model, farmer_feedback_model])
+exclusive_choice6 = OperatorPOWL(operator=Operator.XOR, children=[dynamic_pricing_model, roast_scheduling_model])
+exclusive_choice7 = OperatorPOWL(operator=Operator.XOR, children=[batch_testing_model, certification_review_model])
+exclusive_choice8 = OperatorPOWL(operator=Operator.XOR, children=[distribution_prep_model, consumer_feedback_model])
+
+# Create the root POWL model with all exclusive choice nodes
+root = StrictPartialOrder(nodes=[exclusive_choice1, exclusive_choice2, exclusive_choice3, exclusive_choice4, exclusive_choice5, exclusive_choice6, exclusive_choice7, exclusive_choice8])
+root.order.add_edge(exclusive_choice1, exclusive_choice2)
+root.order.add_edge(exclusive_choice2, exclusive_choice3)
+root.order.add_edge(exclusive_choice3, exclusive_choice4)
+root.order.add_edge(exclusive_choice4, exclusive_choice5)
+root.order.add_edge(exclusive_choice5, exclusive_choice6)
+root.order.add_edge(exclusive_choice6, exclusive_choice7)
+root.order.add_edge(exclusive_choice7, exclusive_choice8)

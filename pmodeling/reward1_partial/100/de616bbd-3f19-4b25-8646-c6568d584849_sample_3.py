@@ -1,0 +1,43 @@
+root = StrictPartialOrder(
+    nodes=[
+        Transition(label='Site Analysis'),
+        Transition(label='Structural Check'),
+        Transition(label='System Design'),
+        Transition(label='Hydroponics Setup'),
+        Transition(label='Lighting Install'),
+        Transition(label='Sensor Install'),
+        Transition(label='Climate Control'),
+        Transition(label='Nutrient Monitor'),
+        Transition(label='Seed Selection'),
+        Transition(label='Germination Start'),
+        Transition(label='Auto Planting'),
+        Transition(label='Growth Monitoring'),
+        Transition(label='AI Analytics'),
+        Transition(label='Robotic Harvest'),
+        Transition(label='Packaging'),
+        Transition(label='Trace Labeling'),
+        Transition(label='Logistics Plan'),
+        Transition(label='Delivery'),
+        Transition(label='Market Delivery')
+    ],
+    order=[
+        ('Site Analysis', 'Structural Check'),
+        ('Structural Check', 'System Design'),
+        ('System Design', 'Hydroponics Setup'),
+        ('System Design', 'Lighting Install'),
+        ('System Design', 'Sensor Install'),
+        ('System Design', 'Climate Control'),
+        ('System Design', 'Nutrient Monitor'),
+        ('Hydroponics Setup', 'Seed Selection'),
+        ('Lighting Install', 'Germination Start'),
+        ('Sensor Install', 'Auto Planting'),
+        ('Climate Control', 'Growth Monitoring'),
+        ('Nutrient Monitor', 'AI Analytics'),
+        ('Auto Planting', 'Robotic Harvest'),
+        ('Robotic Harvest', 'Packaging'),
+        ('Packaging', 'Trace Labeling'),
+        ('Trace Labeling', 'Logistics Plan'),
+        ('Logistics Plan', 'Delivery'),
+        ('Delivery', 'Market Delivery')
+    ]
+)

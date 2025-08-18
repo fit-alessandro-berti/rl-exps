@@ -1,0 +1,38 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the transitions for each activity
+scenario_setup = Transition(label='Scenario Setup')
+resource_mapping = Transition(label='Resource Mapping')
+team_briefing = Transition(label='Team Briefing')
+tech_deployment = Transition(label='Tech Deployment')
+data_sync = Transition(label='Data Sync')
+comm_setup = Transition(label='Comm Setup')
+live_monitoring = Transition(label='Live Monitoring')
+variable_adjust = Transition(label='Variable Adjust')
+incident_injection = Transition(label='Incident Injection')
+response_tracking = Transition(label='Response Tracking')
+interlock_check = Transition(label='Interlock Check')
+real_time_feedback = Transition(label='Real-time Feedback')
+debrief_session = Transition(label='Debrief Session')
+outcome_analysis = Transition(label='Outcome Analysis')
+report_generation = Transition(label='Report Generation')
+improvement_plan = Transition(label='Improvement Plan')
+
+# Define the partial order and its order
+root = StrictPartialOrder()
+root.order.add_edge(scenario_setup, resource_mapping)
+root.order.add_edge(scenario_setup, team_briefing)
+root.order.add_edge(scenario_setup, tech_deployment)
+root.order.add_edge(scenario_setup, data_sync)
+root.order.add_edge(scenario_setup, comm_setup)
+root.order.add_edge(resource_mapping, live_monitoring)
+root.order.add_edge(live_monitoring, variable_adjust)
+root.order.add_edge(live_monitoring, incident_injection)
+root.order.add_edge(live_monitoring, response_tracking)
+root.order.add_edge(live_monitoring, interlock_check)
+root.order.add_edge(live_monitoring, real_time_feedback)
+root.order.add_edge(real_time_feedback, debrief_session)
+root.order.add_edge(debrief_session, outcome_analysis)
+root.order.add_edge(outcome_analysis, report_generation)
+root.order.add_edge(report_generation, improvement_plan)

@@ -1,0 +1,38 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+provenance_check = Transition(label='Provenance Check')
+material_scan = Transition(label='Material Scan')
+wear_analysis = Transition(label='Wear Analysis')
+image_capture = Transition(label='Image Capture')
+pattern_match = Transition(label='Pattern Match')
+ownership_verify = Transition(label='Ownership Verify')
+ethics_review = Transition(label='Ethics Review')
+carbon_dating = Transition(label='Carbon Dating')
+restoration_eval = Transition(label='Restoration Eval')
+report_draft = Transition(label='Report Draft')
+stakeholder_review = Transition(label='Stakeholder Review')
+archive_data = Transition(label='Archive Data')
+exhibit_approve = Transition(label='Exhibit Approve')
+condition_monitor = Transition(label='Condition Monitor')
+final_certification = Transition(label='Final Certification')
+
+skip = SilentTransition()
+xor = OperatorPOWL(operator=Operator.XOR, children=[provenance_check, material_scan])
+xor = OperatorPOWL(operator=Operator.XOR, children=[xor, wear_analysis])
+xor = OperatorPOWL(operator=Operator.XOR, children=[xor, image_capture])
+xor = OperatorPOWL(operator=Operator.XOR, children=[xor, pattern_match])
+xor = OperatorPOWL(operator=Operator.XOR, children=[xor, ownership_verify])
+xor = OperatorPOWL(operator=Operator.XOR, children=[xor, ethics_review])
+xor = OperatorPOWL(operator=Operator.XOR, children=[xor, carbon_dating])
+xor = OperatorPOWL(operator=Operator.XOR, children=[xor, restoration_eval])
+xor = OperatorPOWL(operator=Operator.XOR, children=[xor, report_draft])
+xor = OperatorPOWL(operator=Operator.XOR, children=[xor, stakeholder_review])
+xor = OperatorPOWL(operator=Operator.XOR, children=[xor, archive_data])
+xor = OperatorPOWL(operator=Operator.XOR, children=[xor, exhibit_approve])
+xor = OperatorPOWL(operator=Operator.XOR, children=[xor, condition_monitor])
+xor = OperatorPOWL(operator=Operator.XOR, children=[xor, final_certification])
+
+root = StrictPartialOrder(nodes=[xor])
+root.order.add_edge(xor, final_certification)

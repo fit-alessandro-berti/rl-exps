@@ -1,0 +1,53 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+site_survey = Transition(label='Site Survey')
+structure_assess = Transition(label='Structure Assess')
+system_design = Transition(label='System Design')
+crop_select = Transition(label='Crop Select')
+permit_obtain = Transition(label='Permit Obtain')
+enviro_setup = Transition(label='Enviro Setup')
+irrigation_plan = Transition(label='Irrigation Plan')
+sensor_install = Transition(label='Sensor Install')
+ai_calibration = Transition(label='AI Calibration')
+staff_train = Transition(label='Staff Train')
+nutrient_mix = Transition(label='Nutrient Mix')
+pest_monitor = Transition(label='Pest Monitor')
+yield_analyze = Transition(label='Yield Analyze')
+market_align = Transition(label='Market Align')
+launch_farm = Transition(label='Launch Farm')
+
+# Define the process structure
+site_survey_to_structure = OperatorPOWL(operator=Operator.XOR, children=[structure_assess, site_survey])
+structure_to_system = OperatorPOWL(operator=Operator.XOR, children=[system_design, structure_assess])
+system_to_crop = OperatorPOWL(operator=Operator.XOR, children=[crop_select, system_design])
+crop_to_permit = OperatorPOWL(operator=Operator.XOR, children=[permit_obtain, crop_select])
+permit_to_enviro = OperatorPOWL(operator=Operator.XOR, children=[enviro_setup, permit_obtain])
+enviro_to_irrigation = OperatorPOWL(operator=Operator.XOR, children=[irrigation_plan, enviro_setup])
+irrigation_to_sensor = OperatorPOWL(operator=Operator.XOR, children=[sensor_install, irrigation_plan])
+sensor_to_ai = OperatorPOWL(operator=Operator.XOR, children=[ai_calibration, sensor_install])
+ai_to_staff = OperatorPOWL(operator=Operator.XOR, children=[staff_train, ai_calibration])
+staff_to_nutrient = OperatorPOWL(operator=Operator.XOR, children=[nutrient_mix, staff_train])
+nutrient_to_pest = OperatorPOWL(operator=Operator.XOR, children=[pest_monitor, nutrient_mix])
+pest_to_yield = OperatorPOWL(operator=Operator.XOR, children=[yield_analyze, pest_monitor])
+yield_to_market = OperatorPOWL(operator=Operator.XOR, children=[market_align, yield_analyze])
+market_to_launch = OperatorPOWL(operator=Operator.XOR, children=[launch_farm, market_align])
+
+# Create the root node
+root = StrictPartialOrder(nodes=[site_survey, structure_assess, system_design, crop_select, permit_obtain, enviro_setup, irrigation_plan, sensor_install, ai_calibration, staff_train, nutrient_mix, pest_monitor, yield_analyze, market_align, launch_farm])
+root.order.add_edge(site_survey, structure_assess)
+root.order.add_edge(structure_assess, system_design)
+root.order.add_edge(system_design, crop_select)
+root.order.add_edge(crop_select, permit_obtain)
+root.order.add_edge(permit_obtain, enviro_setup)
+root.order.add_edge(enviro_setup, irrigation_plan)
+root.order.add_edge(irrigation_plan, sensor_install)
+root.order.add_edge(sensor_install, ai_calibration)
+root.order.add_edge(ai_calibration, staff_train)
+root.order.add_edge(staff_train, nutrient_mix)
+root.order.add_edge(nutrient_mix, pest_monitor)
+root.order.add_edge(pest_monitor, yield_analyze)
+root.order.add_edge(yield_analyze, market_align)
+root.order.add_edge(market_align, launch_farm)

@@ -1,0 +1,50 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the transitions (activities) for the POWL model
+seed_selection = Transition(label='Seed Selection')
+germination_setup = Transition(label='Germination Setup')
+nutrient_mix = Transition(label='Nutrient Mix')
+water_control = Transition(label='Water Control')
+climate_adjust = Transition(label='Climate Adjust')
+sensor_monitor = Transition(label='Sensor Monitor')
+lighting_tune = Transition(label='Lighting Tune')
+airflow_manage = Transition(label='Airflow Manage')
+health_scan = Transition(label='Health Scan')
+pest_control = Transition(label='Pest Control')
+harvest_timing = Transition(label='Harvest Timing')
+cold_storage = Transition(label='Cold Storage')
+package_prep = Transition(label='Package Prep')
+delivery_plan = Transition(label='Delivery Plan')
+feedback_loop = Transition(label='Feedback Loop')
+
+# Define the workflow using POWL operators
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[pest_control, sensor_monitor])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[health_scan, lighting_tune])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[airflow_manage, water_control])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[nutrient_mix, germination_setup])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[seed_selection, harvest_timing])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[cold_storage, package_prep])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[delivery_plan, feedback_loop])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[xor1, xor2])
+xor9 = OperatorPOWL(operator=Operator.XOR, children=[xor3, xor4])
+xor10 = OperatorPOWL(operator=Operator.XOR, children=[xor5, xor6])
+xor11 = OperatorPOWL(operator=Operator.XOR, children=[xor7, xor8])
+xor12 = OperatorPOWL(operator=Operator.XOR, children=[xor9, xor10])
+xor13 = OperatorPOWL(operator=Operator.XOR, children=[xor11, xor12])
+
+# Define the strict partial order with dependencies
+root = StrictPartialOrder(nodes=[xor13])
+root.order.add_edge(xor13, xor12)
+root.order.add_edge(xor12, xor11)
+root.order.add_edge(xor11, xor10)
+root.order.add_edge(xor10, xor9)
+root.order.add_edge(xor9, xor8)
+root.order.add_edge(xor8, xor7)
+root.order.add_edge(xor7, xor6)
+root.order.add_edge(xor6, xor5)
+root.order.add_edge(xor5, xor4)
+root.order.add_edge(xor4, xor3)
+root.order.add_edge(xor3, xor2)
+root.order.add_edge(xor2, xor1)

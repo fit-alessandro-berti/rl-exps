@@ -1,0 +1,47 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions
+data_capture = Transition(label='Data Capture')
+trend_scan = Transition(label='Trend Scan')
+idea_workshop = Transition(label='Idea Workshop')
+concept_draft = Transition(label='Concept Draft')
+expert_review = Transition(label='Expert Review')
+prototype_build = Transition(label='Prototype Build')
+regulation_check = Transition(label='Regulation Check')
+ip_alignment = Transition(label='IP Alignment')
+supply_sync = Transition(label='Supply Sync')
+market_mapping = Transition(label='Market Mapping')
+pilot_launch = Transition(label='Pilot Launch')
+feedback_loop = Transition(label='Feedback Loop')
+design_iterate = Transition(label='Design Iterate')
+impact_measure = Transition(label='Impact Measure')
+strategy_adapt = Transition(label='Strategy Adapt')
+
+# Define loop and XOR nodes
+loop_data = OperatorPOWL(operator=Operator.LOOP, children=[data_capture, trend_scan, idea_workshop])
+xor_prototype = OperatorPOWL(operator=Operator.XOR, children=[prototype_build, expert_review])
+loop_prototype = OperatorPOWL(operator=Operator.LOOP, children=[prototype_build, expert_review])
+xor_ip = OperatorPOWL(operator=Operator.XOR, children=[ip_alignment, regulation_check])
+loop_ip = OperatorPOWL(operator=Operator.LOOP, children=[ip_alignment, regulation_check])
+xor_supply = OperatorPOWL(operator=Operator.XOR, children=[supply_sync, market_mapping])
+loop_supply = OperatorPOWL(operator=Operator.LOOP, children=[supply_sync, market_mapping])
+xor_market = OperatorPOWL(operator=Operator.XOR, children=[pilot_launch, feedback_loop])
+loop_market = OperatorPOWL(operator=Operator.LOOP, children=[pilot_launch, feedback_loop])
+xor_design = OperatorPOWL(operator=Operator.XOR, children=[design_iterate, impact_measure])
+loop_design = OperatorPOWL(operator=Operator.LOOP, children=[design_iterate, impact_measure])
+xor_strategy = OperatorPOWL(operator=Operator.XOR, children=[strategy_adapt, market_mapping])
+
+# Define root node
+root = StrictPartialOrder(nodes=[loop_data, xor_prototype, loop_prototype, xor_ip, loop_ip, xor_supply, loop_supply, xor_market, loop_market, xor_design, loop_design, xor_strategy])
+root.order.add_edge(loop_data, xor_prototype)
+root.order.add_edge(xor_prototype, loop_prototype)
+root.order.add_edge(loop_prototype, xor_ip)
+root.order.add_edge(xor_ip, loop_ip)
+root.order.add_edge(loop_ip, xor_supply)
+root.order.add_edge(xor_supply, loop_supply)
+root.order.add_edge(loop_supply, xor_market)
+root.order.add_edge(xor_market, loop_market)
+root.order.add_edge(loop_market, xor_design)
+root.order.add_edge(xor_design, loop_design)
+root.order.add_edge(loop_design, xor_strategy)

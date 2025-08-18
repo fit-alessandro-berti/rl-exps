@@ -1,0 +1,26 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+design_layout = Transition(label='Design Layout')
+system_assembly = Transition(label='System Assembly')
+climate_setup = Transition(label='Climate Setup')
+light_calibration = Transition(label='Light Calibration')
+seed_selection = Transition(label='Seed Selection')
+seedling_prep = Transition(label='Seedling Prep')
+nutrient_mix = Transition(label='Nutrient Mix')
+irrigation_setup = Transition(label='Irrigation Setup')
+sensor_install = Transition(label='Sensor Install')
+data_integration = Transition(label='Data Integration')
+waste_routing = Transition(label='Waste Routing')
+energy_audit = Transition(label='Energy Audit')
+regulation_check = Transition(label='Regulation Check')
+operational_test = Transition(label='Operational Test')
+community_outreach = Transition(label='Community Outreach')
+
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[site_survey, design_layout, system_assembly, climate_setup, light_calibration, seed_selection, seedling_prep, nutrient_mix, irrigation_setup, sensor_install, data_integration, waste_routing, energy_audit, regulation_check, operational_test, community_outreach])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[site_survey, design_layout, system_assembly, climate_setup, light_calibration, seed_selection, seedling_prep, nutrient_mix, irrigation_setup, sensor_install, data_integration, waste_routing, energy_audit, regulation_check, operational_test, community_outreach])
+
+root = StrictPartialOrder(nodes=[loop1, loop2])
+root.order.add_edge(loop1, loop2)

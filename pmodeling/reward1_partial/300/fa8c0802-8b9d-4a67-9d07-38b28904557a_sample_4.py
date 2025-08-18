@@ -1,0 +1,66 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define activities
+data_aggregation = Transition(label='Data Aggregation')
+anomaly_detect = Transition(label='Anomaly Detect')
+risk_assess = Transition(label='Risk Assess')
+demand_model = Transition(label='Demand Model')
+stakeholder_sync = Transition(label='Stakeholder Sync')
+auto_negotiate = Transition(label='Auto Negotiate')
+inventory_optimize = Transition(label='Inventory Optimize')
+contingency_plan = Transition(label='Contingency Plan')
+resource_allocate = Transition(label='Resource Allocate')
+sustainability_check = Transition(label='Sustainability Check')
+compliance_verify = Transition(label='Compliance Verify')
+impact_score = Transition(label='Impact Score')
+distribution_plan = Transition(label='Distribution Plan')
+feedback_loop = Transition(label='Feedback Loop')
+performance_audit = Transition(label='Performance Audit')
+schedule_execute = Transition(label='Schedule Execute')
+
+# Define control-flow operators
+xor = OperatorPOWL(operator=Operator.XOR, children=[stakeholder_sync, feedback_loop])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[compliance_verify, impact_score])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[inventory_optimize, contingency_plan])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[resource_allocate, sustainability_check])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[distribution_plan, performance_audit])
+
+# Define loop nodes
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[auto_negotiate, xor])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[xor2, xor3])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[xor4, xor5])
+
+# Define the root model
+root = StrictPartialOrder(nodes=[data_aggregation, anomaly_detect, risk_assess, demand_model, loop1, loop2, loop3, schedule_execute])
+root.order.add_edge(data_aggregation, anomaly_detect)
+root.order.add_edge(anomaly_detect, risk_assess)
+root.order.add_edge(risk_assess, demand_model)
+root.order.add_edge(demand_model, loop1)
+root.order.add_edge(loop1, xor)
+root.order.add_edge(loop1, xor2)
+root.order.add_edge(loop2, xor3)
+root.order.add_edge(loop2, xor4)
+root.order.add_edge(loop3, xor5)
+root.order.add_edge(xor, loop1)
+root.order.add_edge(xor2, loop2)
+root.order.add_edge(xor3, loop2)
+root.order.add_edge(xor4, loop3)
+root.order.add_edge(xor5, loop3)
+root.order.add_edge(loop1, schedule_execute)
+root.order.add_edge(loop2, schedule_execute)
+root.order.add_edge(loop3, schedule_execute)
+root.order.add_edge(schedule_execute, feedback_loop)
+root.order.add_edge(feedback_loop, xor)
+root.order.add_edge(xor, schedule_execute)
+root.order.add_edge(compliance_verify, schedule_execute)
+root.order.add_edge(impact_score, schedule_execute)
+root.order.add_edge(sustainability_check, schedule_execute)
+root.order.add_edge(resource_allocate, schedule_execute)
+root.order.add_edge(distribution_plan, schedule_execute)
+root.order.add_edge(schedule_execute, performance_audit)
+root.order.add_edge(performance_audit, xor5)
+root.order.add_edge(xor5, schedule_execute)
+
+print(root)

@@ -1,0 +1,42 @@
+root = StrictPartialOrder(
+    nodes=[
+        Transition(label='Receive Artifact'),
+        Transition(label='Condition Log'),
+        Transition(label='Radiocarbon Test'),
+        Transition(label='Spectroscopy Scan'),
+        Transition(label='Expert Consult'),
+        Transition(label='Provenance Check'),
+        Transition(label='Archive Search'),
+        Transition(label='Risk Assess'),
+        Transition(label='3D Scan'),
+        Transition(label='Legal Review'),
+        Transition(label='Insurance Setup'),
+        Transition(label='Certificate Draft'),
+        Transition(label='Certificate Approve'),
+        Transition(label='Climate Pack'),
+        Transition(label='Conservation Plan'),
+        Transition(label='Monitoring Schedule')
+    ],
+    order={
+        (Transition(label='Receive Artifact'), Transition(label='Condition Log')): None,
+        (Transition(label='Condition Log'), Transition(label='Radiocarbon Test')): None,
+        (Transition(label='Condition Log'), Transition(label='Spectroscopy Scan')): None,
+        (Transition(label='Radiocarbon Test'), Transition(label='Expert Consult')): None,
+        (Transition(label='Radiocarbon Test'), Transition(label='Archive Search')): None,
+        (Transition(label='Radiocarbon Test'), Transition(label='Risk Assess')): None,
+        (Transition(label='Spectroscopy Scan'), Transition(label='Expert Consult')): None,
+        (Transition(label='Spectroscopy Scan'), Transition(label='Archive Search')): None,
+        (Transition(label='Spectroscopy Scan'), Transition(label='Risk Assess')): None,
+        (Transition(label='Expert Consult'), Transition(label='Provenance Check')): None,
+        (Transition(label='Archive Search'), Transition(label='Provenance Check')): None,
+        (Transition(label='Risk Assess'), Transition(label='Provenance Check')): None,
+        (Transition(label='Provenance Check'), Transition(label='3D Scan')): None,
+        (Transition(label='3D Scan'), Transition(label='Legal Review')): None,
+        (Transition(label='Legal Review'), Transition(label='Insurance Setup')): None,
+        (Transition(label='Insurance Setup'), Transition(label='Certificate Draft')): None,
+        (Transition(label='Certificate Draft'), Transition(label='Certificate Approve')): None,
+        (Transition(label='Certificate Approve'), Transition(label='Climate Pack')): None,
+        (Transition(label='Climate Pack'), Transition(label='Conservation Plan')): None,
+        (Transition(label='Conservation Plan'), Transition(label='Monitoring Schedule')): None
+    }
+)

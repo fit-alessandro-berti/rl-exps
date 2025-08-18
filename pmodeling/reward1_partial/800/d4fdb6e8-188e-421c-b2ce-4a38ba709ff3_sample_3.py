@@ -1,0 +1,45 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the activities
+artifact_receipt = Transition(label='Artifact Receipt')
+initial_inspection = Transition(label='Initial Inspection')
+material_testing = Transition(label='Material Testing')
+provenance_check = Transition(label='Provenance Check')
+digital_imaging = Transition(label='Digital Imaging')
+database_search = Transition(label='Database Search')
+expert_consult = Transition(label='Expert Consult')
+legal_review = Transition(label='Legal Review')
+cultural_audit = Transition(label='Cultural Audit')
+condition_report = Transition(label='Condition Report')
+risk_assessment = Transition(label='Risk Assessment')
+insurance_setup = Transition(label='Insurance Setup')
+transport_plan = Transition(label='Transport Plan')
+final_certification = Transition(label='Final Certification')
+archive_entry = Transition(label='Archive Entry')
+publication_prep = Transition(label='Publication Prep')
+
+# Define the workflow
+initial_workflow = StrictPartialOrder(nodes=[
+    artifact_receipt, initial_inspection, material_testing, provenance_check, digital_imaging, database_search,
+    expert_consult, legal_review, cultural_audit, condition_report, risk_assessment, insurance_setup, transport_plan,
+    final_certification, archive_entry, publication_prep
+])
+initial_workflow.order.add_edge(artifact_receipt, initial_inspection)
+initial_workflow.order.add_edge(initial_inspection, material_testing)
+initial_workflow.order.add_edge(material_testing, provenance_check)
+initial_workflow.order.add_edge(provenance_check, digital_imaging)
+initial_workflow.order.add_edge(digital_imaging, database_search)
+initial_workflow.order.add_edge(database_search, expert_consult)
+initial_workflow.order.add_edge(expert_consult, legal_review)
+initial_workflow.order.add_edge(legal_review, cultural_audit)
+initial_workflow.order.add_edge(cultural_audit, condition_report)
+initial_workflow.order.add_edge(condition_report, risk_assessment)
+initial_workflow.order.add_edge(risk_assessment, insurance_setup)
+initial_workflow.order.add_edge(insurance_setup, transport_plan)
+initial_workflow.order.add_edge(transport_plan, final_certification)
+initial_workflow.order.add_edge(final_certification, archive_entry)
+initial_workflow.order.add_edge(archive_entry, publication_prep)
+
+root = initial_workflow

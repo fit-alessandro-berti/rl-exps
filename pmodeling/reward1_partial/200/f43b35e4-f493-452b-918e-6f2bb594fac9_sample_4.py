@@ -1,0 +1,58 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define the transitions (activities) with their labels
+client_brief = Transition(label='Client Brief')
+design_draft = Transition(label='Design Draft')
+part_sourcing = Transition(label='Part Sourcing')
+component_fabric = Transition(label='Component Fabric')
+circuit_assembly = Transition(label='Circuit Assembly')
+software_upload = Transition(label='Software Upload')
+initial_testing = Transition(label='Initial Testing')
+flight_calibrate = Transition(label='Flight Calibrate')
+payload_mount = Transition(label='Payload Mount')
+stress_testing = Transition(label='Stress Testing')
+feedback_loop = Transition(label='Feedback Loop')
+quality_check = Transition(label='Quality Check')
+certification = Transition(label='Certification')
+packaging = Transition(label='Packaging')
+delivery_plan = Transition(label='Delivery Plan')
+post_support = Transition(label='Post Support')
+
+# Define the silent transition (no action)
+skip = SilentTransition()
+
+# Define the workflow structure
+client_brief_to_design_draft = OperatorPOWL(operator=Operator.XOR, children=[client_brief, skip])
+design_draft_to_part_sourcing = OperatorPOWL(operator=Operator.XOR, children=[design_draft, skip])
+part_sourcing_to_component_fabric = OperatorPOWL(operator=Operator.XOR, children=[part_sourcing, skip])
+component_fabric_to_circuit_assembly = OperatorPOWL(operator=Operator.XOR, children=[component_fabric, skip])
+circuit_assembly_to_software_upload = OperatorPOWL(operator=Operator.XOR, children=[circuit_assembly, skip])
+software_upload_to_initial_testing = OperatorPOWL(operator=Operator.XOR, children=[software_upload, skip])
+initial_testing_to_flight_calibrate = OperatorPOWL(operator=Operator.XOR, children=[initial_testing, skip])
+flight_calibrate_to_payload_mount = OperatorPOWL(operator=Operator.XOR, children=[flight_calibrate, skip])
+payload_mount_to_stress_testing = OperatorPOWL(operator=Operator.XOR, children=[payload_mount, skip])
+stress_testing_to_feedback_loop = OperatorPOWL(operator=Operator.XOR, children=[stress_testing, skip])
+feedback_loop_to_quality_check = OperatorPOWL(operator=Operator.XOR, children=[feedback_loop, skip])
+quality_check_to_certification = OperatorPOWL(operator=Operator.XOR, children=[quality_check, skip])
+certification_to_packaging = OperatorPOWL(operator=Operator.XOR, children=[certification, skip])
+packaging_to_delivery_plan = OperatorPOWL(operator=Operator.XOR, children=[packaging, skip])
+delivery_plan_to_post_support = OperatorPOWL(operator=Operator.XOR, children=[delivery_plan, skip])
+
+# Construct the root POWL model
+root = StrictPartialOrder(nodes=[client_brief_to_design_draft, design_draft_to_part_sourcing, part_sourcing_to_component_fabric, component_fabric_to_circuit_assembly, circuit_assembly_to_software_upload, software_upload_to_initial_testing, initial_testing_to_flight_calibrate, flight_calibrate_to_payload_mount, payload_mount_to_stress_testing, stress_testing_to_feedback_loop, feedback_loop_to_quality_check, quality_check_to_certification, certification_to_packaging, packaging_to_delivery_plan, delivery_plan_to_post_support])
+root.order.add_edge(client_brief_to_design_draft, design_draft_to_part_sourcing)
+root.order.add_edge(design_draft_to_part_sourcing, part_sourcing_to_component_fabric)
+root.order.add_edge(part_sourcing_to_component_fabric, component_fabric_to_circuit_assembly)
+root.order.add_edge(component_fabric_to_circuit_assembly, circuit_assembly_to_software_upload)
+root.order.add_edge(circuit_assembly_to_software_upload, software_upload_to_initial_testing)
+root.order.add_edge(software_upload_to_initial_testing, initial_testing_to_flight_calibrate)
+root.order.add_edge(initial_testing_to_flight_calibrate, flight_calibrate_to_payload_mount)
+root.order.add_edge(flight_calibrate_to_payload_mount, payload_mount_to_stress_testing)
+root.order.add_edge(payload_mount_to_stress_testing, stress_testing_to_feedback_loop)
+root.order.add_edge(stress_testing_to_feedback_loop, feedback_loop_to_quality_check)
+root.order.add_edge(feedback_loop_to_quality_check, quality_check_to_certification)
+root.order.add_edge(quality_check_to_certification, certification_to_packaging)
+root.order.add_edge(certification_to_packaging, packaging_to_delivery_plan)
+root.order.add_edge(packaging_to_delivery_plan, delivery_plan_to_post_support)

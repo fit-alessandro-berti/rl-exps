@@ -1,0 +1,43 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define transitions (activities)
+verify_provenance = Transition(label='Verify Provenance')
+assess_condition = Transition(label='Assess Condition')
+negotiate_terms = Transition(label='Negotiate Terms')
+arrange_transport = Transition(label='Arrange Transport')
+customs_clearance = Transition(label='Customs Clearance')
+secure_insurance = Transition(label='Secure Insurance')
+schedule_handlers = Transition(label='Schedule Handlers')
+install_artwork = Transition(label='Install Artwork')
+monitor_climate = Transition(label='Monitor Climate')
+manage_security = Transition(label='Manage Security')
+facilitate_access = Transition(label='Facilitate Access')
+document_display = Transition(label='Document Display')
+coordinate_events = Transition(label='Coordinate Events')
+inspect_periodically = Transition(label='Inspect Periodically')
+plan_return = Transition(label='Plan Return')
+deinstall_artwork = Transition(label='Deinstall Artwork')
+finalize_reports = Transition(label='Finalize Reports')
+
+# Define silent transitions (no activity)
+skip = SilentTransition()
+
+# Define loops and exclusive choices
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[install_artwork, deinstall_artwork])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[monitor_climate, inspect_periodically])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[manage_security, document_display])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[facilitate_access, coordinate_events])
+loop5 = OperatorPOWL(operator=Operator.LOOP, children=[plan_return, finalize_reports])
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[arrange_transport, customs_clearance])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[secure_insurance, negotiate_terms])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[assess_condition, verify_provenance])
+
+# Construct the POWL model
+root = StrictPartialOrder(nodes=[xor1, xor2, xor3, loop1, loop2, loop3, loop4, loop5])
+root.order.add_edge(xor1, loop1)
+root.order.add_edge(xor2, loop2)
+root.order.add_edge(xor3, loop3)
+root.order.add_edge(loop1, loop4)
+root.order.add_edge(loop2, loop5)
+root.order.add_edge(loop3, loop5)
+root.order.add_edge(loop4, loop5)

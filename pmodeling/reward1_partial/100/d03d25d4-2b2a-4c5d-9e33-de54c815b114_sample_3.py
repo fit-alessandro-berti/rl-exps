@@ -1,0 +1,42 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+farm_registration = Transition(label='Farm Registration')
+lot_tagging = Transition(label='Lot Tagging')
+soil_testing = Transition(label='Soil Testing')
+harvest_logging = Transition(label='Harvest Logging')
+coffee_sorting = Transition(label='Coffee Sorting')
+sensory_profiling = Transition(label='Sensory Profiling')
+quality_scoring = Transition(label='Quality Scoring')
+blockchain_entry = Transition(label='Blockchain Entry')
+environmental_audit = Transition(label='Environmental Audit')
+farmer_feedback = Transition(label='Farmer Feedback')
+dynamic_pricing = Transition(label='Dynamic Pricing')
+roast_scheduling = Transition(label='Roast Scheduling')
+batch_testing = Transition(label='Batch Testing')
+certification_review = Transition(label='Certification Review')
+distribution_prep = Transition(label='Distribution Prep')
+consumer_feedback = Transition(label='Consumer Feedback')
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[farmer_feedback, dynamic_pricing])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[environmental_audit, roast_scheduling])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[quality_scoring, dynamic_pricing])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[blockchain_entry, distribution_prep])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[consumer_feedback, certification_review])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[batch_testing, certification_review])
+
+loop1 = OperatorPOWL(operator=Operator.LOOP, children=[farm_registration, lot_tagging])
+loop2 = OperatorPOWL(operator=Operator.LOOP, children=[soil_testing, harvest_logging])
+loop3 = OperatorPOWL(operator=Operator.LOOP, children=[coffee_sorting, sensory_profiling])
+loop4 = OperatorPOWL(operator=Operator.LOOP, children=[xor1, xor2])
+loop5 = OperatorPOWL(operator=Operator.LOOP, children=[xor3, xor4])
+loop6 = OperatorPOWL(operator=Operator.LOOP, children=[xor5, xor6])
+
+root = StrictPartialOrder(nodes=[loop1, loop2, loop3, loop4, loop5, loop6])
+root.order.add_edge(loop1, loop2)
+root.order.add_edge(loop2, loop3)
+root.order.add_edge(loop3, loop4)
+root.order.add_edge(loop4, loop5)
+root.order.add_edge(loop5, loop6)
+root.order.add_edge(loop6, loop1)

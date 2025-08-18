@@ -1,0 +1,38 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_assess = Transition(label='Site Assess')
+plan_layout = Transition(label='Plan Layout')
+install_racks = Transition(label='Install Racks')
+mix_nutrients = Transition(label='Mix Nutrients')
+calibrate_sensors = Transition(label='Calibrate Sensors')
+setup_lighting = Transition(label='Setup Lighting')
+configure_climate = Transition(label='Configure Climate')
+select_seeds = Transition(label='Select Seeds')
+monitor_germinate = Transition(label='Monitor Germinate')
+apply_bio_controls = Transition(label='Apply Bio-controls')
+maintain_systems = Transition(label='Maintain Systems')
+analyze_data = Transition(label='Analyze Data')
+harvest_crops = Transition(label='Harvest Crops')
+quality_check = Transition(label='Quality Check')
+package_produce = Transition(label='Package Produce')
+distribute_goods = Transition(label='Distribute Goods')
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[site_assess, plan_layout])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[install_racks, mix_nutrients])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[calibrate_sensors, setup_lighting])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[configure_climate, select_seeds])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[monitor_germinate, apply_bio_controls])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[maintain_systems, analyze_data])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[harvest_crops, quality_check])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[package_produce, distribute_goods])
+
+root = StrictPartialOrder(nodes=[xor1, xor2, xor3, xor4, xor5, xor6, xor7, xor8])
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor8)

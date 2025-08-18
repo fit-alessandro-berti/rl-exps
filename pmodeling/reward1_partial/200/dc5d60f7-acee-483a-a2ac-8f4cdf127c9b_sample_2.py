@@ -1,0 +1,35 @@
+root = StrictPartialOrder(
+    nodes=[
+        Transition(label='Intake Review'),
+        Transition(label='Condition Scan'),
+        Transition(label='Material Test'),
+        Transition(label='Style Match'),
+        Transition(label='Provenance Log'),
+        Transition(label='Forgery Risk'),
+        Transition(label='Legal Audit'),
+        Transition(label='Expert Panel'),
+        Transition(label='Data Crosscheck'),
+        Transition(label='Report Draft'),
+        Transition(label='Blockchain Tag'),
+        Transition(label='Certification'),
+        Transition(label='Client Feedback'),
+        Transition(label='Final Approval'),
+        Transition(label='Release Prep'),
+    ],
+    order={
+        'Intake Review': 'Condition Scan',
+        'Condition Scan': 'Material Test',
+        'Material Test': 'Style Match',
+        'Style Match': 'Provenance Log',
+        'Provenance Log': 'Forgery Risk',
+        'Forgery Risk': 'Legal Audit',
+        'Legal Audit': 'Expert Panel',
+        'Expert Panel': 'Data Crosscheck',
+        'Data Crosscheck': 'Report Draft',
+        'Report Draft': 'Blockchain Tag',
+        'Blockchain Tag': 'Certification',
+        'Certification': 'Client Feedback',
+        'Client Feedback': 'Final Approval',
+        'Final Approval': 'Release Prep'
+    }
+)

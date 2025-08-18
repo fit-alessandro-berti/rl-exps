@@ -1,0 +1,39 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition
+
+# Define activities
+site_survey = Transition(label='Site Survey')
+climate_scan = Transition(label='Climate Scan')
+module_setup = Transition(label='Module Setup')
+crop_choice = Transition(label='Crop Choice')
+nutrient_feed = Transition(label='Nutrient Feed')
+pest_control = Transition(label='Pest Control')
+energy_audit = Transition(label='Energy Audit')
+waste_cycle = Transition(label='Waste Cycle')
+growth_track = Transition(label='Growth Track')
+demand_plan = Transition(label='Demand Plan')
+community_link = Transition(label='Community Link')
+regulation_check = Transition(label='Regulation Check')
+supply_sync = Transition(label='Supply Sync')
+system_upgrade = Transition(label='System Upgrade')
+data_backup = Transition(label='Data Backup')
+
+# Create exclusive choice (XOR)
+exclusive_choice = OperatorPOWL(operator=Operator.XOR, children=[energy_audit, supply_sync])
+
+# Create loop
+loop = OperatorPOWL(operator=Operator.LOOP, children=[pest_control, nutrient_feed])
+
+# Construct the partial order
+root = StrictPartialOrder(nodes=[site_survey, climate_scan, module_setup, crop_choice, exclusive_choice, loop, demand_plan, community_link, regulation_check, system_upgrade, data_backup])
+root.order.add_edge(site_survey, climate_scan)
+root.order.add_edge(climate_scan, module_setup)
+root.order.add_edge(module_setup, crop_choice)
+root.order.add_edge(crop_choice, nutrient_feed)
+root.order.add_edge(nutrient_feed, pest_control)
+root.order.add_edge(pest_control, energy_audit)
+root.order.add_edge(energy_audit, supply_sync)
+root.order.add_edge(supply_sync, demand_plan)
+root.order.add_edge(demand_plan, community_link)
+root.order.add_edge(community_link, regulation_check)
+root.order.add_edge(regulation_check, system_upgrade)
+root.order.add_edge(system_upgrade, data_backup)

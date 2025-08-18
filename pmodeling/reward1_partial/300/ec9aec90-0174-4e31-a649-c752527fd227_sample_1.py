@@ -1,0 +1,47 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+# Define transitions for each activity
+assess_artifact = Transition(label='Assess Artifact')
+verify_provenance = Transition(label='Verify Provenance')
+analyze_condition = Transition(label='Analyze Condition')
+plan_conservation = Transition(label='Plan Conservation')
+clean_surface = Transition(label='Clean Surface')
+stabilize_structure = Transition(label='Stabilize Structure')
+source_materials = Transition(label='Source Materials')
+fabricate_parts = Transition(label='Fabricate Parts')
+perform_repairs = Transition(label='Perform Repairs')
+apply_patina = Transition(label='Apply Patina')
+match_colors = Transition(label='Match Colors')
+document_process = Transition(label='Document Process')
+review_quality = Transition(label='Review Quality')
+obtain_approval = Transition(label='Obtain Approval')
+package_securely = Transition(label='Package Securely')
+arrange_transport = Transition(label='Arrange Transport')
+
+# Define control flow operators
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[source_materials, fabricate_parts])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[stabilize_structure, perform_repairs])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[apply_patina, match_colors])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[document_process, review_quality])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[obtain_approval, package_securely])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[arrange_transport, None])
+
+# Define the root of the POWL model
+root = StrictPartialOrder(nodes=[assess_artifact, verify_provenance, analyze_condition, plan_conservation, clean_surface, xor1, xor2, xor3, xor4, xor5, xor6])
+root.order.add_edge(assess_artifact, verify_provenance)
+root.order.add_edge(verify_provenance, analyze_condition)
+root.order.add_edge(analyze_condition, plan_conservation)
+root.order.add_edge(plan_conservation, clean_surface)
+root.order.add_edge(clean_surface, xor1)
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor1, xor3)
+root.order.add_edge(xor2, xor4)
+root.order.add_edge(xor2, xor5)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor3, xor5)
+root.order.add_edge(xor4, xor6)
+root.order.add_edge(xor4, obtain_approval)
+root.order.add_edge(xor5, package_securely)
+root.order.add_edge(xor5, arrange_transport)
+root.order.add_edge(xor6, arrange_transport)

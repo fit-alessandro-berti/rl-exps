@@ -1,0 +1,46 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+initial_audit = Transition(label='Initial Audit')
+artist_review = Transition(label='Artist Review')
+material_check = Transition(label='Material Check')
+condition_scan = Transition(label='Condition Scan')
+ownership_verify = Transition(label='Ownership Verify')
+appraisal_update = Transition(label='Appraisal Update')
+restoration_plan = Transition(label='Restoration Plan')
+restoration_track = Transition(label='Restoration Track')
+logistics_book = Transition(label='Logistics Book')
+shipping_monitor = Transition(label='Shipping Monitor')
+customs_clear = Transition(label='Customs Clear')
+legal_compliance = Transition(label='Legal Compliance')
+ledger_update = Transition(label='Ledger Update')
+exhibition_setup = Transition(label='Exhibition Setup')
+public_showcase = Transition(label='Public Showcase')
+archival_prep = Transition(label='Archival Prep')
+final_report = Transition(label='Final Report')
+
+skip = SilentTransition()
+
+# Define the process flow
+initial_audit_order = OperatorPOWL(operator=Operator.XOR, children=[artist_review, material_check])
+material_check_order = OperatorPOWL(operator=Operator.XOR, children=[condition_scan, ownership_verify])
+ownership_verify_order = OperatorPOWL(operator=Operator.XOR, children=[appraisal_update, restoration_plan])
+appraisal_update_order = OperatorPOWL(operator=Operator.XOR, children=[restoration_track, logistics_book])
+restoration_plan_order = OperatorPOWL(operator=Operator.XOR, children=[shipping_monitor, customs_clear])
+shipping_monitor_order = OperatorPOWL(operator=Operator.XOR, children=[legal_compliance, ledger_update])
+customs_clear_order = OperatorPOWL(operator=Operator.XOR, children=[exhibition_setup, archival_prep])
+exhibition_setup_order = OperatorPOWL(operator=Operator.XOR, children=[public_showcase, final_report])
+
+root = StrictPartialOrder(nodes=[initial_audit_order, material_check_order, ownership_verify_order, appraisal_update_order, restoration_plan_order, shipping_monitor_order, customs_clear_order, exhibition_setup_order, public_showcase_order, archival_prep_order, final_report_order])
+root.order.add_edge(initial_audit_order, material_check_order)
+root.order.add_edge(material_check_order, condition_scan_order)
+root.order.add_edge(condition_scan_order, ownership_verify_order)
+root.order.add_edge(ownership_verify_order, appraisal_update_order)
+root.order.add_edge(appraisal_update_order, restoration_plan_order)
+root.order.add_edge(restoration_plan_order, shipping_monitor_order)
+root.order.add_edge(shipping_monitor_order, customs_clear_order)
+root.order.add_edge(customs_clear_order, exhibition_setup_order)
+root.order.add_edge(exhibition_setup_order, public_showcase_order)
+root.order.add_edge(public_showcase_order, archival_prep_order)
+root.order.add_edge(archival_prep_order, final_report_order)

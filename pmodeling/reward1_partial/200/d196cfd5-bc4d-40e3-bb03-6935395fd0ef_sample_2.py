@@ -1,0 +1,42 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+concept_ideation = Transition(label='Concept Ideation')
+sponsor_alignment = Transition(label='Sponsor Alignment')
+participant_signup = Transition(label='Participant SignUp')
+team_formation = Transition(label='Team Formation')
+workshop_setup = Transition(label='Workshop Setup')
+workshop_delivery = Transition(label='Workshop Delivery')
+progress_monitor = Transition(label='Progress Monitor')
+live_support = Transition(label='Live Support')
+feedback_loop = Transition(label='Feedback Loop')
+submission_check = Transition(label='Submission Check')
+plagiarism_scan = Transition(label='Plagiarism Scan')
+jury_evaluation = Transition(label='Jury Evaluation')
+result_compilation = Transition(label='Result Compilation')
+winner_announcement = Transition(label='Winner Announcement')
+post_analytics = Transition(label='Post Analytics')
+
+skip = SilentTransition()
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[concept_ideation, sponsor_alignment])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[participant_signup, team_formation])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[workshop_setup, workshop_delivery])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[progress_monitor, live_support])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[feedback_loop, submission_check])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[plagiarism_scan, jury_evaluation])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[result_compilation, winner_announcement])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[post_analytics, skip])
+
+root = StrictPartialOrder(nodes=[xor1, xor2, xor3, xor4, xor5, xor6, xor7, xor8])
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor1, xor3)
+root.order.add_edge(xor2, xor4)
+root.order.add_edge(xor2, xor5)
+root.order.add_edge(xor3, xor6)
+root.order.add_edge(xor3, xor7)
+root.order.add_edge(xor4, xor8)
+root.order.add_edge(xor5, xor8)
+root.order.add_edge(xor6, xor8)
+root.order.add_edge(xor7, xor8)

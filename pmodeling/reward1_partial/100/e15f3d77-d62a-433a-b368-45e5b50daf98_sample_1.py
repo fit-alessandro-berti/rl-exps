@@ -1,0 +1,43 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+Gather_Specs = Transition(label='Gather Specs')
+Adapt_Design = Transition(label='Adapt Design')
+Source_Parts = Transition(label='Source Parts')
+Component_Test = Transition(label='Component Test')
+Assemble_Frame = Transition(label='Assemble Frame')
+Install_Firmware = Transition(label='Install Firmware')
+Calibrate_Sensors = Transition(label='Calibrate Sensors')
+Stress_Test = Transition(label='Stress Test')
+Flight_Simulate = Transition(label='Flight Simulate')
+Validate_Battery = Transition(label='Validate Battery')
+Check_Accuracy = Transition(label='Check Accuracy')
+Package_Units = Transition(label='Package Units')
+Create_Manuals = Transition(label='Create Manuals')
+Ship_Drones = Transition(label='Ship Drones')
+Collect_Feedback = Transition(label='Collect Feedback')
+
+skip = SilentTransition()
+
+gather_design = OperatorPOWL(operator=Operator.LOOP, children=[Gather_Specs, Adapt_Design])
+source_parts = OperatorPOWL(operator=Operator.LOOP, children=[Source_Parts, Component_Test])
+assembly = OperatorPOWL(operator=Operator.LOOP, children=[Assemble_Frame, Install_Firmware, Calibrate_Sensors])
+stress_test = OperatorPOWL(operator=Operator.LOOP, children=[Stress_Test])
+flight_simulate = OperatorPOWL(operator=Operator.LOOP, children=[Flight_Simulate])
+battery_validation = OperatorPOWL(operator=Operator.LOOP, children=[Validate_Battery])
+accuracy_check = OperatorPOWL(operator=Operator.LOOP, children=[Check_Accuracy])
+package_units = OperatorPOWL(operator=Operator.LOOP, children=[Package_Units, Create_Manuals])
+ship_drones = OperatorPOWL(operator=Operator.LOOP, children=[Ship_Drones])
+collect_feedback = OperatorPOWL(operator=Operator.LOOP, children=[Collect_Feedback])
+
+root = StrictPartialOrder(nodes=[gather_design, source_parts, assembly, stress_test, flight_simulate, battery_validation, accuracy_check, package_units, ship_drones, collect_feedback])
+root.order.add_edge(gather_design, source_parts)
+root.order.add_edge(source_parts, assembly)
+root.order.add_edge(assembly, stress_test)
+root.order.add_edge(stress_test, flight_simulate)
+root.order.add_edge(flight_simulate, battery_validation)
+root.order.add_edge(battery_validation, accuracy_check)
+root.order.add_edge(accuracy_check, package_units)
+root.order.add_edge(package_units, ship_drones)
+root.order.add_edge(ship_drones, collect_feedback)

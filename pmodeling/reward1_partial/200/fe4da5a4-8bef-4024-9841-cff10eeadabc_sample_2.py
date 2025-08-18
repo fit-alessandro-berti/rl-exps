@@ -1,0 +1,35 @@
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+
+# Define the activities
+permit_securing = Transition(label='Permit Securing')
+structure_check = Transition(label='Structure Check')
+soil_testing = Transition(label='Soil Testing')
+water_analysis = Transition(label='Water Analysis')
+material_sourcing = Transition(label='Material Sourcing')
+planter_setup = Transition(label='Planter Setup')
+sensor_install = Transition(label='Sensor Install')
+irrigation_setup = Transition(label='Irrigation Setup')
+vendor_liaison = Transition(label='Vendor Liaison')
+staff_training = Transition(label='Staff Training')
+pest_control = Transition(label='Pest Control')
+produce_marketing = Transition(label='Produce Marketing')
+crop_rotation = Transition(label='Crop Rotation')
+health_audit = Transition(label='Health Audit')
+waste_composting = Transition(label='Waste Composting')
+
+# Define the process structure
+permit_check = OperatorPOWL(operator=Operator.XOR, children=[permit_securing, structure_check])
+soil_water_analysis = OperatorPOWL(operator=Operator.XOR, children=[soil_testing, water_analysis])
+material_sourcing = OperatorPOWL(operator=Operator.XOR, children=[material_sourcing, vendor_liaison])
+sensor_installation = OperatorPOWL(operator=Operator.XOR, children=[sensor_install, irrigation_setup])
+pest_control = OperatorPOWL(operator=Operator.XOR, children=[pest_control, staff_training])
+produce_marketing = OperatorPOWL(operator=Operator.XOR, children=[produce_marketing, health_audit])
+waste_composting = OperatorPOWL(operator=Operator.XOR, children=[waste_composting, crop_rotation])
+
+root = StrictPartialOrder(nodes=[permit_check, soil_water_analysis, material_sourcing, sensor_installation, pest_control, produce_marketing, waste_composting])
+root.order.add_edge(permit_check, soil_water_analysis)
+root.order.add_edge(soil_water_analysis, material_sourcing)
+root.order.add_edge(material_sourcing, sensor_installation)
+root.order.add_edge(sensor_installation, pest_control)
+root.order.add_edge(pest_control, produce_marketing)
+root.order.add_edge(produce_marketing, waste_composting)

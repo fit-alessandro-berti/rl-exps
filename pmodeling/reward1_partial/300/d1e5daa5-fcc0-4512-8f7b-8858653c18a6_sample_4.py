@@ -1,0 +1,37 @@
+import pm4py
+from pm4py.objects.powl.obj import StrictPartialOrder, OperatorPOWL, Transition, SilentTransition
+from pm4py.objects.process_tree.obj import Operator
+
+site_survey = Transition(label='Site Survey')
+regulation_check = Transition(label='Regulation Check')
+design_modules = Transition(label='Design Modules')
+install_hydroponics = Transition(label='Install Hydroponics')
+integrate_sensors = Transition(label='Integrate Sensors')
+calibrate_nutrients = Transition(label='Calibrate Nutrients')
+program_climate = Transition(label='Program Climate')
+select_crops = Transition(label='Select Crops')
+optimize_lighting = Transition(label='Optimize Lighting')
+train_staff = Transition(label='Train Staff')
+plan_harvest = Transition(label='Plan Harvest')
+recycle_waste = Transition(label='Recycle Waste')
+analyze_demand = Transition(label='Analyze Demand')
+plan_logistics = Transition(label='Plan Logistics')
+monitor_systems = Transition(label='Monitor Systems')
+
+xor1 = OperatorPOWL(operator=Operator.XOR, children=[site_survey, regulation_check])
+xor2 = OperatorPOWL(operator=Operator.XOR, children=[design_modules, install_hydroponics])
+xor3 = OperatorPOWL(operator=Operator.XOR, children=[integrate_sensors, calibrate_nutrients])
+xor4 = OperatorPOWL(operator=Operator.XOR, children=[program_climate, select_crops])
+xor5 = OperatorPOWL(operator=Operator.XOR, children=[optimize_lighting, train_staff])
+xor6 = OperatorPOWL(operator=Operator.XOR, children=[plan_harvest, recycle_waste])
+xor7 = OperatorPOWL(operator=Operator.XOR, children=[analyze_demand, plan_logistics])
+xor8 = OperatorPOWL(operator=Operator.XOR, children=[monitor_systems])
+
+root = StrictPartialOrder(nodes=[xor1, xor2, xor3, xor4, xor5, xor6, xor7, xor8])
+root.order.add_edge(xor1, xor2)
+root.order.add_edge(xor2, xor3)
+root.order.add_edge(xor3, xor4)
+root.order.add_edge(xor4, xor5)
+root.order.add_edge(xor5, xor6)
+root.order.add_edge(xor6, xor7)
+root.order.add_edge(xor7, xor8)
