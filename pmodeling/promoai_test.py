@@ -2,7 +2,7 @@ import os
 import pm4py
 import pandas as pd
 
-samples_dir = 'sampling_promoai_step2'
+samples_dir = 'sampling_promoai_qwen32'
 gt_dir = "test_promoai/xes"
 root = None
 
@@ -39,9 +39,9 @@ for file in os.listdir(samples_dir):
     #break
 
 final_list = pd.DataFrame(final_list)
-final_list.to_csv("promoai_test.csv", index=False)
+final_list.to_csv("promoai_test_qwen32.csv", index=False)
 
 df2 = final_list.groupby("label")["f_score"].agg(["min", "max", "mean"])
 df2.columns = ['min', 'max', 'mean']
-df2.to_csv("promoai_test_agg.csv", index=True)  # Keep the label as index
+df2.to_csv("promoai_test_qwen32_agg.csv", index=True)  # Keep the label as index
 
